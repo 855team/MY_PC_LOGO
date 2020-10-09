@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
+import SideBar from "../Component/SideBar";
+import SideBarPane from "../Component/SideBarPane";
 import {
     ReflexContainer,
     ReflexSplitter,
@@ -147,15 +149,13 @@ export default class MainView extends React.Component {
                     <ReflexElement className="body-pane">
                         <ReflexContainer orientation="vertical">
 
-                            <ReflexElement className="left-sidebar-pane" size={80}>
-                                <div className="left-sidebar-pane-content">
-                                    Left Sidebar Pane (fixed)
-                                </div>
+                            <ReflexElement className="left-sidebar-pane" size={64}>
+                                <SideBar />
                             </ReflexElement>
 
-                            <ReflexElement className="left-pane" flex={0.08} maxSize={300} minSize={120}>
-                                <div className="left-pane-content">
-                                    Left Pane (resizable)
+                            <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
+                                <div style={{ height:'100%', width: '100%' }}>
+                                    <SideBarPane style={{ height:'100%', width: '100%' }} />
                                 </div>
                             </ReflexElement>
 
