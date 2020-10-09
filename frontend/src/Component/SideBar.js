@@ -4,7 +4,9 @@ import { IconContext } from "react-icons";
 import { IoIosDocument, IoMdPeople, IoMdSettings } from "react-icons/io";
 import { GoBug } from "react-icons/go";
 import { HiLightBulb } from "react-icons/hi";
-import {getTheme} from "../utils/theme";
+import { getTheme } from "../utils/theme";
+
+import '../CSS/react-sidenav.css';
 
 
 class SideBar extends React.Component {
@@ -41,7 +43,7 @@ class SideBar extends React.Component {
                 <Nav defaultSelected="file">
                     <NavItem eventKey="file" active={this.state.active['file']}>
                         <NavIcon>
-                            <IconContext.Provider value={{size: "2.5em", color: "white"}}>
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoIosDocument />
                             </IconContext.Provider>
                         </NavIcon>
@@ -49,7 +51,7 @@ class SideBar extends React.Component {
 
                     <NavItem eventKey="debug" active={this.state.active['debug']}>
                         <NavIcon>
-                            <IconContext.Provider value={{size: "2.5em", color: "white"}}>
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <GoBug />
                             </IconContext.Provider>
                         </NavIcon>
@@ -57,7 +59,7 @@ class SideBar extends React.Component {
 
                     <NavItem eventKey="settings" active={this.state.active['settings']}>
                         <NavIcon>
-                            <IconContext.Provider value={{size: "2.5em", color: "white"}}>
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdSettings />
                             </IconContext.Provider>
                         </NavIcon>
@@ -65,7 +67,7 @@ class SideBar extends React.Component {
 
                     <NavItem eventKey="tutorials" active={this.state.active['tutorials']}>
                         <NavIcon>
-                            <IconContext.Provider value={{size: "2.5em", color: "white"}}>
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <HiLightBulb />
                             </IconContext.Provider>
                         </NavIcon>
@@ -73,7 +75,7 @@ class SideBar extends React.Component {
 
                     <NavItem eventKey="online" active={this.state.active['online']}>
                         <NavIcon>
-                            <IconContext.Provider value={{size: "2.5em", color: "white"}}>
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdPeople />
                             </IconContext.Provider>
                         </NavIcon>
