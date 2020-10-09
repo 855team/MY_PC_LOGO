@@ -1,6 +1,6 @@
 import React from "react";
 import { Treebeard } from 'react-treebeard';
-import {getTheme} from "../utils/theme";
+import { getTheme } from "../utils/theme";
 
 const data = {
     name: 'root',

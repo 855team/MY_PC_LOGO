@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import SideBar from "../Component/SideBar";
 import SideBarPane from "../Component/SideBarPane";
+import Console from "../Component/Console";
 import {
     ReflexContainer,
     ReflexSplitter,
@@ -98,16 +99,16 @@ class ControlledElement extends React.Component {
     render() {
         return (
             <ReflexElement className="ctrl-pane" size={this.state.size} {...this.props}>
-                <div>
-                    <div className="ctrl-pane-header">
-                        <button onClick={this.onMaximizeClicked}>
-                            <label> + </label>
-                        </button>
-                        <button onClick={this.onMinimizeClicked}>
+                <div style={{height: '100%'}}>
+                    <div style={{height: '20px', backgroundColor: 'black', overflow: 'hidden'}}>
+                        <button onClick={this.onMinimizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
                             <label> - </label>
                         </button>
+                        <button onClick={this.onMaximizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
+                            <label> + </label>
+                        </button>
                     </div>
-                    <div className="ctrl-pane-content">
+                    <div style={{position: 'absolute', top: '22px', bottom: '0', width: '100%', overflow: 'hidden'}}>
                         {this.props.children}
                     </div>
                 </div>
@@ -138,9 +139,9 @@ export default class MainView extends React.Component {
     render() {
         return (
             <div style={{ height: '100vh', width: '100vw' }}>
-                <ReflexContainer orientation="horizontal">
+                <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
-                    <ReflexElement className="header-pane" size={50}>
+                    <ReflexElement className="header-pane" minSize={50} maxSize={50}>
                         <div className="header-pane-content">
                             Header Pane (fixed)
                         </div>
@@ -149,7 +150,7 @@ export default class MainView extends React.Component {
                     <ReflexElement className="body-pane">
                         <ReflexContainer orientation="vertical">
 
-                            <ReflexElement className="left-sidebar-pane" size={64}>
+                            <ReflexElement className="left-sidebar-pane" minSize={64} maxSize={64}>
                                 <SideBar />
                             </ReflexElement>
 
@@ -173,9 +174,7 @@ export default class MainView extends React.Component {
                                     <ReflexSplitter propagate={true}/>
 
                                     <ControlledElement {...this.state.pane2}>
-                                        <div className="mid-bot-pane-content">
-                                            Mid Bot Pane (resizable)
-                                        </div>
+                                        <Console />
                                     </ControlledElement>
                                 </ReflexContainer>
                             </ReflexElement>
@@ -191,7 +190,7 @@ export default class MainView extends React.Component {
                         </ReflexContainer>
                     </ReflexElement>
 
-                    <ReflexElement className="footer-pane" size={30}>
+                    <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
                         <div className="footer-pane-content">
                             Footer Pane (fixed)
                         </div>
