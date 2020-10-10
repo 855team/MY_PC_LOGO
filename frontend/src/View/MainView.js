@@ -8,6 +8,7 @@ import {
     ReflexSplitter,
     ReflexElement
 } from 'react-reflex';
+import MonacoEditor from "../Component/MonacoEditor";
 
 class ControlledElement extends React.Component {
 
@@ -166,9 +167,16 @@ export default class MainView extends React.Component {
                                 <ReflexContainer orientation="horizontal">
 
                                     <ControlledElement {...this.state.pane1}>
-                                        <div className="mid-top-pane-content">
-                                            Mid Top Pane (resizable)
-                                        </div>
+                                        <MonacoEditor
+                                            language="LOGO"
+                                            options={{
+                                                selectOnLineNumbers: true,
+                                                roundedSelection: false,
+                                                cursorStyle: 'line',
+                                                automaticLayout: false,
+                                                theme: 'vs-dark',
+                                            }}
+                                        />
                                     </ControlledElement>
 
                                     <ReflexSplitter propagate={true}/>
