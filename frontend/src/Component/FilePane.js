@@ -1,6 +1,7 @@
 import React from "react";
 import { Treebeard } from 'react-treebeard';
 import { getTheme } from "../utils/theme";
+import "../CSS/react-filepane.css";
 
 const data = {
     name: 'root',
@@ -59,9 +60,12 @@ class FilePane extends React.Component {
     render() {
         let theme = getTheme();
         return (
-            <div style={theme.filePane}>
+            <div
+                // style={theme.filePane}
+                style={{background:"linear-gradient(#82cbff,#ffffff)",width:"100%",height:"100%"}}
+            >
                 <div style={{height: '0.4em'}} />
-                <Treebeard data={data} onToggle={this.onToggle} />
+                <Treebeard data={data} onToggle={this.onToggle}/>
             </div>
         );
     }
