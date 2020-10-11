@@ -28,7 +28,8 @@ class SideBar extends React.Component {
         let theme = getTheme();
         return (
             <SideNav
-                style={theme.sidebar}
+                // style={theme.sidebar}
+                style={{background:"linear-gradient(#82cbff,#ffffff)"}}
                 onSelect={(selected) => {
                     let prev_active = this.state.active;
                     for (let k in prev_active) {

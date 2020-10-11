@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import SideBar from "../Component/SideBar";
 import SideBarPane from "../Component/SideBarPane";
 import Console from "../Component/Console";
+import Header from "../Component/Header";
 import {
     ReflexContainer,
     ReflexSplitter,
@@ -143,20 +144,18 @@ export default class MainView extends React.Component {
                 <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
                     <ReflexElement className="header-pane" minSize={50} maxSize={50}>
-                        <div className="header-pane-content">
-                            Header Pane (fixed)
-                        </div>
+                        <Header/>
                     </ReflexElement>
 
                     <ReflexElement className="body-pane">
                         <ReflexContainer orientation="vertical">
 
-                            <ReflexElement className="left-sidebar-pane" minSize={64} maxSize={64}>
+                            <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
                                 <SideBar />
                             </ReflexElement>
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
-                                <div style={{ height:'100%', width: '100%' }}>
+                                <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
                                     <SideBarPane style={{ height:'100%', width: '100%' }} />
                                 </div>
                             </ReflexElement>
@@ -199,9 +198,8 @@ export default class MainView extends React.Component {
                     </ReflexElement>
 
                     <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
-                        <div className="footer-pane-content">
-                            Footer Pane (fixed)
-                        </div>
+                        <div className="footer-pane-content"
+                        style={{background:"#ffffff",height:"100%",width:"100%"}}/>
                     </ReflexElement>
 
                 </ReflexContainer>
