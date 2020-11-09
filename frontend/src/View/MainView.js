@@ -10,11 +10,13 @@ import {
     ReflexElement
 } from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
+import DrawingPanel from "../Component/DrawingPanel"
 
 class ControlledElement extends React.Component {
 
     constructor(props) {
         super(props);
+
 
         this.onMinimizeClicked = this.onMinimizeClicked.bind(this);
         this.onMaximizeClicked = this.onMaximizeClicked.bind(this);
@@ -122,6 +124,7 @@ class ControlledElement extends React.Component {
 export default class MainView extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             pane1: {
                 name: '命令文件',
@@ -138,9 +141,13 @@ export default class MainView extends React.Component {
         }
     }
 
+    componentDidMount() {
+
+    }
+
     render() {
         return (
-            <div style={{ height: '100vh', width: '100vw' }}>
+            <div style={{ height: '100vh', width: '100vw' }} >
                 <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
                     <ReflexElement className="header-pane" minSize={50} maxSize={50}>
@@ -188,11 +195,17 @@ export default class MainView extends React.Component {
 
                             <ReflexSplitter propagate={true}/>
 
-                            <ReflexElement className="right-pane" minSize={200}>
-                                <div className="right-pane-content">
-                                    Right Pane (resizable)
-                                </div>
+
+                            <ReflexElement  className="right-pane"  minSize={800} maxSize={800}  onResize={(el)=> {
+                                let canvas=document.getElementById('mycanvas');
+                                let data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height)
+                                canvas.width=el.domElement.clientWidth;
+                                canvas.height=el.domElement.clientHeight;
+                                canvas.getContext("2d").putImageData(data,0,0);
+                            }}>
+                                    <DrawingPanel />
                             </ReflexElement>
+
 
                         </ReflexContainer>
                     </ReflexElement>
