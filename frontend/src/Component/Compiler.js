@@ -59,7 +59,7 @@ class Compiler extends React.Component{
         function walk() {
 
             let token = tokens[current];
-            console.log(token);
+        //    console.log(token);
             if (token.type === 'INT') {
                 current++;
                 return {
@@ -143,6 +143,7 @@ class Compiler extends React.Component{
                 }
             }
             if (token.type == 'SETXY') {
+                console.log(tokens,current);
                 token = tokens[++current];
                 let node = {
                     type: 'SETXYExp',
@@ -166,6 +167,8 @@ class Compiler extends React.Component{
                 if (token.type != 'RBRACK') {
                     throw 'error';
                 }
+                current ++;
+                console.log("success",node);
                 return node;
             }
             if (token.type == 'SETPC') {
@@ -240,6 +243,7 @@ class Compiler extends React.Component{
 
         while (current < tokens.length) {
             this.AST.exps.push(walk());
+            console.log(current,this.AST);
         }
         console.log(this.AST);
         this.current_token = current;
@@ -291,14 +295,17 @@ class Compiler extends React.Component{
         if (node.type == 'SETBGExp') {
             commands.changepbgcolor(node.value);
         }
-        if (node.type == 'STAMPOVAL') {
+        if (node.type == 'STAMPOVALExp') {
+            console.log("hello",node);
             commands.drawcircle({x:node.valuex, y:node.valuey});
         }
         if (node.type == 'SETXYExp') {
+            console.log('hello')
             commands.changeposition({x:node.valuex,y:node.valuey});
         }
     }
     operGenerator() {
+        console.log("last",this.AST);
         let current = this.current_ASTNode;
         let AST = this.AST;
         while (current < AST.exps.length) {

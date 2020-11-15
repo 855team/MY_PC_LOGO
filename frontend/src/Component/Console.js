@@ -16,7 +16,6 @@ class Console extends React.Component {
     }
 
     handle(line) {
-        commands.changepbgcolor("white");
         this.compiler.append(line);
         // if(line=="a"){
         //     commands.turn(45);
