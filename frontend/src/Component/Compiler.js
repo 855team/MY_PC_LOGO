@@ -36,7 +36,7 @@ class Compiler extends React.Component{
                '[\[]': function() {
                    return {type:'LBRACK'}
                },
-               '[\]]': function() {
+               '\]': function() {
                    return {type:'RBRACK'}
                },
                '[ \t\n]': null,
@@ -44,9 +44,7 @@ class Compiler extends React.Component{
         });
         let that = this;
         function callback(token) {
- //           console.log(token);
-            if (token == ']')
-                token = {type:'RBRACK'};
+ //           console.log(token)
             that.tokens.push(token);
         }
         lexer.lex(input, callback);
@@ -267,19 +265,10 @@ class Compiler extends React.Component{
             for (let i = 0;i < node.iter;i++) {
                 for (let j = 0;j < node.exps.length;j++) {
                     console.log(node.exps[j]);
-                    function sleep(numberMillis) {
-                        var now = new Date();
-                        var exitTime = now.getTime() + numberMillis;
-                        while (true) {
-                            now = new Date();
-                            if (now.getTime() > exitTime)
-                                return;
-                        }
-                    }
+
                     console.log('start sleep')
-                    sleep(1000);
+                    setTimeout(() => this.traverse(node.exps[j]), (i * 10 + j) * 10)
                     console.log('end sleep')
-                    this.traverse(node.exps[j]);
                 }
             }
         }
