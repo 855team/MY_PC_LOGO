@@ -1,6 +1,7 @@
 import React, {createRef} from "react";
 import Commands from "../Controller/Commands";
 import ReactConsole from 'react-console-component';
+import Compiler from './Compiler.js'
 
 import '../CSS/react-console.css';
 let commands=new Commands();
@@ -10,34 +11,34 @@ class Console extends React.Component {
         super(props);
 
         this.ref = createRef();
-
+        this.compiler = new Compiler();
         this.handle = this.handle.bind(this);
     }
 
     handle(line) {
-        commands.changepbgcolor("white");
-        if(line=="a"){
-            commands.turn(45);
-            commands.changepenstate(1);
-        }
-        if(line=="b"){
-            commands.gostrait(50);
-        }
-        if(line=="c"){
-            commands.changeposition({x:600,y:600})
-        }
-        if(line=="d"){
-            commands.drawcircle({x:200,y:300})
-        }
-        if(line=="f"){
-            commands.clear()
-        }
-        if(line=="e"){
-            commands.changeimg("logo")
-        }
-        if(line=="g"){
-            commands.changepencolor("red")
-        }
+        this.compiler.append(line);
+        // if(line=="a"){
+        //     commands.turn(45);
+        //     commands.changepenstate(1);
+        // }
+        // if(line=="b"){
+        //     commands.gostrait(50);
+        // }
+        // if(line=="c"){
+        //     commands.changeposition({x:600,y:600})
+        // }
+        // if(line=="d"){
+        //     commands.drawcircle({x:200,y:300})
+        // }
+        // if(line=="f"){
+        //     commands.clear()
+        // }
+        // if(line=="e"){
+        //     commands.changeimg("logo")
+        // }
+        // if(line=="g"){
+        //     commands.changepencolor("red")
+        // }
 
         this.ref.current.log(line);
         this.ref.current.return();
