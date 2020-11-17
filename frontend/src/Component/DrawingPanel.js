@@ -111,14 +111,17 @@ class DrawingPanel extends React.Component{
         //清除canvas中的内容，乌龟回到初始位置
         this.setorientation(0);
         this.setposition(initpos);
-
+        this.setState({
+            pos:initpos,
+            orientation:0,
+        })
         let canvas=document.getElementById("mycanvas");
         canvas.width=canvas.width;
     }
 
     setorientation(angle){
-        //设置乌龟的旋转角度，角度为顺时针绝对值
-        ReactDom.findDOMNode(document.getElementById("turtle")).style.transform=`rotate(${angle}deg)`;
+        //设置乌龟的旋转角度，角度为顺时针绝对
+         ReactDom.findDOMNode(document.getElementById("turtle")).style.transform=`rotate(${angle}deg)`;
     }
     setposition(position){
         //设置乌龟在canvas上的位置
