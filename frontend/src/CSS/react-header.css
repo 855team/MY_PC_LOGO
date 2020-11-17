@@ -46,6 +46,10 @@
 }
 
 .toolbar-item-clicked{
+    height: 100%;
+    align-items: center;
+    display: flex;
+
     cursor: pointer;
     font-family: 汉仪乐喵体简;
 }

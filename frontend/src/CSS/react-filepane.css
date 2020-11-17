@@ -17,3 +17,9 @@ li div{
 .css-s4kvnr{
     color: #2e37ff !important;
 }
+
+.reflex-splitter{
+    background: none !important;
+    border-color: rgba(255, 255, 255, 0) !important;
+    border: none !important;
+}
