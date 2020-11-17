@@ -40,8 +40,8 @@ class DrawingPanel extends React.Component{
                 <canvas id='mycanvas'   style={{backgroundColor:'#F0FFFF',position:'absolute'}}>
                     Your browser does not support the canvas element.
                 </canvas>
-                <img id="turtle" ref="turtle"  src={require("../assets/turtle.png")} style={{position:'relative',width:'40px',height:'40px',marginLeft:initpos.x,
-                    marginTop:initpos.y,transform:'rotate(0deg)'}}/>
+                <img id="turtle" ref="turtle"  src={require("../assets/turtle.png")} style={{position:'relative',width:'40px',height:'40px',marginLeft:400,
+                    marginTop:400,transform:'rotate(0deg)'}}/>
             </div>
         )
     }

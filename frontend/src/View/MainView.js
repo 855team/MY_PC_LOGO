@@ -11,6 +11,9 @@ import {
 } from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
 import DrawingPanel from "../Component/DrawingPanel"
+import * as userService from "../Services/userService"
+import {message} from 'antd';
+import WrappedLoginForm from "../Component/LoginForm";
 
 class ControlledElement extends React.Component {
 
@@ -137,21 +140,124 @@ export default class MainView extends React.Component {
                 direction: -1,
                 id: 'mid-bot-panel',
                 minSize: 25
-            }
+            },
+            login:false,
+            username:"",
+            uid:undefined,
+            turtle:undefined,
+            task:undefined,
+            projects:[],
+            login_visible:false,
+            register_visible:false
+
         }
     }
 
     componentDidMount() {
+        this.validate()
+    }
+    validate= ()=>{
+        let token = localStorage.getItem("token")
+        console.log(token)
+        if(!token){
+            return false;
+        }
+        if(token){
+            const callback= async (result)=>{
+                console.log(result)
+                if(!result.success){
+                    return false;
+                }
+                else{
+                    await this.setState({
+                        login:true,
+                        username:result.data.Username,
+                        uid:result.data.Uid,
+                        turtle:result.data.Turtle,
+                        task:result.data.Task,
+                        projects:result.data.Projects
+                    })
+                }
+            }
+            userService.validate({token:token},callback)
+        }
+    }
 
+    login=(username,password)=>{
+        let callback=async(result)=>{
+
+            if(result.success){
+                message.success("登陆成功");
+                localStorage.setItem("token",result.data.token)
+                console.log(localStorage.getItem("token"))
+                await this.setState({
+                    login_visible:false,
+                    login:true,
+                    username:result.data.info.Username,
+                    uid:result.data.info.Uid,
+                    turtle:result.data.info.Turtle,
+                    task:result.data.info.Task,
+                    projects:result.data.info.Projects
+                });
+            }
+            else{
+                message.error("登陆失败")
+                this.setState({
+                    login_visible:false
+                })
+            }
+        }
+        userService.login({username:username,password:password},callback)
+    }
+
+    register=(username,password,email)=>{
+        let callback=async(result)=>{
+            if(result.success){
+                message.success("注册成功");
+                await this.setState({
+                    register_visible:false,
+                });
+            }
+            else{
+                message.error("注册失败")
+                this.setState({
+                    register_visible:false
+                })
+            }
+        }
+        userService.login({username:username,password:password,email:email},callback)
+    }
+
+    openlogin=()=>{
+        this.setState({
+            login_visible:true
+        })
+    }
+    openregister=()=>{
+        this.setState({
+            register_visible:true
+        })
+    }
+
+    closelogin=()=>{
+        this.setState({
+            login_visible:false
+        })
+    }
+    closeregister=()=>{
+        this.setState({
+            register_visible:false
+        })
     }
 
     render() {
         return (
-            <div style={{ height: '100vh', width: '100vw' }} >
+            <div>
+            <div style={{ height: '100vh', width: '100vw',position:'absolute' }} >
                 <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
                     <ReflexElement className="header-pane" minSize={50} maxSize={50}>
-                        <Header/>
+                        <Header openlogin={()=>this.openlogin()} username={this.state.username} login={this.state.login}/>
                     </ReflexElement>
 
                     <ReflexElement className="body-pane">
@@ -216,6 +322,12 @@ export default class MainView extends React.Component {
                     </ReflexElement>
 
                 </ReflexContainer>
+
+            </div>
+                <div style={{position:'relative'}}>
+                    <WrappedLoginForm login={(username,password)=>this.login(username,password)} closelogin={()=>this.closelogin()} visible={this.state.login_visible}/>
+                </div>
+
             </div>
         )
     }

@@ -1,5 +1,4 @@
 export function getTheme() {
-    localStorage.clear();
     let themeRaw = localStorage.getItem('theme');
     if (themeRaw) {
         return JSON.parse(themeRaw);

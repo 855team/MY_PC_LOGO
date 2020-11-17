@@ -15,7 +15,7 @@ class Console extends React.Component {
     }
 
     handle(line) {
-        commands.changepbgcolor("white");
+
         if(line=="a"){
             commands.turn(45);
             commands.changepenstate(1);
@@ -30,7 +30,7 @@ class Console extends React.Component {
             commands.drawcircle({x:200,y:300})
         }
         if(line=="f"){
-            commands.clear()
+            commands.changepbgcolor("yellow");
         }
         if(line=="e"){
             commands.changeimg("logo")
