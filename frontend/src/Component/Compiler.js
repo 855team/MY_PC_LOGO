@@ -24,7 +24,7 @@ class Compiler extends React.Component{
                "[0-9]+": function() {
                  return {type:'INT',value:parseInt(this.text, 10)}
                },
-               "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL": function() {
+               "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
                    return {type:this.text}
                },
                "#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]": function() {
@@ -131,6 +131,12 @@ class Compiler extends React.Component{
                 current++;
                 return {
                     type: 'PUExp'
+                }
+            }
+            if (token.type == 'CLEAN') {
+                current++;
+                return {
+                    type: 'CLEANExp'
                 }
             }
             if (token.type == 'PD') {
@@ -259,6 +265,9 @@ class Compiler extends React.Component{
         }
         if (node.type == 'LTExp') {
             commands.turn(-node.value);
+        }
+        if (node.type == 'CLEANExp') {
+            commands.clear();
         }
         if (node.type == 'RepeatExp') {
             console.log(node);
