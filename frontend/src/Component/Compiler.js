@@ -19,20 +19,57 @@ class Compiler extends React.Component{
         commands.changepenstate(1);
     }
     tokenizer(input) {
-        let lexer = new jslex({
+         let lexer = new jslex({
            "start": {
                "[0-9]+": function() {
                  return {type:'INT',value:parseInt(this.text, 10)}
                },
-               "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
-                   return {type:this.text}
+        //       "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
+      //             return {type:this.text}
+         //      },
+               "REPEAT": function() {
+                   return {type:"REPEAT"}
                },
+               "FD": function() {
+                   return {type:"FD"}
+               },
+               "LT": function() {
+                   return {type:"LT"}
+               },
+               "BK": function() {
+                   return {type:"BK"}
+               },
+               "RT": function() {
+                   return {type:"RT"}
+               },
+               "PU": function() {
+                   return {type:"PU"}
+               },
+               "PD": function() {
+                   return {type:"PD"}
+               },
+               "SETXY": function() {
+                   return {type:"SETXY"}
+               },
+               "SETPC": function() {
+                   return {type:"SETPC"}
+               },
+               "SETBG": function() {
+                   return {type:"SETBG"}
+               },
+               "STAMPOVAL": function() {
+                   return {type:"STAMPOVAL"}
+               },
+               "CLEAN": function() {
+                   return {type:"CLEAN"}
+               },
+
                "#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]": function() {
                    return {type:'COLOR', value:this.text}
                },
-               "[a-zA-Z0-9]+": function() {
-                   return {type:'ID',value:this.text}
-               },
+               // "[a-zA-Z0-9]+": function() {
+               //     return {type:'ID',value:this.text}
+               // },
                '[\[]': function() {
                    return {type:'LBRACK'}
                },
@@ -40,15 +77,27 @@ class Compiler extends React.Component{
                    return {type:'RBRACK'}
                },
                '[ \t\n]': null,
+               '.': function() {
+                   return {type:'ERROR'}
+               }
            }
         });
         let that = this;
+        let tokens = [];
         function callback(token) {
  //           console.log(token)
-            that.tokens.push(token);
+            tokens.push(token);
         }
         lexer.lex(input, callback);
+        for (let i = 0;i < tokens.length;i++)
+            if (tokens[i].type == 'ERROR') {
+                return 0;
+            }
+        for (let i = 0;i < tokens.length;i++) {
+            this.tokens.push(tokens[i]);
+        }
         console.log(this.tokens);
+        return 1;
     }
 
     parser() {
@@ -253,6 +302,7 @@ class Compiler extends React.Component{
         this.current_token = current;
     }
     traverse(node) {
+        setTimeout(Math.random() * 1000);
         if (node.type == 'FDExp') {
      //       console.log(node);
             commands.gostrait(node.value);
@@ -275,9 +325,9 @@ class Compiler extends React.Component{
                 for (let j = 0;j < node.exps.length;j++) {
                     console.log(node.exps[j]);
 
-                    console.log('start sleep')
-                    setTimeout(() => this.traverse(node.exps[j]), (i * 10 + j) * 10)
-                    console.log('end sleep')
+          //          console.log('start sleep')
+                    setTimeout(() => this.traverse(node.exps[j]), (i * 10 + j) * 20)
+          //          console.log('end sleep')
                 }
             }
         }
@@ -315,7 +365,8 @@ class Compiler extends React.Component{
 
     append(input) {
         // token AST traverse operation
-        this.tokenizer(input);
+        if (this.tokenizer(input) == 0)
+            return;
         this.parser();
         this.operGenerator();
     }
