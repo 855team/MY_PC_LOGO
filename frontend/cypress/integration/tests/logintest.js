@@ -1,7 +1,7 @@
 context('Login', () => {
     it('login', () => {
         localStorage.clear()
-        cy.visit('http://localhost:3001')
+        cy.visit('http://localhost:3000')
         cy.get(".tologin").click()
         cy.get(".inputusername").type("test")
         cy.get(".inputpassword").type("test")
