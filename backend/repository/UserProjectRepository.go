@@ -14,7 +14,7 @@ func GetPidsByUid(uid uint) (ret []uint) {
 		project_pid uint
 	}
 
-	rows, _ := db.Table("users_projects").Where("user_uid = ?", uid).Rows()
+	rows, _ := db.Table("users_projects").Select("user_uid", "project_pid").Where("user_uid = ?", uid).Rows()
 
 	for rows.Next() {
 		query := queryType{}
