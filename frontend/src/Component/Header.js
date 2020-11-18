@@ -10,7 +10,7 @@ class UserArea extends React.Component{
         if(!this.props.login){
             return(
                 <div>
-                    <Button type="primary" shape="round" onClick={()=>this.props.openlogin()}>登录</Button>
+                    <Button className="tologin" type="primary" shape="round" onClick={()=>this.props.openlogin()}>登录</Button>
                 </div>
             )
         }

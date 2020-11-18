@@ -52,7 +52,7 @@ class WrappedLoginForm extends React.Component {
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                     >
-                        <Input />
+                        <Input className="inputusername"/>
                     </Form.Item>
 
                     <Form.Item
@@ -60,11 +60,11 @@ class WrappedLoginForm extends React.Component {
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
                     >
-                        <Input.Password />
+                        <Input.Password className="inputpassword"/>
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" style={{top:0}} htmlType="submit">
+                        <Button type="primary" style={{top:0}} htmlType="submit" className="loginbutton">
                             登录
                         </Button>
                         <br/>
