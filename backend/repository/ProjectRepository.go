@@ -15,6 +15,11 @@ func GetProjectByPid(pid uint) (ret model.Project) {
 	return
 }
 
+func GetProjectWithFilesByPid(pid uint) (ret model.Project) {
+	db.Preload("Files").First(&ret, "pid = ?", pid)
+	return
+}
+
 func SaveProject(project model.Project) {
 	db.Save(&project)
 	return
