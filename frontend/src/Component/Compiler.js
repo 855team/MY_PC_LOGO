@@ -1,6 +1,7 @@
 import React from 'react'
 import jslex from '../utils/jslex.js'
 import Commands from "../Controller/Commands";
+let interval=0;
 
 let commands=new Commands();
 class Compiler extends React.Component{
@@ -326,7 +327,8 @@ class Compiler extends React.Component{
                     console.log(node.exps[j]);
 
           //          console.log('start sleep')
-                    setTimeout(() => this.traverse(node.exps[j]), (i * 10 + j) * 20)
+                    interval++;
+                    setTimeout(() => this.traverse(node.exps[j]), 10*interval)
           //          console.log('end sleep')
                 }
             }
@@ -365,6 +367,7 @@ class Compiler extends React.Component{
 
     append(input) {
         // token AST traverse operation
+        interval=0;
         if (this.tokenizer(input) == 0)
             return;
         this.parser();
