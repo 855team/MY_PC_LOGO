@@ -14,6 +14,11 @@ import DrawingPanel from "../Component/DrawingPanel"
 import * as userService from "../Services/userService"
 import {message} from 'antd';
 import WrappedLoginForm from "../Component/LoginForm";
+import RegisterForm from "../Component/RegisterForm";
+import Help from "../Component/Help";
+import Battle from "../Component/Battle";
+import Setting from "../Component/Setting";
+import FileOperation from "../Component/FileOperation";
 
 class ControlledElement extends React.Component {
 
@@ -148,7 +153,12 @@ export default class MainView extends React.Component {
             task:undefined,
             projects:[],
             login_visible:false,
-            register_visible:false
+            register_visible:false,
+            help_visible:false,
+            battle_visible:false,
+            setting_visible:false,
+            fileoperation_visible:false
+
 
         }
     }
@@ -238,6 +248,27 @@ export default class MainView extends React.Component {
             register_visible:true
         })
     }
+    openhelp=()=>{
+        this.setState({
+            help_visible:true
+        })
+    }
+    openbattle=()=>{
+        this.setState({
+            battle_visible:true
+        })
+    }
+    opensetting=()=>{
+        this.setState({
+            setting_visible:true
+        })
+    }
+    openfileoperation=()=>{
+        this.setState({
+            fileoperation_visible:true
+        })
+    }
+
 
     closelogin=()=>{
         this.setState({
@@ -249,6 +280,26 @@ export default class MainView extends React.Component {
             register_visible:false
         })
     }
+    closehelp=()=>{
+        this.setState({
+            help_visible:false
+        })
+    }
+    closebattle=()=>{
+        this.setState({
+            battle_visible:false
+        })
+    }
+    closesetting=()=>{
+        this.setState({
+            setting_visible:false
+        })
+    }
+    closefileoperation=()=>{
+        this.setState({
+            fileoperation_visible:false
+        })
+    }
 
     render() {
         return (
@@ -257,14 +308,22 @@ export default class MainView extends React.Component {
                 <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
                     <ReflexElement className="header-pane" minSize={50} maxSize={50}>
-                        <Header openlogin={()=>this.openlogin()} username={this.state.username} login={this.state.login}/>
+                        <Header
+                            openlogin={()=>this.openlogin()}
+                            openregister={()=>this.openregister()}
+                            openhelp={()=>this.openhelp()}
+                            opensetting={()=>this.opensetting()}
+                            openfileoperation={()=>this.openfileoperation()}
+                            username={this.state.username}
+                            login={this.state.login}
+                        />
                     </ReflexElement>
 
                     <ReflexElement className="body-pane">
                         <ReflexContainer orientation="vertical">
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar />
+                                <SideBar openbattle={()=>{this.openbattle()}}/>
                             </ReflexElement>
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
@@ -326,6 +385,21 @@ export default class MainView extends React.Component {
             </div>
                 <div style={{position:'relative'}}>
                     <WrappedLoginForm login={(username,password)=>this.login(username,password)} closelogin={()=>this.closelogin()} visible={this.state.login_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <RegisterForm register={(username,password,email)=>this.register(username,password,email)} closeregister={()=>this.closeregister()} visible={this.state.register_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <Battle closebattle={()=>this.closebattle()} visible={this.state.battle_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <Setting closesetting={()=>this.closesetting()} visible={this.state.setting_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
                 </div>
 
             </div>

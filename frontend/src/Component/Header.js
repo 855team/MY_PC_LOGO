@@ -11,6 +11,7 @@ class UserArea extends React.Component{
             return(
                 <div>
                     <Button className="tologin" type="primary" shape="round" onClick={()=>this.props.openlogin()}>登录</Button>
+                    <Button className="toregister" type="primary" shape="round" onClick={()=>this.props.openregister()}>注册</Button>
                 </div>
             )
         }
@@ -47,18 +48,18 @@ class Header extends React.Component {
                 <ul className="toolbar">
                     <li className="toolbar-item">
                         <a className="toolbar-item-clicked"
-                           onClick={(e)=>console.log("点击了文件")}>文件</a>
+                           onClick={()=>{this.props.openfileoperation()}}>文件</a>
                     </li>
                     <li className="toolbar-item">
                         <a className="toolbar-item-clicked"
-                           onClick={(e)=>console.log("点击了设置")}>设置</a>
+                           onClick={()=>{this.props.opensetting()}}>设置</a>
                     </li>
                     <li className="toolbar-item">
                         <a className="toolbar-item-clicked"
-                           onClick={(e)=>console.log("点击了帮助")}>帮助</a>
+                           onClick={()=>{this.props.openhelp()}}>帮助</a>
                     </li>
                 </ul>
-                <UserArea login={this.props.login} username={this.props.username} openlogin={this.props.openlogin}/>
+                <UserArea login={this.props.login} username={this.props.username} openlogin={this.props.openlogin} openregister={this.props.openregister}/>
             </div>
         );
     }
