@@ -75,7 +75,7 @@ class SideBar extends React.Component {
                     </NavItem>
 
                     <NavItem eventKey="online" active={this.state.active['online']}>
-                        <NavIcon>
+                        <NavIcon onClick={()=>{this.props.openbattle()}}>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdPeople />
                             </IconContext.Provider>
