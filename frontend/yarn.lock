@@ -10071,6 +10071,13 @@ react-console-component@^0.6.1:
   resolved "https://registry.npm.taobao.org/react-console-component/download/react-console-component-0.6.1.tgz#241be9fcee815e58cd6de89c89ea72b6ae12b626"
   integrity sha1-JBvp/O6BXljNbeiciepytq4StiY=
 
+react-context-menu@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npm.taobao.org/react-context-menu/download/react-context-menu-3.0.2.tgz#0105439f77062a91c87a135a0937979a8aa92220"
+  integrity sha1-AQVDn3cGKpHIehNaCTeXmoqpIiA=
+  dependencies:
+    prop-types "^15.6.2"
+
 react-dev-utils@^10.2.1:
   version "10.2.1"
   resolved "https://registry.npm.taobao.org/react-dev-utils/download/react-dev-utils-10.2.1.tgz#f6de325ae25fa4d546d09df4bb1befdc6dd19c19"

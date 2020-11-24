@@ -11,14 +11,20 @@ import {
 } from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
 import DrawingPanel from "../Component/DrawingPanel"
-import * as userService from "../Services/userService"
-import {message} from 'antd';
+import * as userService from "../Services/userService";
+import * as fileService from "../Services/fileService"
+import {message,Modal,Input} from 'antd';
 import WrappedLoginForm from "../Component/LoginForm";
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
 import Battle from "../Component/Battle";
 import Setting from "../Component/Setting";
 import FileOperation from "../Component/FileOperation";
+import {Editorheaderbar} from "../Component/InfoBar";
+import UserState from "../Component/UserState";
+import Bus from "../Controller/eventBus";
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
 
 class ControlledElement extends React.Component {
 
@@ -134,36 +140,31 @@ export default class MainView extends React.Component {
         super(props);
 
         this.state = {
-            pane1: {
-                name: '命令文件',
-                direction: 1,
-                id: 'mid-top-panel',
-                minSize: 25
-            },
-            pane2: {
-                name: '命令行',
-                direction: -1,
-                id: 'mid-bot-panel',
-                minSize: 25
-            },
             login:false,
             username:"",
             uid:undefined,
             turtle:undefined,
             task:undefined,
             projects:[],
+
             login_visible:false,
             register_visible:false,
             help_visible:false,
             battle_visible:false,
             setting_visible:false,
-            fileoperation_visible:false
+            userstate_visible:false,
+            fileoperation_visible:false,
+
+            editorcontent:"",
+            filepanel_visible:true
+
 
 
         }
     }
 
     componentDidMount() {
+        this.registerlisteners()
         this.validate()
     }
     validate= ()=>{
@@ -268,6 +269,11 @@ export default class MainView extends React.Component {
             fileoperation_visible:true
         })
     }
+    openuserstate=()=>{
+        this.setState({
+            userstate_visible:true
+        })
+    }
 
 
     closelogin=()=>{
@@ -300,6 +306,163 @@ export default class MainView extends React.Component {
             fileoperation_visible:false
         })
     }
+    closeuserstate=()=>{
+        this.setState({
+            userstate_visible:false
+        })
+    }
+
+    logout=async()=>{
+        localStorage.removeItem("token")
+        await this.setState({
+            login:false,
+            //TODO
+        })
+        message.success("退出成功")
+    }
+
+    showfilepanel(){
+        this.setState({
+            filepanel_visible:!this.state.filepanel_visible
+        })
+    }
+
+    getproject=(pid)=>{
+        let token=localStorage.getItem("token");
+        let data={pid:pid,token:token}
+        let callback=(result)=>{
+            if(result.success){
+                ; //TODO
+            }
+            else{
+                message.error("获取远程项目失败");
+            }
+        }
+        fileService.getproject(data,callback)
+    }
+
+    newfile=(pid,filename)=>{
+        //TODO
+    }
+
+    newproject=(projectname)=>{
+        //TODO
+    }
+
+    deletefile=(pid,fid)=>{
+        //TODO
+        return;
+    }
+
+    deleteproject=(pid)=>{
+        //TODO
+    }
+
+    renamefile=(pid,fid,filename)=>{
+        //TODO
+    }
+
+    renameproject=(pid,projectname)=>{
+        //TODO
+    }
+
+    showConfirm=(type,name,data,deletefile,deleteproject) =>{
+
+        confirm({
+            title: `确定删除`+type+'\''+name+'\''+"吗",
+            icon: <ExclamationCircleOutlined />,
+            content: "一旦删除，无法撤销",
+            onOk() {
+                if(type=="file"){
+                    deletefile(data.pid,data.fid)
+                }
+                if(type=="project"){
+                    deleteproject(data.pid)
+                }
+            },
+            onCancel() {
+                message.success("撤销删除")
+            },
+        });
+    }
+
+    Askfornewname=(type,operation,data) =>{
+        let newfile=this.newfile;
+        let newproject=this.newproject;
+        let renamefile=this.renamefile;
+        let renameproject=this.renameproject;
+
+        let tmpstr="";
+        let onChange = ({ target: { value } }) => {
+            tmpstr=value;
+        };
+        confirm({
+            title: "输入一个新的名字",
+            bodyStyle:{TextAlign:"center"},
+            content: <Input onChange={onChange}/>,
+            onOk() {
+                if(type=="file"){
+                    if(operation=="rename"){
+                        renamefile(data.pid,data,data.fid,tmpstr)
+                    }
+                    if(operation=="new"){
+                        newfile(data.pid,tmpstr)
+                    }
+
+                }
+                if(type=="project"){
+                    if(operation=="rename"){
+                        renameproject(data.pid,data,tmpstr)
+                    }
+                    if(operation=="new"){
+                        newproject(tmpstr)
+                    }
+                }
+            },
+            onCancel() {
+                message.success("操作已取消")
+            },
+        });
+    }
+
+    lookupname=(type,data)=>{
+        //TODO
+        return "a"
+    }
+
+
+    registerlisteners(){
+        Bus.addListener('newfile', (data) => {
+            this.Askfornewname("file","new",{pid:data.pid})
+        });
+        Bus.addListener('renameproject', (data) => {
+            this.Askfornewname("project","rename",{pid:data.pid})
+        });
+        Bus.addListener('deleteproject', (data) => {
+            this.showConfirm(
+                "project",
+                this.lookupname("project",{pid:data.pid}),
+                {pid:data.pid},
+                this.deletefile,
+                this.deleteproject
+            )
+        });
+        Bus.addListener('newproject', (data) => {
+            this.Askfornewname("project","new",null)
+        });
+        Bus.addListener('deletefile', (data) => {
+            this.showConfirm(
+                "file",
+                this.lookupname("file",{fid:data.fid,pid:data.pid}),
+                {fid:data.fid,pid:data.pid},
+                this.deletefile,
+                this.deleteproject
+            )
+        });
+        Bus.addListener('renamefile', (data) => {
+            this.Askfornewname("file","rename",{pid:data.pid,fid:data.fid})
+        });
+    }
 
     render() {
         return (
@@ -310,6 +473,7 @@ export default class MainView extends React.Component {
                     <ReflexElement className="header-pane" minSize={50} maxSize={50}>
                         <Header
                             openlogin={()=>this.openlogin()}
+                            logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
                             opensetting={()=>this.opensetting()}
@@ -323,12 +487,12 @@ export default class MainView extends React.Component {
                         <ReflexContainer orientation="vertical">
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar openbattle={()=>{this.openbattle()}}/>
+                                <SideBar openbattle={()=>{this.openbattle()}} />
                             </ReflexElement>
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
                                 <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
-                                    <SideBarPane style={{ height:'100%', width: '100%' }} />
+                                    <SideBarPane style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
                                 </div>
                             </ReflexElement>
 
@@ -337,7 +501,6 @@ export default class MainView extends React.Component {
                             <ReflexElement className="mid-pane" minSize={200}>
                                 <ReflexContainer orientation="horizontal">
 
-                                    <ControlledElement {...this.state.pane1}>
                                         <MonacoEditor
                                             language="LOGO"
                                             options={{
@@ -347,14 +510,15 @@ export default class MainView extends React.Component {
                                                 automaticLayout: false,
                                                 theme: 'vs-dark',
                                             }}
+                                            value={this.state.editorcontent}
                                         />
-                                    </ControlledElement>
+
 
                                     <ReflexSplitter propagate={true}/>
 
-                                    <ControlledElement {...this.state.pane2}>
+
                                         <Console />
-                                    </ControlledElement>
+
                                 </ReflexContainer>
                             </ReflexElement>
 
@@ -400,6 +564,9 @@ export default class MainView extends React.Component {
                 </div>
                 <div style={{position:'relative'}}>
                     <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
 
             </div>

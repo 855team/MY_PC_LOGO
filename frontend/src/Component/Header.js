@@ -31,6 +31,7 @@ class UserArea extends React.Component{
                     <img src={require("../assets/avatar.jpg")} className="avatar-img"/>
 
                     <p className="avatar-username">{this.props.username}</p>
+                    <Button shape="round" type="primary" onClick={()=>this.props.logout()}>logout</Button>
                 </span>
             )
         }
@@ -59,7 +60,7 @@ class Header extends React.Component {
                            onClick={()=>{this.props.openhelp()}}>帮助</a>
                     </li>
                 </ul>
-                <UserArea login={this.props.login} username={this.props.username} openlogin={this.props.openlogin} openregister={this.props.openregister}/>
+                <UserArea logout={this.props.logout} login={this.props.login} username={this.props.username} openlogin={this.props.openlogin} openregister={this.props.openregister}/>
             </div>
         );
     }
