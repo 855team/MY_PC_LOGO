@@ -156,6 +156,32 @@ export default class MainView extends React.Component {
             fileoperation_visible:false,
 
             editorcontent:"",
+            currentpid:-1,
+            currentfid:-1,
+
+            treedata: {
+                name: 'root',
+                toggled: true,
+                type:"root"
+            },
+            remotedata:[{
+                pid:1,
+                name:'proj1',
+                files:[
+                    {fid:1,name:"file1",contents:"FD 100"},
+                    {fid:2,name:"file2",contents:"FD 200"},
+                    {fid:3,name:"file3",contents:"FD 300"}
+                ]
+            },{
+                pid:2,
+                name:'proj2',
+                files:[
+                    {fid:4,name:"file1",contents:"FD 100"},
+                    {fid:5,name:"file2",contents:"FD 200"},
+                    {fid:6,name:"file3",contents:"FD 300"}
+                ]
+            }],
+
             filepanel_visible:true
 
 
@@ -167,6 +193,11 @@ export default class MainView extends React.Component {
         this.registerlisteners()
         this.validate()
     }
+
+    generatetreedata(){
+        let data=this.state.remotedata;
+    }
+
     validate= ()=>{
         let token = localStorage.getItem("token")
         console.log(token)
@@ -492,7 +523,7 @@ export default class MainView extends React.Component {
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
                                 <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
-                                    <SideBarPane style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
+                                    <SideBarPane treedata={this.state.treedata} style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
                                 </div>
                             </ReflexElement>
 

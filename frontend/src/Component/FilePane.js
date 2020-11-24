@@ -29,9 +29,6 @@ class FilePane extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            data: data
-        }
 
         this.onToggle = this.onToggle.bind(this);
     }
@@ -59,7 +56,7 @@ class FilePane extends React.Component {
                 style={{background:"linear-gradient(#82cbff,#ffffff)",width:"100%",height:"100%"}}
             >
                 <div style={{height: '0.4em'}} />
-                <Treebeard data={data} onToggle={this.onToggle} />
+                <Treebeard data={this.props.treedata} onToggle={this.onToggle} />
             </div>
         );
     }
