@@ -1,0 +1,62 @@
+.doubleroom-body{
+    width: 100%;
+    height: 100%;
+}
+
+.unvisible-mask{
+    height: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.5s;
+}
+
+.doubleroom-mask{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 1200;
+    background: rgba(0, 0, 0, 0.45);
+    transition: background 0.5s;
+}
+
+.unvisible-wrap{
+    height: 0%;
+    width: 0%;
+}
+
+.doubleroom-wrap{
+    position: absolute;
+    z-index: 1200;
+    background: white;
+
+    height: 90%;
+    width: 70%;
+    margin: 2.5% 15% 0% 15%;
+
+    transition: width 0.5s;
+    transition: height 0.5s;
+
+    border-radius: 15px;
+
+    display: flex;
+}
+
+.console{
+    border-top:5px solid #ffc870;
+    width: 100%;
+    height:30%;
+}
+
+.react-console-container{
+    background: white !important;
+    border-radius: 0 0 0 15px !important;
+}
+
+.doubleroom-header{
+    width:100%;
+    height:10%;
+    background:#ffc870;
+    border-radius:16px 0 0 0;
+    display: flex;
+    align-items: center;
+}

@@ -10,10 +10,11 @@ import {
     ReflexElement
 } from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
-import DrawingPanel from "../Component/DrawingPanel"
-import * as userService from "../Services/userService"
+import DrawingPanel from "../Component/DrawingPanel";
+import * as userService from "../Services/userService";
 import {message} from 'antd';
 import WrappedLoginForm from "../Component/LoginForm";
+import DoubleRoom from "../Component/DoubleRoom";
 
 class ControlledElement extends React.Component {
 
@@ -148,8 +149,8 @@ export default class MainView extends React.Component {
             task:undefined,
             projects:[],
             login_visible:false,
-            register_visible:false
-
+            register_visible:false,
+            selected:'file'
         }
     }
 
@@ -253,81 +254,87 @@ export default class MainView extends React.Component {
     render() {
         return (
             <div>
-            <div style={{ height: '100vh', width: '100vw',position:'absolute' }} >
-                <ReflexContainer orientation="horizontal" windowResizeAware={true}>
+                <div style={{ height: '100vh', width: '100vw',position:'absolute' }} >
+                    <ReflexContainer orientation="horizontal" windowResizeAware={true}>
 
-                    <ReflexElement className="header-pane" minSize={50} maxSize={50}>
-                        <Header openlogin={()=>this.openlogin()} username={this.state.username} login={this.state.login}/>
-                    </ReflexElement>
+                        <ReflexElement className="header-pane" minSize={50} maxSize={50}>
+                            <Header openlogin={()=>this.openlogin()} username={this.state.username} login={this.state.login}/>
+                        </ReflexElement>
 
-                    <ReflexElement className="body-pane">
-                        <ReflexContainer orientation="vertical">
+                        <ReflexElement className="body-pane">
+                            <ReflexContainer orientation="vertical">
 
-                            <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar />
-                            </ReflexElement>
+                                <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
+                                    <SideBar onSelected={(s)=>this.setState({selected:s})}/>
+                                </ReflexElement>
 
-                            <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
-                                <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
-                                    <SideBarPane style={{ height:'100%', width: '100%' }} />
-                                </div>
-                            </ReflexElement>
+                                <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
+                                    <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
+                                        <SideBarPane style={{ height:'100%', width: '100%' }} />
+                                    </div>
+                                </ReflexElement>
 
-                            <ReflexSplitter propagate={true}/>
+                                <ReflexSplitter propagate={true}/>
 
-                            <ReflexElement className="mid-pane" minSize={200}>
-                                <ReflexContainer orientation="horizontal">
+                                <ReflexElement className="mid-pane" minSize={200}>
+                                    <ReflexContainer orientation="horizontal">
 
-                                    <ControlledElement {...this.state.pane1}>
-                                        <MonacoEditor
-                                            language="LOGO"
-                                            options={{
-                                                selectOnLineNumbers: true,
-                                                roundedSelection: false,
-                                                cursorStyle: 'line',
-                                                automaticLayout: false,
-                                                theme: 'vs-dark',
-                                            }}
-                                        />
-                                    </ControlledElement>
+                                        <ControlledElement {...this.state.pane1}>
+                                            <MonacoEditor
+                                                language="LOGO"
+                                                options={{
+                                                    selectOnLineNumbers: true,
+                                                    roundedSelection: false,
+                                                    cursorStyle: 'line',
+                                                    automaticLayout: false,
+                                                    theme: 'vs-dark',
+                                                }}
+                                            />
+                                        </ControlledElement>
 
-                                    <ReflexSplitter propagate={true}/>
+                                        <ReflexSplitter propagate={true}/>
 
-                                    <ControlledElement {...this.state.pane2}>
-                                        <Console />
-                                    </ControlledElement>
-                                </ReflexContainer>
-                            </ReflexElement>
+                                        <ControlledElement {...this.state.pane2}>
+                                            <Console />
+                                        </ControlledElement>
+                                    </ReflexContainer>
+                                </ReflexElement>
 
-                            <ReflexSplitter propagate={true}/>
-
-
-                            <ReflexElement  className="right-pane"  minSize={800} maxSize={800}  onResize={(el)=> {
-                                let canvas=document.getElementById('mycanvas');
-                                let data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height)
-                                canvas.width=el.domElement.clientWidth;
-                                canvas.height=el.domElement.clientHeight;
-                                canvas.getContext("2d").putImageData(data,0,0);
-                            }}>
-                                    <DrawingPanel />
-                            </ReflexElement>
+                                <ReflexSplitter propagate={true}/>
 
 
-                        </ReflexContainer>
-                    </ReflexElement>
+                                <ReflexElement  className="right-pane"  minSize={800} maxSize={800}  onResize={(el)=> {
+                                    let canvas=document.getElementById('mycanvas');
+                                    let data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height)
+                                    canvas.width=el.domElement.clientWidth;
+                                    canvas.height=el.domElement.clientHeight;
+                                    canvas.getContext("2d").putImageData(data,0,0);
+                                }}>
+                                        <DrawingPanel />
+                                </ReflexElement>
 
-                    <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
-                        <div className="footer-pane-content"
-                        style={{background:"#ffffff",height:"100%",width:"100%"}}/>
-                    </ReflexElement>
 
-                </ReflexContainer>
+                            </ReflexContainer>
+                        </ReflexElement>
 
-            </div>
+                        <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
+                            <div className="footer-pane-content"
+                            style={{background:"#ffffff",height:"100%",width:"100%"}}/>
+                        </ReflexElement>
+
+                    </ReflexContainer>
+                </div>
+
+                <div>
+                    <DoubleRoom
+                        onVisible={this.state.selected=="online"}
+                        onReturn={e=>this.setState({selected:"file"})}
+                    />
+                </div>
+
                 <div style={{position:'relative'}}>
                     <WrappedLoginForm login={(username,password)=>this.login(username,password)} closelogin={()=>this.closelogin()} visible={this.state.login_visible}/>
                 </div>
-
             </div>
         )
     }
