@@ -7,6 +7,7 @@ class SideBarPane extends React.Component {
     }
 
     render() {
+
         if(this.props.visible){
             return (
                 <FilePane treedata={this.props.treedata}/>

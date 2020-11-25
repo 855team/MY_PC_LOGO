@@ -164,43 +164,56 @@ export default class MainView extends React.Component {
                 toggled: true,
                 type:"root"
             },
-            remotedata:[{
-                pid:1,
-                name:'proj1',
-                files:[
-                    {fid:1,name:"file1",contents:"FD 100"},
-                    {fid:2,name:"file2",contents:"FD 200"},
-                    {fid:3,name:"file3",contents:"FD 300"}
-                ]
-            },{
-                pid:2,
-                name:'proj2',
-                files:[
-                    {fid:4,name:"file1",contents:"FD 100"},
-                    {fid:5,name:"file2",contents:"FD 200"},
-                    {fid:6,name:"file3",contents:"FD 300"}
-                ]
-            }],
+            remotedata:[],
 
-            filepanel_visible:true
+            filepanel_visible:true,
+            fake:false
 
 
 
         }
     }
 
-    componentDidMount() {
+    componentDidMount=() =>{
         this.registerlisteners()
         this.validate()
+
     }
 
-    generatetreedata(){
-        let data=this.state.remotedata;
+    generatetreedata=(data)=>{
+        let currentproject=this.state.currentpid;
+        let translate=(p)=>{
+            let project={};
+            project.name=p.name;
+            project.type="project";
+            project.id=p.pid;
+            project.child=[];
+            if (currentproject==p.pid){
+                project.toggle=true;
+            }
+            for(let j=0;j<p.files.length;j++){
+                let tmp= {};
+                tmp.type="file";
+                tmp.id=p.files[j].fid;
+                tmp.parentid=p.pid;
+                tmp.name=p.files[j].name;
+                project.child.push(tmp);
+            }
+            return project;
+        }
+        let treedata={};
+        treedata.name= 'root';
+        treedata.toggled=true;
+        treedata.type="root";
+        treedata.child=[];
+        for(let i=0;i<data.length;i++){
+            treedata.child.push(translate(data[i]))
+        }
+        return treedata;
     }
 
     validate= ()=>{
         let token = localStorage.getItem("token")
-        console.log(token)
         if(!token){
             return false;
         }
@@ -219,6 +232,7 @@ export default class MainView extends React.Component {
                         task:result.data.Task,
                         projects:result.data.Projects
                     })
+                    this.getremotedata(result.data.Projects)
                 }
             }
             userService.validate({token:token},callback)
@@ -241,6 +255,7 @@ export default class MainView extends React.Component {
                     task:result.data.info.Task,
                     projects:result.data.info.Projects
                 });
+                this.getremotedata(result.data.info.Projects)
             }
             else{
                 message.error("登陆失败")
@@ -363,13 +378,57 @@ export default class MainView extends React.Component {
         let data={pid:pid,token:token}
         let callback=(result)=>{
             if(result.success){
-                ; //TODO
+                let project=result.data;
+                this.updateremotedata(pid,project)
             }
             else{
                 message.error("获取远程项目失败");
             }
         }
         fileService.getproject(data,callback)
+    }
+
+    updateremotedata=async(pid,project)=>{
+        let olddata=this.state.remotedata;
+        let files=project.files;
+
+        let child=[];
+        for(let i=0;i<files.length;i++){
+            let tmp={};
+            tmp.name=files[i].Name;
+            tmp.fid=files[i].Fid;
+            tmp.content=files[i].Content;
+            child.push(tmp);
+        }
+        for(let i=0;i<olddata.length;i++){
+            if(olddata[i].pid==pid){
+                olddata[i].name=project.name;
+                olddata[i].files=child;
+                await this.setState({remotedata:olddata});
+                return;
+            }
+        }
+        let newproject={};
+        newproject.pid=project.pid;
+        newproject.name=project.name;
+        newproject.files=child;
+
+        olddata.push(newproject);
+        await this.setState({remotedata:olddata});
+        await this.setState({
+            treedata: this.generatetreedata(this.state.remotedata),
+            filepanel_visible:true
+        })
+        return;
+    }
+
+    // 根据login时返回的Projects信息，获取整个远端文件信息
+    // 注意，这个函数里的data是login时返回值中的Projects，Pid是大写的
+    getremotedata=async (data)=>{
+
+        for(let i=0;i<data.length;i++){
+            this.getproject(data[i].Pid);
+        }
     }
 
     newfile=(pid,filename)=>{
@@ -457,8 +516,26 @@ export default class MainView extends React.Component {
     }
 
     lookupname=(type,data)=>{
-        //TODO
-        return "a"
+        let info=this.state.remotedata;
+        if(type=="project"){
+            for(let i=0;i<info.length;i++){
+                if(info[i].pid==data.pid){
+                    return info[i].name;
+                }
+            }
+        }
+        if(type=="file"){
+            for(let i=0;i<info.length;i++){
+                if(info[i].pid==data.pid){
+                    for(let j=0;j<info[i].files.length;j++){
+                        if(info[i].files[j].fid==data.fid){
+                            return info[i].files[j].name;
+                        }
+                    }
+                }
+            }
+        }
+        return "";
     }
 
 
