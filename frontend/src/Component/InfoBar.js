@@ -1,45 +1,32 @@
 import React from 'react';
-import {Button} from 'antd';
+import {Button,Tag} from 'antd';
 
-class Fileheaderbar extends React.Component{
+class Infobar extends React.Component{
     constructor(props) {
         super(props);
     }
     render(){
+        if(!this.props.login){
+            return <Tag style={{marginLeft:"2rem"}} color="purple">未登录</Tag>
+        }
+        if(this.props.fid<=0){
+            return(
+                <div>
+                    <Tag style={{marginLeft:"2rem"}} color="purple">已登录</Tag>
+                </div>
+            )
+        }
+
         return(
-            <div style={{height:'30px',TextAlign:'center'}}>
-                <div style={{height: '2px',background:'lightblue'}} />
-                <a>title</a>
-                <div style={{height: '2px',background:'lightblue'}} />
+            <div>
+                <Tag style={{marginLeft:"2rem"}} color="purple">已登录</Tag>
+                <Tag style={{marginLeft:"2rem"}} color="purple">currentProject:{this.props.lookup("project",{pid:this.props.pid})}</Tag>
+                <Tag style={{marginLeft:"2rem"}} color="purple">currentFile:{this.props.lookup("file",{pid:this.props.pid,fid:this.props.fid})}</Tag>
             </div>
         )
     }
 }
 
-class Editorheaderbar extends React.Component{
-    constructor(props) {
-        super(props);
-    }
-    render(){
-        if(this.props.login){
-            return(
-                <div style={{height:'30px',TextAlign:'center'}}>
-                    <a>currentfile:{this.props.currentfile.name}</a>
-                    <a>&nbsp;&nbsp;</a>
-                    <a>currentproject:{this.props.currentproject.name}</a>
-                    <Button type="primary" shape="round">run</Button>
-                </div>
-            )
-        }
-        else{
-            return(
-                <div style={{height:'30px',TextAlign:'center'}}>
-                    <Button type="primary" shape="round" >run</Button>
-                </div>
-            )
-        }
 
-    }
-}
 
-export {Fileheaderbar,Editorheaderbar};
+export default Infobar;
