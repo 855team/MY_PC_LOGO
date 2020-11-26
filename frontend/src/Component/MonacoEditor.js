@@ -174,6 +174,7 @@ export default class MonacoEditor extends Component {
     this.props.editorDidMount(editor, monaco);
     editor.onDidChangeModelContent((event) => {
       const value = editor.getValue();
+      this.props.updatecontent(value);
       // Always refer to the latest value
       this._currentValue = value;
       this.props.onChange(value, event);
@@ -195,14 +196,24 @@ export default class MonacoEditor extends Component {
       this.editorDidMount(this.editor);
     }
     this.editor.addAction({       //custom context-menu
-      id: "Alert",
-      label: "Alert",
+      id: "Save",
+      label: "Save",
       contextMenuOrder: 0, // choose the order
       contextMenuGroupId: "operation",
       keybindings: [
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
       ],
-      run: ()=>alert("hello"),
+      run: ()=>this.props.save(),
+    })
+    this.editor.addAction({       //custom context-menu
+      id: "New",
+      label: "New",
+      contextMenuOrder: 0, // choose the order
+      contextMenuGroupId: "operation",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_N,
+      ],
+      run: ()=>this.props.new(),
     })
   }
   editorRef = (component) => {
