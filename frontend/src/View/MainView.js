@@ -187,7 +187,7 @@ export default class MainView extends React.Component {
             project.name=p.name;
             project.type="project";
             project.id=p.pid;
-            project.child=[];
+            project.children=[];
             if (currentproject==p.pid){
                 project.toggle=true;
             }
@@ -197,7 +197,7 @@ export default class MainView extends React.Component {
                 tmp.id=p.files[j].fid;
                 tmp.parentid=p.pid;
                 tmp.name=p.files[j].name;
-                project.child.push(tmp);
+                project.children.push(tmp);
             }
             return project;
         }
@@ -205,9 +205,9 @@ export default class MainView extends React.Component {
         treedata.name= 'root';
         treedata.toggled=true;
         treedata.type="root";
-        treedata.child=[];
+        treedata.children=[];
         for(let i=0;i<data.length;i++){
-            treedata.child.push(translate(data[i]))
+            treedata.children.push(translate(data[i]))
         }
         return treedata;
     }

@@ -28,7 +28,10 @@ const data = {
 class FilePane extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state={
+            cursor:null,
+            data:null
+        }
 
         this.onToggle = this.onToggle.bind(this);
     }
