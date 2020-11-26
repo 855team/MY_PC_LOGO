@@ -431,8 +431,27 @@ export default class MainView extends React.Component {
         }
     }
 
+    savecurrent=()=>{
+
+    }
+
     newfile=(pid,filename)=>{
-        //TODO
+        let token=localStorage.getItem("token");
+        let data={pid:pid,filename:filename,token:token};
+        let callback=(result)=>{
+            if(result.success){
+                this.savecurrent();
+                this.setState({
+                    editorcontent:"",
+                    currentpid:pid,
+                    currentfid:result.data //TODO,newfid
+                })
+            }
+            else{
+                message.error("新建文件失败")
+            }
+        }
+        fileService.newfile(data,callback)
     }
 
     newproject=(projectname)=>{
