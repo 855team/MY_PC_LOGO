@@ -43,7 +43,6 @@ class FilePane extends React.Component {
         }
         node.active = true;
         if (node.children) {
-            console.log(node.children)
             node.toggled = toggled;
         }
         this.setState(() => ({cursor: node, data: Object.assign({}, data)}));

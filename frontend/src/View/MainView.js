@@ -13,17 +13,17 @@ import MonacoEditor from "../Component/MonacoEditor";
 import DrawingPanel from "../Component/DrawingPanel"
 import * as userService from "../Services/userService";
 import * as fileService from "../Services/fileService"
-import {message,Modal,Input} from 'antd';
+import {message,Modal,Input,Tag} from 'antd';
 import WrappedLoginForm from "../Component/LoginForm";
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
 import Battle from "../Component/Battle";
 import Setting from "../Component/Setting";
 import FileOperation from "../Component/FileOperation";
-import {Editorheaderbar} from "../Component/InfoBar";
 import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import InfoBar from "../Component/InfoBar"
 const { confirm } = Modal;
 
 class ControlledElement extends React.Component {
@@ -189,7 +189,7 @@ export default class MainView extends React.Component {
             project.id=p.pid;
             project.children=[];
             if (currentproject==p.pid){
-                project.toggle=true;
+                project.toggled=true;
             }
             for(let j=0;j<p.files.length;j++){
                 let tmp= {};
@@ -362,7 +362,14 @@ export default class MainView extends React.Component {
         localStorage.removeItem("token")
         await this.setState({
             login:false,
-            //TODO
+            currentfid:-1,
+            currentpid:-1,
+            remotedate:[],
+            treedata:{
+                name: 'root',
+                toggled: true,
+                type:"root"
+            }
         })
         message.success("退出成功")
     }
@@ -431,29 +438,221 @@ export default class MainView extends React.Component {
         }
     }
 
+    modifyfile=(fid,filename,content,callback)=>{
+        let token=localStorage.getItem("token");
+        let data={fid:fid,name:filename,token:token,content:content};
+        fileService.modifyfile(data,callback)
+    }
+
+    updatecontent(content){
+        this.setState({
+            editorcontent:content
+        })
+
+    }
+
+    savecurrent=(nextop)=>{
+        let pid=this.state.currentpid;
+        let fid=this.state.currentfid;
+        let content=this.state.editorcontent;
+        if(pid>=0&&fid>=0){
+            let callback=(result)=>{
+                if(result.success){
+                    message.success("文件已保存至远端")
+                }
+                else{
+                    message.error("保存失败")
+
+                }
+            }
+            let filename=this.lookupname("file",{pid:pid,fid:fid})
+            this.modifyfile(fid,filename,content,callback)
+        }
+        nextop();
+    }
+
+    addfiletoremotedata=(pid,filename,fid)=>{
+        this.state.remotedata.map((proj)=>{
+            if(proj.pid==pid){
+                proj.files.push({fid:fid,name:filename,content:""})
+            }
+        })
+    }
+
+    addprojecttoremotedata=(pid,projectname)=>{
+        this.state.remotedata.push({
+            pid:pid,
+            name:projectname,
+            files:[]
+        })
+    }
+
+    renamefiletoremotedata=(pid,filename,fid)=>{
+        this.state.remotedata.map((proj)=>{
+            if(proj.pid==pid){
+                proj.files.map((file)=>{
+                    if(fid==file.fid){
+                        file.name=filename
+                    }
+                })
+            }
+        })
+    }
+
+    renameprojecttoremotedata=(pid,projectname)=>{
+        this.state.remotedata.map((proj)=>{
+            if(proj.pid==pid){
+                proj.name=projectname;
+            }
+        })
+    }
+
+    deletefiletoremotedata=(pid,fid)=>{
+        let old=this.state.remotedata;
+        old.map((proj)=>{
+            if(proj.pid==pid){
+                let tmp=proj.files.findIndex(e=>e.fid==fid);
+                proj.files.splice(tmp,1)
+            }
+        })
+        this.setState({
+            remotedata:old
+        })
+    }
+
+    deleteprojecttoremotedata=(pid)=>{
+        let old=this.state.remotedata;
+        let tmp=old.findIndex(e=>e.pid==pid);
+        old.splice(tmp,1)
+        this.setState({
+            remotedata:old
+        })
+    }
+
     newfile=(pid,filename)=>{
-        //TODO
+        let token=localStorage.getItem("token");
+        let data={pid:pid,name:filename,token:token};
+        let callback=async(result)=>{
+            if(result.success){
+                this.savecurrent(()=>alert("ok"));
+                this.addfiletoremotedata(pid,filename,result.data);
+                await this.setState({
+                    currentpid:pid,
+                    currentfid:result.data
+                })
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata),
+                    editorcontent:"",
+                })
+                message.success("新建文件成功")
+            }
+            else{
+                message.error("新建文件失败")
+            }
+        }
+        fileService.newfile(data,callback)
     }
 
     newproject=(projectname)=>{
-        //TODO
+        let token=localStorage.getItem("token");
+        let data={name:projectname,token:token};
+        let callback=async(result)=>{
+            if(result.success){
+                this.addprojecttoremotedata(result.data,projectname);
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata),
+                })
+                message.success("新建项目成功")
+            }
+            else{
+                message.error("新建项目失败")
+            }
+        }
+        fileService.newproject(data,callback)
     }
 
     deletefile=(pid,fid)=>{
-        //TODO
-        return;
+        let token=localStorage.getItem("token");
+        let data={pid:pid,fid:fid,token:token};
+        let callback=async(result)=>{
+            if(result.success){
+                if(pid==this.state.currentpid&&fid==this.state.currentfid){
+                    this.setState({
+                        editorcontent:"",
+                        currentfid:-1,
+                    })
+                }
+                this.deletefiletoremotedata(pid,fid);
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata),
+                })
+                message.success("删除文件成功")
+            }
+            else{
+                message.error("删除文件失败")
+            }
+        }
+        fileService.deletefile(data,callback)
     }
 
     deleteproject=(pid)=>{
-        //TODO
+        let token=localStorage.getItem("token");
+        let data={pid:pid,token:token};
+        let callback=async(result)=>{
+            if(result.success){
+                if(pid==this.state.currentpid){
+                    this.setState({
+                        editorcontent:"",
+                        currentfid:-1,
+                        currentpid:-1
+                    })
+                }
+                this.deleteprojecttoremotedata(pid);
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata),
+                })
+                message.success("删除项目成功")
+            }
+            else{
+                message.error("删除项目失败")
+            }
+        }
+        fileService.deleteproject(data,callback)
     }
 
     renamefile=(pid,fid,filename)=>{
-        //TODO
+        let callback=(result)=>{
+            if(result.success){
+                this.renamefiletoremotedata(pid,filename,fid);
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata)
+                })
+                message.success("文件改名成功")
+            }
+            else{
+                message.error("文件改名失败")
+            }
+        }
+        let content=this.lookupcontent(fid,pid);
+        this.modifyfile(fid,filename,content,callback);
     }
 
     renameproject=(pid,projectname)=>{
-        //TODO
+        let callback=(result)=>{
+            if(result.success){
+                this.renameprojecttoremotedata(pid,projectname);
+                this.setState({
+                    treedata:this.generatetreedata(this.state.remotedata)
+                })
+                message.success("项目改名成功")
+            }
+            else{
+                message.error("项目改名失败")
+            }
+        }
+        let token=localStorage.getItem("token");
+        let data={token:token,pid:pid,name:projectname}
+        fileService.modifyproject(data,callback);
     }
 
     showConfirm=(type,name,data,deletefile,deleteproject) =>{
@@ -493,7 +692,7 @@ export default class MainView extends React.Component {
             onOk() {
                 if(type=="file"){
                     if(operation=="rename"){
-                        renamefile(data.pid,data,data.fid,tmpstr)
+                        renamefile(data.pid,data.fid,tmpstr)
                     }
                     if(operation=="new"){
                         newfile(data.pid,tmpstr)
@@ -502,7 +701,7 @@ export default class MainView extends React.Component {
                 }
                 if(type=="project"){
                     if(operation=="rename"){
-                        renameproject(data.pid,data,tmpstr)
+                        renameproject(data.pid,tmpstr)
                     }
                     if(operation=="new"){
                         newproject(tmpstr)
@@ -538,6 +737,65 @@ export default class MainView extends React.Component {
         return "";
     }
 
+    lookupcontent=(fid,pid)=>{
+        let info=this.state.remotedata;
+        for(let i=0;i<info.length;i++){
+            if(info[i].pid==pid){
+                for(let j=0;j<info[i].files.length;j++){
+                    if(info[i].files[j].fid==fid){
+                        return info[i].files[j].content;
+                    }
+                }
+            }
+        }
+    }
+
+    updateworkspace=(fid,pid)=>{
+        let content=this.lookupcontent(fid,pid);
+        let setstate=(data)=>{this.setState(data)};
+        if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+            this.setState({
+                currentfid:fid,
+                currentpid:pid
+            })
+            return;
+        }
+        if(this.state.currentfid<0 && this.state.editorcontent==""){
+            this.setState({
+                currentfid:fid,
+                currentpid:pid
+            })
+            return;
+        }
+        else{
+            confirm({
+                title: '是否保存当前项目',
+                icon: <ExclamationCircleOutlined />,
+                onOk() {
+                    let nextop=()=>{
+                        setstate({
+                            currentfid:fid,
+                            currentpid:pid,
+                            editorcontent:content
+                        })
+                    }
+                    this.savecurrent(nextop);
+                },
+                onCancel() {
+                    setstate({
+                        currentfid:fid,
+                        currentpid:pid,
+                        editorcontent:content
+                    })
+                },
+            });
+        }
+
+
+
+
+    }
+
 
     registerlisteners(){
         Bus.addListener('newfile', (data) => {
@@ -569,6 +827,9 @@ export default class MainView extends React.Component {
         });
         Bus.addListener('renamefile', (data) => {
             this.Askfornewname("file","rename",{pid:data.pid,fid:data.fid})
+        });
+        Bus.addListener('updateworkspace', (data) => {
+            this.updateworkspace(data.fid,data.pid)
         });
     }
 
@@ -619,6 +880,7 @@ export default class MainView extends React.Component {
                                                 theme: 'vs-dark',
                                             }}
                                             value={this.state.editorcontent}
+                                            updatecontent={(content)=>this.updatecontent(content)}
                                         />
 
 
@@ -648,8 +910,14 @@ export default class MainView extends React.Component {
                     </ReflexElement>
 
                     <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
-                        <div className="footer-pane-content"
-                        style={{background:"#ffffff",height:"100%",width:"100%"}}/>
+                        <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
+                            <InfoBar
+                                login={this.state.login}
+                                fid={this.state.currentfid}
+                                pid={this.state.currentpid}
+                                lookup={(type,data)=>this.lookupname(type,data)}
+                            />
+                        </div>
                     </ReflexElement>
 
                 </ReflexContainer>

@@ -25,7 +25,7 @@ export const newfile=(data,callback)=>{
     postRequest(url, data, callback);
 }
 
-export const modifile=(data,callback)=>{
+export const modifyfile=(data,callback)=>{
     let url=backedip+"/modifyfile"
     postRequest(url, data, callback);
 }
