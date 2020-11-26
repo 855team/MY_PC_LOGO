@@ -16,7 +16,6 @@ import WrappedLoginForm from "../Component/LoginForm";
 import DoubleRoom from "../Component/DoubleRoom";
 import * as fileService from "../Services/fileService"
 import {message,Modal,Input,Tag} from 'antd';
-import WrappedLoginForm from "../Component/LoginForm";
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
 import Battle from "../Component/Battle";
