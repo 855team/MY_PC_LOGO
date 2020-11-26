@@ -33,13 +33,6 @@ class SideBar extends React.Component {
                 }}
             >
                 <Nav defaultSelected="file">
-                    <NavItem eventKey="file" active={this.state.active=='file'}>
-                        <NavIcon>
-                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
-                                <IoIosDocument />
-                            </IconContext.Provider>
-                        </NavIcon>
-                    </NavItem>
 
                     <NavItem eventKey="debug" active={this.state.active=='debug'}>
                         <NavIcon>

@@ -1,6 +1,7 @@
 import React from 'react'
 import jslex from '../utils/jslex.js'
 import Commands from "../Controller/Commands";
+let interval=0;
 
 let commands=new Commands();
 class Compiler extends React.Component{
@@ -20,35 +21,84 @@ class Compiler extends React.Component{
     }
     tokenizer(input) {
         let lexer = new jslex({
-           "start": {
-               "[0-9]+": function() {
-                 return {type:'INT',value:parseInt(this.text, 10)}
-               },
-               "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
-                   return {type:this.text}
-               },
-               "#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]": function() {
-                   return {type:'COLOR', value:this.text}
-               },
-               "[a-zA-Z0-9]+": function() {
-                   return {type:'ID',value:this.text}
-               },
-               '[\[]': function() {
-                   return {type:'LBRACK'}
-               },
-               '\]': function() {
-                   return {type:'RBRACK'}
-               },
-               '[ \t\n]': null,
-           }
+            "start": {
+                "[0-9]+": function() {
+                    return {type:'INT',value:parseInt(this.text, 10)}
+                },
+                //       "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
+                //             return {type:this.text}
+                //      },
+                "REPEAT": function() {
+                    return {type:"REPEAT"}
+                },
+                "FD": function() {
+                    return {type:"FD"}
+                },
+                "LT": function() {
+                    return {type:"LT"}
+                },
+                "BK": function() {
+                    return {type:"BK"}
+                },
+                "RT": function() {
+                    return {type:"RT"}
+                },
+                "PU": function() {
+                    return {type:"PU"}
+                },
+                "PD": function() {
+                    return {type:"PD"}
+                },
+                "SETXY": function() {
+                    return {type:"SETXY"}
+                },
+                "SETPC": function() {
+                    return {type:"SETPC"}
+                },
+                "SETBG": function() {
+                    return {type:"SETBG"}
+                },
+                "STAMPOVAL": function() {
+                    return {type:"STAMPOVAL"}
+                },
+                "CLEAN": function() {
+                    return {type:"CLEAN"}
+                },
+
+                "#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]": function() {
+                    return {type:'COLOR', value:this.text}
+                },
+                // "[a-zA-Z0-9]+": function() {
+                //     return {type:'ID',value:this.text}
+                // },
+                '[\[]': function() {
+                    return {type:'LBRACK'}
+                },
+                '\]': function() {
+                    return {type:'RBRACK'}
+                },
+                '[ \t\n]': null,
+                '.': function() {
+                    return {type:'ERROR'}
+                }
+            }
         });
         let that = this;
+        let tokens = [];
         function callback(token) {
- //           console.log(token)
-            that.tokens.push(token);
+            //           console.log(token)
+            tokens.push(token);
         }
         lexer.lex(input, callback);
+        for (let i = 0;i < tokens.length;i++)
+            if (tokens[i].type == 'ERROR') {
+                return 0;
+            }
+        for (let i = 0;i < tokens.length;i++) {
+            this.tokens.push(tokens[i]);
+        }
         console.log(this.tokens);
+        return 1;
     }
 
     parser() {
@@ -57,7 +107,7 @@ class Compiler extends React.Component{
         function walk() {
 
             let token = tokens[current];
-        //    console.log(token);
+            //    console.log(token);
             if (token.type === 'INT') {
                 current++;
                 return {
@@ -254,52 +304,61 @@ class Compiler extends React.Component{
     }
     traverse(node) {
         if (node.type == 'FDExp') {
-     //       console.log(node);
-            commands.gostrait(node.value);
+            interval++;
+            setTimeout(() => commands.gostrait(node.value), 10*interval)
+
         }
         if (node.type == 'BKExp') {
-            commands.gostrait(-node.value);
+            interval++;
+            setTimeout(() => commands.gostrait(-node.value), 10*interval)
         }
         if (node.type == 'RTExp') {
-            commands.turn(node.value);
+            interval++;
+            setTimeout(() => commands.turn(node.value), 10*interval)
+
         }
         if (node.type == 'LTExp') {
-            commands.turn(-node.value);
+            interval++;
+            setTimeout(() => commands.turn(-node.value), 10*interval)
         }
         if (node.type == 'CLEANExp') {
-            commands.clear();
+            interval++;
+            setTimeout(() => commands.clear(), 10*interval)
         }
         if (node.type == 'RepeatExp') {
-            console.log(node);
             for (let i = 0;i < node.iter;i++) {
                 for (let j = 0;j < node.exps.length;j++) {
-                    console.log(node.exps[j]);
-
-                    console.log('start sleep')
-                    setTimeout(() => this.traverse(node.exps[j]), (i * 10 + j) * 10)
-                    console.log('end sleep')
+                    this.traverse(node.exps[j])
                 }
             }
         }
         if (node.type == 'PUExp') {
-            commands.changepenstate(0);
+            interval++;
+            setTimeout(() =>commands.changepenstate(0), 10*interval)
+
         }
         if (node.type == 'PDExp') {
-            commands.changepenstate(1);
+            interval++;
+            setTimeout(() =>commands.changepenstate(1), 10*interval)
         }
         if (node.type == 'SETPCExp') {
-            commands.changepencolor(node.value);
+            interval++;
+            setTimeout(() =>commands.changepencolor(node.value), 10*interval)
         }
         if (node.type == 'SETBGExp') {
-            commands.changepbgcolor(node.value);
+            interval++;
+            setTimeout(() =>commands.changepbgcolor(node.value), 10*interval)
+
         }
         if (node.type == 'STAMPOVALExp') {
-            console.log("hello",node);
-            commands.drawcircle({x:node.valuex, y:node.valuey});
+            interval++;
+            setTimeout(() =>commands.drawcircle({x:node.valuex, y:node.valuey}), 10*interval)
+
         }
         if (node.type == 'SETXYExp') {
-            console.log('hello')
-            commands.changeposition({x:node.valuex,y:node.valuey});
+            interval++;
+            setTimeout(() =>commands.changeposition({x:node.valuex,y:node.valuey}), 10*interval)
+
         }
     }
     operGenerator() {
@@ -315,7 +374,9 @@ class Compiler extends React.Component{
 
     append(input) {
         // token AST traverse operation
-        this.tokenizer(input);
+        interval=0;
+        if (this.tokenizer(input) == 0)
+            return;
         this.parser();
         this.operGenerator();
     }
@@ -324,3 +385,8 @@ class Compiler extends React.Component{
 
 
 export default Compiler;
+
+
+
+
+

@@ -39,17 +39,22 @@ func ModifyProject(params utils.ModifyProjectParams) (success bool, msg int) {
 	return
 }
 
-func GetProject(params utils.GetProjectParams) (success bool, msg int, data model.Project) {
+func GetProject(params utils.GetProjectParams) (success bool, msg int, data utils.GetProjectResponse) {
 	uid := CheckToken(params.Token)
 	if uid != 0 {
 		ownedPids := dao.GetPidsByUid(uid)
 		if !utils.UintListContains(ownedPids, params.Pid) {
-			success, msg, data = false, utils.ProjectNoPermission, model.Project{}
+			success, msg, data = false, utils.ProjectNoPermission, utils.GetProjectResponse{}
 		} else {
-			success, msg, data = true, utils.ProjectGetSuccess, dao.GetProjectByPid(params.Pid)
+			project := dao.GetProjectWithFilesByPid(params.Pid)
+			success, msg, data = true, utils.ProjectGetSuccess, utils.GetProjectResponse{
+				Pid: project.Pid,
+				Name: project.Name,
+				Files: project.Files,
+			}
 		}
 	} else {
-		success, msg, data = false, utils.InvalidToken, model.Project{}
+		success, msg, data = false, utils.InvalidToken, utils.GetProjectResponse{}
 	}
 
 	return

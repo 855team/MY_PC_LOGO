@@ -145,6 +145,7 @@ export default class MonacoEditor extends Component {
             return { suggestions: autocompletion(range) };
           }
     });
+
   }
   componentDidMount() {
     this.initMonacoEditor();
@@ -193,13 +194,25 @@ export default class MonacoEditor extends Component {
       // After initializing monaco editor
       this.editorDidMount(this.editor);
     }
+    this.editor.addAction({       //custom context-menu
+      id: "Alert",
+      label: "Alert",
+      contextMenuOrder: 0, // choose the order
+      contextMenuGroupId: "operation",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
+      ],
+      run: ()=>alert("hello"),
+    })
   }
   editorRef = (component) => {
     this.containerElement = component;
   };
   render() {
     const { width, height, className } = this.props;
-    return <div className={className} ref={this.editorRef} style={{ width, height }} />;
+    return(
+          <div className={className} ref={this.editorRef} style={{ width, height }} />
+    )
   }
 }
 

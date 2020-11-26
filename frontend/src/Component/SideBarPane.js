@@ -2,10 +2,18 @@ import React from "react";
 import FilePane from "./FilePane";
 
 class SideBarPane extends React.Component {
+    constructor(props){
+        super(props);
+    }
+
     render() {
-        return (
-            <FilePane />
-        )
+        if(this.props.visible){
+            return (
+                <FilePane />
+            )
+        }
+        else return null
+
     }
 }
 

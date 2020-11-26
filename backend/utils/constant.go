@@ -1,5 +1,7 @@
 package utils
 
+import "backend/model"
+
 const IsTest = true
 
 const (
@@ -32,6 +34,12 @@ type ResponseBean struct {
 	Success		bool			`json:"success"`
 	Msg			int 			`json:"msg"`
 	Data		interface{} 	`json:"data"`
+}
+
+type GetProjectResponse struct {
+	Pid			uint			`json:"pid"`
+	Name		string			`json:"name"`
+	Files		[]model.File	`json:"files"`
 }
 
 /* Structure of Request Parameters */

@@ -17,6 +17,10 @@ func GetProjectByPid(pid uint) model.Project {
 	return repository.GetProjectByPid(pid)
 }
 
+func GetProjectWithFilesByPid(pid uint) model.Project {
+	return repository.GetProjectWithFilesByPid(pid)
+}
+
 func SetProject(project model.Project) {
 	repository.SaveProject(project)
 	return
