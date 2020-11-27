@@ -14,13 +14,7 @@ class SideBar extends React.Component {
         super(props);
 
         this.state = {
-            active: {
-                'file': true,
-                'debug': false,
-                'settings': false,
-                'tutorials': false,
-                'online': false
-            }
+            active: 'file'
         };
     }
 
@@ -31,19 +25,16 @@ class SideBar extends React.Component {
                 // style={theme.sidebar}
                 style={{background:"linear-gradient(#82cbff,#ffffff)"}}
                 onSelect={(selected) => {
-                    let prev_active = this.state.active;
-                    for (let k in prev_active) {
-                        prev_active[k] = false;
-                    }
-                    prev_active[selected] = true;
-                    this.setState({
-                        active: prev_active
-                    });
+                    this.props.onSelected(selected);
+                    this.setState(
+                        {active:selected},
+                        // ()=>console.log(this.state)
+                    );
                 }}
             >
                 <Nav defaultSelected="file">
 
-                    <NavItem eventKey="debug" active={this.state.active['debug']}>
+                    <NavItem eventKey="debug" active={this.state.active=='debug'}>
                         <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <GoBug />
@@ -51,7 +42,7 @@ class SideBar extends React.Component {
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="settings" active={this.state.active['settings']}>
+                    <NavItem eventKey="settings" active={this.state.active=='settings'}>
                         <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdSettings />
@@ -59,7 +50,7 @@ class SideBar extends React.Component {
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="tutorials" active={this.state.active['tutorials']}>
+                    <NavItem eventKey="tutorials" active={this.state.active=='tutorials'}>
                         <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <HiLightBulb />
@@ -67,8 +58,8 @@ class SideBar extends React.Component {
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="online" active={this.state.active['online']}>
-                        <NavIcon onClick={()=>{this.props.openbattle()}}>
+                    <NavItem eventKey="online" active={this.state.active=='online'}>
+                        <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdPeople />
                             </IconContext.Provider>
