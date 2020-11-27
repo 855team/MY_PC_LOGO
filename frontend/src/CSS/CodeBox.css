@@ -1,0 +1,26 @@
+.codebox-body{
+    padding: 3px 10px;
+}
+
+.message-wrap{
+    padding: 3px 0 3px 0;
+    display: flex;
+    align-items: center;
+}
+
+.coder{
+    display:inline-block;
+    width: 60px;
+    color: #54b7ff;
+    font-family: 幼圆;
+    font-size: 13px;
+    font-weight: bolder;
+}
+
+.code{
+    display:inline-block;
+
+    color: #ffc870;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 20px;
+}

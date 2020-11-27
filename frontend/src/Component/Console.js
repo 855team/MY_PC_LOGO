@@ -47,6 +47,7 @@ class Console extends React.Component {
     render() {
         return (
             <ReactConsole
+                {...this.props}
                 ref={this.ref}
                 handler={this.handle}
                 welcomeMessage="Welcome to Online MY_PC_LOGO!"

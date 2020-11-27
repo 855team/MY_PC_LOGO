@@ -23,18 +23,19 @@
 }
 
 .toolbar-item{
-    padding: 0 10px 0 10px;
+    padding: 0;
     height: 100%;
+
 
     display: flex;
     align-items: center;
 
-    color: white;
+
     transition-duration: 0.5s;
 }
 
 .toolbar-item:hover{
-    padding: 0 10px 0 10px;
+    padding: 0;
     height: 100%;
 
     display: flex;
@@ -47,11 +48,26 @@
 
 .toolbar-item-clicked{
     height: 100%;
+    width: 100%;
+    padding: 0 10px 0 10px;
     align-items: center;
     display: flex;
 
     cursor: pointer;
     font-family: 汉仪乐喵体简;
+    color: white;
+}
+
+.toolbar-item-clicked:hover{
+    height: 100%;
+    width: 100%;
+    padding: 0 10px 0 10px;
+    align-items: center;
+    display: flex;
+
+    cursor: pointer;
+    font-family: 汉仪乐喵体简;
+    color: #82cbff;
 }
 
 .avatar{

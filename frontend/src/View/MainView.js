@@ -10,11 +10,12 @@ import {
     ReflexElement
 } from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
-import DrawingPanel from "../Component/DrawingPanel"
+import DrawingPanel from "../Component/DrawingPanel";
 import * as userService from "../Services/userService";
+import WrappedLoginForm from "../Component/LoginForm";
+import DoubleRoom from "../Component/DoubleRoom";
 import * as fileService from "../Services/fileService"
 import {message,Modal,Input,Tag} from 'antd';
-import WrappedLoginForm from "../Component/LoginForm";
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
 import Battle from "../Component/Battle";
@@ -149,6 +150,8 @@ export default class MainView extends React.Component {
 
             login_visible:false,
             register_visible:false,
+            selected:'file',
+
             help_visible:false,
             battle_visible:false,
             setting_visible:false,
@@ -856,7 +859,7 @@ export default class MainView extends React.Component {
                         <ReflexContainer orientation="vertical">
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar openbattle={()=>{this.openbattle()}} />
+                                <SideBar onSelected={(select)=>{this.setState({selected:select})}} />
                             </ReflexElement>
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
@@ -921,8 +924,8 @@ export default class MainView extends React.Component {
                     </ReflexElement>
 
                 </ReflexContainer>
-
             </div>
+
                 <div style={{position:'relative'}}>
                     <WrappedLoginForm login={(username,password)=>this.login(username,password)} closelogin={()=>this.closelogin()} visible={this.state.login_visible}/>
                 </div>
@@ -932,8 +935,11 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
                 </div>
-                <div style={{position:'relative'}}>
-                    <Battle closebattle={()=>this.closebattle()} visible={this.state.battle_visible}/>
+                <div>
+                    <DoubleRoom
+                        onVisible={this.state.selected=="online"}
+                        onReturn={e=>this.setState({selected:"file"})}
+                    />
                 </div>
                 <div style={{position:'relative'}}>
                     <Setting closesetting={()=>this.closesetting()} visible={this.state.setting_visible}/>
