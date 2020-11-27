@@ -31,15 +31,15 @@ func NewCommand(params utils.NewCommandParams) (success bool, msg int) {
 				Uid: uid,
 				Command: params.Content,
 			}
-			if entry.Owner != uid && entry.Partner != uid {
-				success, msg = false, utils.RoomNoPermission
-			} else if entry.Owner == 0 || entry.Partner == 0 {
+			if !entry.HasOwner || !entry.HasPartner {
 				success, msg = false, utils.RoomUserNotEnough
+			} else if entry.Owner != uid && entry.Partner != uid {
+				success, msg = false, utils.RoomNoPermission
 			} else {
 				entry.Lock.Lock()
-				entry.File += commandEntry.Command
-				entry.OwnerStream <- commandEntry
-				entry.PartnerStream <- commandEntry
+				entry.File = append(entry.File, commandEntry)
+				entry.OwnerStream <- entry.File
+				entry.PartnerStream <- entry.File
 				entry.Lock.Unlock()
 				success, msg = true, utils.RoomNewCommandSuccess
 			}

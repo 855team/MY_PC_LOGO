@@ -62,22 +62,24 @@ func HandleRoom(ctx iris.Context) {
 			Name: name,
 			Owner: uid,
 			Partner: 0,
-			OwnerRecord: uid,
-			PartnerRecord: 0,
-			OwnerStream: make(chan utils.CommandEntry, 10),
-			PartnerStream: make(chan utils.CommandEntry, 10),
+			HasOwner: true,
+			HasPartner: false,
+			OwnerStream: make(chan []utils.CommandEntry, 10),
+			PartnerStream: make(chan []utils.CommandEntry, 10),
 			Lock: new(sync.Mutex),
 		}
 		sse.NextRoom++
 
+		entry := sse.Rooms[rid]
+
 		ctx.OnClose(func(iris.Context) {
-			sse.Rooms[rid].Lock.Lock()
-			sse.Rooms[rid].Owner = 0
-			sse.Rooms[rid].Lock.Unlock()
+			entry.Lock.Lock()
+			entry.HasOwner = false
+			entry.Lock.Unlock()
 
 			golog.Println(strconv.Itoa(int(rid)) + " - Owner Quit -" + strconv.Itoa(int(uid)))
 
-			if sse.Rooms[rid].Owner == 0 && sse.Rooms[rid].Partner == 0 {
+			if !entry.HasOwner && !entry.HasPartner {
 				sse.ClosingRooms <- rid
 			}
 		})
@@ -95,20 +97,20 @@ func HandleRoom(ctx iris.Context) {
 		if entry, ok := sse.Rooms[rid]; !ok {
 			utils.SendStreamResponse(ctx, flusher, false, utils.RoomDoNotExist, nil)
 			return
-		} else if entry.Partner == 0 && entry.Owner != uid {
+		} else if !entry.HasPartner && (entry.Partner == uid || entry.Partner == 0) && entry.Owner != uid {
 			entry.Lock.Lock()
 			entry.Partner = uid
-			entry.PartnerRecord = uid
+			entry.HasPartner = true
 			entry.Lock.Unlock()
 
 			ctx.OnClose(func(iris.Context) {
 				entry.Lock.Lock()
-				entry.Partner = 0
+				entry.HasPartner = false
 				entry.Lock.Unlock()
 
 				golog.Println(strconv.Itoa(int(rid)) + " - Partner Quit -" + strconv.Itoa(int(uid)))
 
-				if entry.Owner == 0 && entry.Partner == 0 {
+				if !entry.HasOwner && !entry.HasPartner {
 					sse.ClosingRooms <- rid
 				}
 			})
@@ -120,20 +122,20 @@ func HandleRoom(ctx iris.Context) {
 				utils.SendStreamResponse(ctx, flusher, true, utils.RoomCommandStream, <-entry.PartnerStream)
 				flusher.Flush()
 			}
-		} else if entry.Owner == 0 && entry.Partner != uid {
+		} else if !entry.HasOwner && (entry.Owner == uid || entry.Owner == 0) && entry.Partner != uid {
 			entry.Lock.Lock()
 			entry.Owner = uid
-			entry.OwnerRecord = uid
+			entry.HasOwner = true
 			entry.Lock.Unlock()
 
 			ctx.OnClose(func(iris.Context) {
 				entry.Lock.Lock()
-				entry.Owner = 0
+				entry.HasOwner = false
 				entry.Lock.Unlock()
 
 				golog.Println(strconv.Itoa(int(rid)) + " - Owner Quit -" + strconv.Itoa(int(uid)))
 
-				if entry.Owner == 0 && entry.Partner == 0 {
+				if !entry.HasOwner && !entry.HasPartner {
 					sse.ClosingRooms <- rid
 				}
 			})
@@ -145,11 +147,11 @@ func HandleRoom(ctx iris.Context) {
 				utils.SendStreamResponse(ctx, flusher, true, utils.RoomCommandStream, <-entry.OwnerStream)
 				flusher.Flush()
 			}
-		} else if entry.Owner != uid && entry.Partner != uid {
-			utils.SendStreamResponse(ctx, flusher, false, utils.RoomNoPermission, nil)
+		} else if (entry.HasOwner && entry.Owner == uid) || (entry.HasPartner && entry.Partner == uid) {
+			utils.SendStreamResponse(ctx, flusher, false, utils.RoomUserAlreadyInRoom, nil)
 			return
 		} else {
-			utils.SendStreamResponse(ctx, flusher, false, utils.RoomUserAlreadyInRoom, nil)
+			utils.SendStreamResponse(ctx, flusher, false, utils.RoomNoPermission, nil)
 			return
 		}
 	}

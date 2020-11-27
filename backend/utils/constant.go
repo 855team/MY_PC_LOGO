@@ -152,10 +152,10 @@ type RoomEntry struct {
 	Name			string
 	Owner			uint
 	Partner			uint
-	OwnerRecord		uint
-	PartnerRecord	uint
-	OwnerStream		chan CommandEntry
-	PartnerStream	chan CommandEntry
-	File			string
+	HasOwner		bool
+	HasPartner		bool
+	OwnerStream		chan []CommandEntry
+	PartnerStream	chan []CommandEntry
+	File			[]CommandEntry
 	Lock			*sync.Mutex
 }

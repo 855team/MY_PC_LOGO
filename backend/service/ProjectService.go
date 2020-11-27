@@ -25,6 +25,9 @@ func NewRoomProjectAndFile(projectName string, fileName string, uid1 uint, uid2 
 		Name: projectName,
 	})
 
+	dao.AddProjectToUser(pid, uid1)
+	dao.AddProjectToUser(pid, uid2)
+
 	dao.CreateFile(model.File{
 		Pid: pid,
 		Name: fileName,
