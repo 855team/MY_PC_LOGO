@@ -30,5 +30,11 @@ func InitDBConn() {
 
 func testPrepare() {
 	db.Create(&model.User{Uid: 1, Username: "test", Email: "test"})
+	db.Create(&model.User{Uid: 2, Username: "test1", Email: "test1"})
+	db.Create(&model.User{Uid: 3, Username: "test2", Email: "test2"})
+	db.Create(&model.User{Uid: 4, Username: "test-noemail"})
 	db.Create(&model.UserAuth{Uid: 1, Username: "test", Password: "test"})
+	db.Create(&model.UserAuth{Uid: 2, Username: "test1", Password: "test1"})
+	db.Create(&model.UserAuth{Uid: 3, Username: "test2", Password: "test2"})
+	db.Create(&model.UserAuth{Uid: 4, Username: "test-noemail", Password: "test-noemail"})
 }

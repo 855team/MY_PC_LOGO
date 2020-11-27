@@ -30,13 +30,15 @@ const (
 	FileDeleteSuccess		=	19
 	RoomEnterSuccess		=	20
 	RoomCommandStream		=	21
-	RoomDoNotExist			=	22
-	RoomNoPermission		=	23
-	RoomUserAlreadyInRoom	=	24
-	RoomSSENotSupported		=	25
-	RoomNewCommandSuccess	=	26
-	RoomUserNotEnough		=	27
-	RoomsGetSuccess			=	28
+	RoomUserEnterNotify		=	22
+	RoomUserLeaveNotify		=	23
+	RoomDoNotExist			=	24
+	RoomNoPermission		=	25
+	RoomUserAlreadyInRoom	=	26
+	RoomSSENotSupported		=	27
+	RoomNewCommandSuccess	=	28
+	RoomUserNotEnough		=	29
+	RoomsGetSuccess			=	30
 )
 
 const TokenTerm = 30 * 60 // 30min
@@ -61,6 +63,8 @@ type GetRoomsResponse struct {
 	Uid2		uint			`json:"uid2"`
 	Username1	string			`json:"username1"`
 	Username2	string			`json:"username2"`
+	IsInRoom1	bool			`json:"isinroom1"`
+	IsInRoom2	bool			`json:"isinroom2"`
 }
 
 /* Structure of Request Parameters */
@@ -148,14 +152,21 @@ type CommandEntry struct {
 	Command		string	`json:"command"`
 }
 
+type NotifyEntry struct {
+	Uid			uint	`json:"uid"`
+	Username	string	`json:"username"`
+}
+
 type RoomEntry struct {
 	Name			string
 	Owner			uint
 	Partner			uint
-	OwnerRecord		uint
-	PartnerRecord	uint
-	OwnerStream		chan CommandEntry
-	PartnerStream	chan CommandEntry
-	File			string
+	OwnerName		string
+	PartnerName		string
+	HasOwner		bool
+	HasPartner		bool
+	OwnerStream		chan []CommandEntry
+	PartnerStream	chan []CommandEntry
+	File			[]CommandEntry
 	Lock			*sync.Mutex
 }

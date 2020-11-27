@@ -38,8 +38,12 @@ func (sse *SSE) listen() {
 		select {
 		case s := <-sse.ClosingRooms:
 			room := sse.Rooms[s]
-			if room.OwnerRecord != 0 && room.PartnerRecord != 0 {
-				NewRoomProjectAndFile(room.Name+"-Project", room.Name+"-File", room.OwnerRecord, room.PartnerRecord, room.File)
+			if room.Owner != 0 && room.Partner != 0 && room.File[0].Uid != 0 {
+				fileStr := ""
+				for _, cmd := range room.File {
+					fileStr += cmd.Command
+				}
+				NewRoomProjectAndFile(room.Name+"-RoomProject", room.Name+"-RoomFile", room.Owner, room.Partner, fileStr)
 			}
 			delete(sse.Rooms, s)
 			golog.Infof("Removed client. %d registered Rooms", len(sse.Rooms))
