@@ -208,12 +208,22 @@ export default class MonacoEditor extends Component {
     this.editor.addAction({       //custom context-menu
       id: "New",
       label: "New",
-      contextMenuOrder: 0, // choose the order
+      contextMenuOrder: 1, // choose the order
       contextMenuGroupId: "operation",
       keybindings: [
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_N,
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P,
       ],
       run: ()=>this.props.new(),
+    })
+    this.editor.addAction({       //custom context-menu
+      id: "Run",
+      label: "Run",
+      contextMenuOrder: 2, // choose the order
+      contextMenuGroupId: "operation",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_E,
+      ],
+      run: ()=>this.props.run(),
     })
   }
   editorRef = (component) => {
