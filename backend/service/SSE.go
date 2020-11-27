@@ -38,7 +38,7 @@ func (sse *SSE) listen() {
 		select {
 		case s := <-sse.ClosingRooms:
 			room := sse.Rooms[s]
-			if room.Owner != 0 && room.Partner != 0 {
+			if room.Owner != 0 && room.Partner != 0 && room.File[0].Uid != 0 {
 				fileStr := ""
 				for _, cmd := range room.File {
 					fileStr += cmd.Command

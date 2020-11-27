@@ -1,7 +1,6 @@
 package service
 
 import (
-	"backend/dao"
 	"backend/utils"
 )
 
@@ -12,8 +11,10 @@ func GetRooms() (success bool, msg int, data []utils.GetRoomsResponse) {
 			Name: entry.Name,
 			Uid1: entry.Owner,
 			Uid2: entry.Partner,
-			Username1: dao.GetUserByUid(entry.Owner).Username,
-			Username2: dao.GetUserByUid(entry.Partner).Username,
+			Username1: entry.OwnerName,
+			Username2: entry.PartnerName,
+			IsInRoom1: entry.HasOwner,
+			IsInRoom2: entry.HasPartner,
 		})
 	}
 	success, msg = true, utils.RoomsGetSuccess
@@ -37,7 +38,11 @@ func NewCommand(params utils.NewCommandParams) (success bool, msg int) {
 				success, msg = false, utils.RoomNoPermission
 			} else {
 				entry.Lock.Lock()
-				entry.File = append(entry.File, commandEntry)
+				if entry.File[0].Uid == 0 {
+					entry.File[0] = commandEntry
+				} else {
+					entry.File = append(entry.File, commandEntry)
+				}
 				entry.OwnerStream <- entry.File
 				entry.PartnerStream <- entry.File
 				entry.Lock.Unlock()

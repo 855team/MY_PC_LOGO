@@ -48,21 +48,3 @@ func UintListContains(list []uint, element uint) bool {
 
 	return false
 }
-
-func PackRoomResponse(data interface{}, ty int) string {
-	if ty == RoomEnterSuccess {
-		str, _ := json.Marshal(ResponseBean{
-			Success: true,
-			Msg: RoomEnterSuccess,
-			Data: data.(uint),
-		})
-		return string(str)
-	} else {
-		str, _ := json.Marshal(ResponseBean{
-			Success: true,
-			Msg: RoomCommandStream,
-			Data: data.(CommandEntry),
-		})
-		return string(str)
-	}
-}
