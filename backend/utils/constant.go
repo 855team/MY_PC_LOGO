@@ -1,21 +1,24 @@
 package utils
 
-import "backend/model"
+import (
+	"backend/model"
+	"sync"
+)
 
 const IsTest = true
 
 const (
 	InvalidFormat			=	0
-	InvalidToken			= 	1
+	InvalidToken			=	1
 	LoginNoSuchUser			=	2
 	LoginWrongPassword		=	3
 	LoginSuccess			=	4
 	RegisterSuccess			=	5
 	RegisterUserExists		=	6
-	ModifyUserSuccess		=	7
-	ModifyUserAuthSuccess	=	8
+	UserModifySuccess		=	7
+	UserAuthModifySuccess	=	8
 	ModifyDupUsername		=	9
-	GetUserSuccess			=	10
+	UserGetSuccess			=	10
 	ProjectNewSuccess		=	11
 	ProjectNoPermission		=	12
 	ProjectModifySuccess	=	13
@@ -25,6 +28,15 @@ const (
 	FileNoPermission		=	17
 	FileModifySuccess		=	18
 	FileDeleteSuccess		=	19
+	RoomEnterSuccess		=	20
+	RoomCommandStream		=	21
+	RoomDoNotExist			=	22
+	RoomNoPermission		=	23
+	RoomUserAlreadyInRoom	=	24
+	RoomSSENotSupported		=	25
+	RoomNewCommandSuccess	=	26
+	RoomUserNotEnough		=	27
+	RoomsGetSuccess			=	28
 )
 
 const TokenTerm = 30 * 60 // 30min
@@ -40,6 +52,15 @@ type GetProjectResponse struct {
 	Pid			uint			`json:"pid"`
 	Name		string			`json:"name"`
 	Files		[]model.File	`json:"files"`
+}
+
+type GetRoomsResponse struct {
+	Rid			uint			`json:"rid"`
+	Name		string			`json:"name"`
+	Uid1		uint			`json:"uid1"`
+	Uid2		uint			`json:"uid2"`
+	Username1	string			`json:"username1"`
+	Username2	string			`json:"username2"`
 }
 
 /* Structure of Request Parameters */
@@ -113,4 +134,28 @@ type ModifyFileParams struct {
 type DeleteFileParams struct {
 	Token		string		`json:"token"`
 	Fid			uint		`json:"fid"`
+}
+
+type NewCommandParams struct {
+	Token		string		`json:"token"`
+	Rid			uint		`json:"rid"`
+	Content		string		`json:"content"`
+}
+
+/* Others */
+type CommandEntry struct {
+	Uid			uint	`json:"uid"`
+	Command		string	`json:"command"`
+}
+
+type RoomEntry struct {
+	Name			string
+	Owner			uint
+	Partner			uint
+	OwnerRecord		uint
+	PartnerRecord	uint
+	OwnerStream		chan CommandEntry
+	PartnerStream	chan CommandEntry
+	File			string
+	Lock			*sync.Mutex
 }

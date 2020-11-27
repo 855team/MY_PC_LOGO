@@ -43,7 +43,7 @@ func Register(params utils.RegisterParams) (success bool, msg int, data string) 
 func GetUser(params utils.GetUserParams) (success bool, msg int, data model.User) {
 	uid := CheckToken(params.Token)
 	if uid != 0 {
-		success, msg, data = true, utils.GetUserSuccess, dao.GetUserByUid(uid)
+		success, msg, data = true, utils.UserGetSuccess, dao.GetUserByUid(uid)
 	} else {
 		success, msg, data = false, utils.InvalidToken, model.User{}
 	}
@@ -68,7 +68,7 @@ func ModifyUser(params utils.ModifyUserParams) (success bool, msg int) {
 			user.Turtle = params.Turtle
 			user.Task = params.Task
 			dao.SetUser(user)
-			success, msg = true, utils.ModifyUserSuccess
+			success, msg = true, utils.UserModifySuccess
 		}
 	} else {
 		success, msg = false, utils.InvalidToken
@@ -83,7 +83,7 @@ func ModifyUserAuth(params utils.ModifyUserAuthParams) (success bool, msg int) {
 		userauth := dao.GetUserAuthByUid(uid)
 		userauth.Password = params.Password
 		dao.SetUserAuth(userauth)
-		success, msg = true, utils.ModifyUserAuthSuccess
+		success, msg = true, utils.UserAuthModifySuccess
 	} else {
 		success, msg = false, utils.InvalidToken
 	}
