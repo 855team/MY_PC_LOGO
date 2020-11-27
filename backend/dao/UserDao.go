@@ -27,7 +27,11 @@ func GetUserByUsername(username string) model.User {
 }
 
 func GetUserByUid(uid uint) model.User {
-	return repository.GetUserByUid(uid)
+	if uid == 0 {
+		return model.User{}
+	} else {
+		return repository.GetUserByUid(uid)
+	}
 }
 
 func CreateUser(user model.User) uint {
