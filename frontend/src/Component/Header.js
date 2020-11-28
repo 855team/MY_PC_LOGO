@@ -1,12 +1,15 @@
 import React from "react";
 import "../CSS/react-header.css"
 import {Button} from 'antd'
+import { Menu, Dropdown,Upload,message } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 class UserArea extends React.Component{
     constructor(props){
         super(props);
     }
     render(){
+
         if(!this.props.login){
             return(
                 <div>
@@ -43,13 +46,55 @@ class Header extends React.Component {
         super(props);
     }
     render() {
+        let importfile=this.props.importfile;
+        let uploadconfig = {
+            name: 'file',
+            beforeUpload(file){
+                if (file.name.indexOf(".logo")===-1) {
+                    message.error(`${file.name} is not a logo file`);
+                    return false;
+                }
+                const reader=new FileReader();
+                reader.readAsText(file);
+                reader.onload=(result)=>{
+                    importfile(result.target.result)
+                }
+                return true;
+            },
+            showUploadList:false
+
+
+        };
+        let menu = (
+            <Menu>
+                <Menu.Item>
+                    <Upload {...uploadconfig} accept=".logo" id="uploader">
+                    <a target="_blank" rel="noopener noreferrer" >
+                        导入文件
+                    </a>
+                    </Upload>
+                </Menu.Item>
+                <Menu.Item>
+                    <a target="_blank" rel="noopener noreferrer" onClick={()=>this.props.exportfile()}>
+                        导出文件
+                    </a>
+                </Menu.Item>
+            </Menu>
+        );
         return (
             <div className="header-content">
                 <img src={require("../assets/logo.png")} className="logo"/>
                 <ul className="toolbar">
                     <li className="toolbar-item">
+                        <Dropdown overlay={menu}>
+                            <a className="toolbar-item-clicked" onClick={e => e.preventDefault()}>
+                                文件 <DownOutlined />
+                            </a>
+                        </Dropdown>
+                    </li>
+                    <li className="toolbar-item">
                         <a className="toolbar-item-clicked"
-                           onClick={()=>{this.props.openfileoperation()}}>文件</a>
+                           onClick={()=>{this.props.run()}}>运行</a>
                     </li>
                     <li className="toolbar-item">
                         <a className="toolbar-item-clicked"

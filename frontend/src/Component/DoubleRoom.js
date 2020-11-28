@@ -61,7 +61,7 @@ class HallTable extends React.Component{
                 columns={columns}
                 dataSource={this.props.dataSource}
                 pagination={false}
-                scroll={{y:170}}
+                scroll={{y:true}}
             />);
     }
 }
@@ -253,9 +253,10 @@ class DoubleRoom extends React.Component{
                 />
                 <div style={{marginLeft:"39%",color:"white",fontSize:20}}>双人模式</div>
             </div>
-            <div className="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{}}>
+            <div className="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{height:"60%"}}>
                 <HallButton
                     onClick={(e)=>this.createRoom()}
+                    disabled={this.state.hallState=="waiting"}
                     image={require("../Image/Newroom.png")} text={"创建房间"}/>
                 <HallButton
                     onClick={(e)=>{
@@ -266,9 +267,12 @@ class DoubleRoom extends React.Component{
                     disabled={this.state.hallState=="waiting"}
                     image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
             </div>
-            <div className="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{}}>
-                {this.state.hallState=='waiting'?
-                    (<div style={{textAlign:"center"}}>
+            <div className="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
+
+                <div
+                    id="hall-more-waiting"
+                    className={this.state.hallState=='waiting'?'hall-more-visible':'hall-more-hidden'}
+                >
                         <Spin size={"large"}/>
                         <div style={{color:"#ffc870"}}>Room {this.state.rid} 等待中</div>
                         <Button
@@ -276,10 +280,13 @@ class DoubleRoom extends React.Component{
                             style={{marginTop:5,width:100}}
                             onClick={(e)=>this.leaveRoom()}
                         >结束等待</Button>
-                    </div>)
-                    :null}
-                {this.state.hallState=='joinroom'?
-                    (<div style={{width:"100%",height:"100%",display:"flex"}}>
+                </div>
+
+
+                <div
+                    id="hall-more-joinroom"
+                    className={this.state.hallState=='joinroom'?'hall-more-visible':'hall-more-hidden'}
+                >
                         <div style={{width:"35%",height:"100%",textAlign:"center"}}>
                             <div style={{marginBottom:20}}>
                                 <span style={{color:"#ffc870"}}>RoomId:</span>
@@ -295,8 +302,7 @@ class DoubleRoom extends React.Component{
                         <div style={{width:"65%",height:"100%",paddingRight:5}}>
                             <HallTable dataSource={this.state.allRooms}/>
                         </div>
-                    </div>)
-                    :null}
+                    </div>
             </div>
         </div>)
     }

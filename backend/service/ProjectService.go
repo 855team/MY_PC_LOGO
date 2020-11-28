@@ -20,6 +20,21 @@ func NewProject(params utils.NewProjectParams) (success bool, msg int, data uint
 	return
 }
 
+func NewRoomProjectAndFile(projectName string, fileName string, uid1 uint, uid2 uint, file string) {
+	pid := dao.CreateProject(model.Project{
+		Name: projectName,
+	})
+
+	dao.AddProjectToUser(pid, uid1)
+	dao.AddProjectToUser(pid, uid2)
+
+	dao.CreateFile(model.File{
+		Pid: pid,
+		Name: fileName,
+		Content: file,
+	})
+}
+
 func ModifyProject(params utils.ModifyProjectParams) (success bool, msg int) {
 	uid := CheckToken(params.Token)
 	if uid != 0 {

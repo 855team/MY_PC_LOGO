@@ -1,8 +1,9 @@
-.ant-table-thead > tr > th {
+.ant-table-thead >tr> th {
     color: #fbffff;
     background: #ffc870;
     font-size: 15px;
-
+    height: 50px;
+    padding: 8px 10px;
 }
 
 .ant-table-tbody > tr > td {

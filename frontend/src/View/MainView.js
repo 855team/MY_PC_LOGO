@@ -24,7 +24,14 @@ import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
+import { Select } from 'antd';
+import * as TaskHandler from '../Component/Taskhandler';
+import Compiler from "../Component/Compiler";
+import {offConnection} from "../Services/doubleService";
+const { Option } = Select;
 const { confirm } = Modal;
+
+
 
 class ControlledElement extends React.Component {
 
@@ -143,14 +150,13 @@ export default class MainView extends React.Component {
             login:false,
             username:"",
             uid:undefined,
-            turtle:undefined,
-
-            task:undefined,
+            turtle:1,
+            task:1,
             projects:[],
 
             login_visible:false,
             register_visible:false,
-            selected:'online',
+            selected:'file',
 
             help_visible:false,
             battle_visible:false,
@@ -285,6 +291,43 @@ export default class MainView extends React.Component {
         userService.login({username:username,password:password,email:email},callback)
     }
 
+    importfile=(content)=>{
+        if(!this.state.login){
+            this.setState({
+                editorcontent:content
+            })
+            return;
+        }
+        if(this.state.login){
+            if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+                return;
+            }
+            if(this.state.currentfid<0 && this.state.editorcontent==""){
+                return;
+            }
+            let op=()=>{
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+            }
+            this.savecurrent(op)
+        }
+    }
+
+    exportfile=()=>{
+        let FileSaver=require('file-saver');
+        let data=this.state.editorcontent;
+        let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "my.logo");
+    }
+
     openlogin=()=>{
         this.setState({
             login_visible:true
@@ -359,6 +402,7 @@ export default class MainView extends React.Component {
     }
 
     logout=async()=>{
+        offConnection(()=>{})
         localStorage.removeItem("token")
         await this.setState({
             login:false,
@@ -451,7 +495,68 @@ export default class MainView extends React.Component {
 
     }
 
-    savecurrent=(nextop)=>{
+    editorsave=()=>{
+        if(!this.state.login){
+            message.warn("用户未登录");
+            return
+        }
+        if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+            return;
+        }
+        if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)!=this.state.editorcontent){
+            this.savecurrent(()=> {
+                return;
+            })
+            return;
+        }
+        if(this.state.currentfid<0){
+            this.savecurrent(()=> {
+                return;
+            })
+            return;
+        }
+
+    }
+
+    editornew=()=>{
+        if(!this.state.login){
+            this.setState({
+                editorcontent:""
+            })
+            return;
+        }
+        if(this.state.login){
+            if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:""
+                })
+                return;
+            }
+            if(this.state.currentfid<0 && this.state.editorcontent==""){
+                return;
+            }
+            let op=()=>{
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:""
+                })
+            }
+            this.savecurrent(op)
+        }
+    }
+
+    editorrun=()=>{
+        let lines=this.state.editorcontent.split("\r\n");
+        let compiler=new Compiler();
+        compiler.append("CLEAN");
+        setTimeout(()=>{compiler.append(lines.join(" "))},10)
+
+    }
+
+    savecurrent=(nextop)=>{     //TODO
         let pid=this.state.currentpid;
         let fid=this.state.currentfid;
         let content=this.state.editorcontent;
@@ -459,6 +564,16 @@ export default class MainView extends React.Component {
             let callback=(result)=>{
                 if(result.success){
                     message.success("文件已保存至远端")
+                    this.state.remotedata.map((project)=>{
+                        if(project.pid==pid){
+                            project.files.map((file)=>{
+                                if(fid==file.fid){
+                                    file.content=content;
+                                }
+                            })
+                        }
+                    })
+                    nextop();
                 }
                 else{
                     message.error("保存失败")
@@ -467,14 +582,63 @@ export default class MainView extends React.Component {
             }
             let filename=this.lookupname("file",{pid:pid,fid:fid})
             this.modifyfile(fid,filename,content,callback)
+
+            return;
         }
-        nextop();
+
+        if(fid<0){
+            let tmpstr="";
+            let pid=-1;
+            let content=this.state.editorcontent;
+            let newfilewithcontent=(pid,tmpstr,content,op)=>this.newfilewithcontent(pid,tmpstr,content,op);
+            let onChange=({ target: { value } }) => {
+                tmpstr=value;
+            };
+            let handleChange=(value)=> {
+                console.log(value)
+                pid=value
+            }
+            let options=[];
+            let remotedata=this.state.remotedata;
+            console.log(remotedata)
+            for(let i=0;i<remotedata.length;i++){
+                let option=<Option key={remotedata[i].pid} value={remotedata[i].pid}>{remotedata[i].name}</Option>
+                options.push(option)
+            }
+            if(options==[]){
+                message.warn("未创建项目")
+                return;
+            }
+
+            confirm({
+                title: "选择新建项目的位置",
+                bodyStyle:{TextAlign:"center"},
+                content:
+                    <div>
+                        <Select placeholder="选择文件位置" style={{ width: 120 }} onChange={handleChange}>
+                            {options}
+                        </Select>
+                        <Input onChange={onChange}/>
+                    </div>,
+                onOk(){
+                        let op=()=>{
+                            nextop()
+                        }
+                        newfilewithcontent(pid,tmpstr,content,op)
+
+                },
+                onCancel() {
+                    message.success("操作已取消")
+                },
+            });
+        }
+
     }
 
-    addfiletoremotedata=(pid,filename,fid)=>{
+    addfiletoremotedata=(pid,filename,fid,content)=>{
         this.state.remotedata.map((proj)=>{
             if(proj.pid==pid){
-                proj.files.push({fid:fid,name:filename,content:""})
+                proj.files.push({fid:fid,name:filename,content:content})
             }
         })
     }
@@ -529,22 +693,99 @@ export default class MainView extends React.Component {
         })
     }
 
-    newfile=(pid,filename)=>{
+    newfilewithcontent=(pid,filename,content,op)=>{
         let token=localStorage.getItem("token");
-        let data={pid:pid,name:filename,token:token};
+        let data={pid:pid,name:filename,token:token,content:content};
+        let setstate=(data)=>this.setState(data);
+
         let callback=async(result)=>{
             if(result.success){
-                this.savecurrent(()=>alert("ok"));
-                this.addfiletoremotedata(pid,filename,result.data);
-                await this.setState({
-                    currentpid:pid,
-                    currentfid:result.data
-                })
+                this.addfiletoremotedata(pid,filename,result.data,content);
                 this.setState({
+                    currentpid:pid,
+                    currentfid:result.data,
                     treedata:this.generatetreedata(this.state.remotedata),
-                    editorcontent:"",
                 })
-                message.success("新建文件成功")
+                message.success("保存文件成功")
+                op();
+                return;
+                }
+            else{
+                message.error("文件保存失败")
+            }
+        }
+        fileService.newfile(data,callback)
+    }
+
+    newfile=(pid,filename,content)=>{
+        let token=localStorage.getItem("token");
+        let data={pid:pid,name:filename,token:token,content:""};
+        let setstate=(data)=>this.setState(data);
+        let callback=async(result)=>{
+            if(result.success){
+                if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+                    this.addfiletoremotedata(pid,filename,result.data,"");
+                    await this.setState({
+                        currentpid:pid,
+                        currentfid:result.data
+                    })
+                    this.setState({
+                        treedata:this.generatetreedata(this.state.remotedata),
+                        editorcontent:"",
+                    })
+                    message.success("新建文件成功")
+                    return;
+
+                }
+                if(this.state.currentfid<0 && this.state.editorcontent==""){
+                    this.addfiletoremotedata(pid,filename,result.data,"");
+                    await this.setState({
+                        currentpid:pid,
+                        currentfid:result.data
+                    })
+                    this.setState({
+                        treedata:this.generatetreedata(this.state.remotedata),
+                        editorcontent:"",
+                    })
+                    message.success("新建文件成功")
+                    return;
+                }
+                confirm({
+                    title: '是否保存当前项目',
+                    icon: <ExclamationCircleOutlined />,
+                    onOk() {
+                        let nextop=async()=>{
+                            this.addfiletoremotedata(pid,filename,result.data,"");
+                            await this.setState({
+                                currentpid:pid,
+                                currentfid:result.data
+                            })
+                            this.setState({
+                                treedata:this.generatetreedata(this.state.remotedata),
+                                editorcontent:"",
+                            })
+                            message.success("新建文件成功")
+                        }
+                        this.savecurrent(nextop);
+                    },
+                    onCancel() {
+                        let op=async()=>{
+                            this.addfiletoremotedata(pid,filename,result.data,"");
+                            await this.setState({
+                                currentpid:pid,
+                                currentfid:result.data
+                            })
+                            this.setState({
+                                treedata:this.generatetreedata(this.state.remotedata),
+                                editorcontent:"",
+                            })
+                            message.success("新建文件成功")
+                        }
+                        op();
+                    },
+                });
+
+
             }
             else{
                 message.error("新建文件失败")
@@ -756,14 +997,16 @@ export default class MainView extends React.Component {
         if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
             this.setState({
                 currentfid:fid,
-                currentpid:pid
+                currentpid:pid,
+                editorcontent:content
             })
             return;
         }
         if(this.state.currentfid<0 && this.state.editorcontent==""){
             this.setState({
                 currentfid:fid,
-                currentpid:pid
+                currentpid:pid,
+                editorcontent:content
             })
             return;
         }
@@ -790,6 +1033,12 @@ export default class MainView extends React.Component {
                 },
             });
         }
+    }
+
+    updatetasklevel=(level)=>{
+        this.setState({
+            task:level
+        })
     }
 
     registerlisteners(){
@@ -844,6 +1093,9 @@ export default class MainView extends React.Component {
                             openfileoperation={()=>this.openfileoperation()}
                             username={this.state.username}
                             login={this.state.login}
+                            importfile={(content)=>this.importfile(content)}
+                            exportfile={()=>this.exportfile()}
+                            run={()=>this.editorrun()}
                         />
                     </ReflexElement>
 
@@ -876,6 +1128,9 @@ export default class MainView extends React.Component {
                                             }}
                                             value={this.state.editorcontent}
                                             updatecontent={(content)=>this.updatecontent(content)}
+                                            save={()=>this.editorsave()}
+                                            new={()=>{this.editornew()}}
+                                            run={()=>this.editorrun()}
                                         />
 
 
@@ -908,9 +1163,11 @@ export default class MainView extends React.Component {
                         <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
                             <InfoBar
                                 login={this.state.login}
+                                task={this.state.task}
                                 fid={this.state.currentfid}
                                 pid={this.state.currentpid}
                                 lookup={(type,data)=>this.lookupname(type,data)}
+                                getcurrenttask={(level)=>TaskHandler.Lookupcurrentask(level)}
                             />
                         </div>
                     </ReflexElement>
@@ -945,6 +1202,7 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
+                <TaskHandler.Taskhandler login={this.state.login} task={this.state.task} update={(level)=>this.updatetasklevel(level)}/>
 
             </div>
         )

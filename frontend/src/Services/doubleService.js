@@ -19,7 +19,6 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
         client = new EventSource(requestUrl);
 
         client.onerror =  (evt)=> {
-            message.info('Browser Does Not Support SSE')
             console.log(evt);
             console.log({status: "Fail !!!!!!",msg:"Browser Does Not Support SSE"});
         }
@@ -28,7 +27,10 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
             let dataJSON = JSON.parse(evt.data)
             console.log(dataJSON);
             if (!dataJSON.success) {
-                message.info('Connect to SSE Fail !!!!!!')
+                message.info({
+                    content:'Connect to SSE Fail !!!!!!',
+                    style:{zIndex:1300}
+                })
                 client.close()
                 console.log({status:"Connect to SSE Fail !!!!!!",msg:dataJSON.msg})
             } else if (dataJSON.msg == RoomEnterSuccess) {

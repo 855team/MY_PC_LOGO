@@ -6,6 +6,7 @@ require (
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/iris-contrib/middleware/cors v0.0.0-20201017024110-39b50ffeb885
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
+	github.com/kataras/golog v0.1.5
 	github.com/kataras/iris/v12 v12.2.0-alpha.0.20201012125253-8e51a296b968
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect

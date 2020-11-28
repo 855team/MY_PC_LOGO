@@ -62,7 +62,6 @@
     justify-content: center;
     align-items: baseline;
     font-size: 20px;
-
     transition-duration: 0.3s;
 }
 
@@ -117,6 +116,28 @@
     margin-left:5px;
     border:2px solid #ffc870;
     box-shadow: none;
+}
+
+#hall-more-waiting{
+    text-align: center;
+}
+
+#hall-more-joinroom{
+    width: 100%;
+    display: flex;
+}
+
+.hall-more-visible{
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.5s;
+}
+
+.hall-more-hidden{
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+
 }
 
 .hall-more-button{

@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"github.com/kataras/iris/v12"
+	"net/http"
 )
 
 func GetContextParams(ctx iris.Context, params interface{}) bool {
@@ -24,6 +26,17 @@ func SendResponse(ctx iris.Context, success bool, msg int, data interface{}) {
 		Msg: msg,
 		Data: data,
 	})
+}
+
+func SendStreamResponse(ctx iris.Context, flusher http.Flusher, success bool, msg int, data interface{}) {
+	str, _ := json.Marshal(ResponseBean{
+		Success: success,
+		Msg: msg,
+		Data: data,
+	})
+
+	_, _ = ctx.Writef("data: %s\n\n", string(str))
+	flusher.Flush()
 }
 
 func UintListContains(list []uint, element uint) bool {
