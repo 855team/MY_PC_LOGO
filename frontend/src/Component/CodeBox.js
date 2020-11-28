@@ -34,6 +34,7 @@ class CodeBox extends React.Component{
         let codelist = dataSource;
         return codelist.map((item)=>
             <CodeMessage coder={item.username} code={item.code} color={item.isMine?"#0ebeff":"#ffa4a4"}/>)
+        /*数据格式--username code isMine*/
     }
 
     render() {
