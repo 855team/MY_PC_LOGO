@@ -27,8 +27,10 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
 import { Select } from 'antd';
 import * as TaskHandler from '../Component/Taskhandler';
+import Compiler from "../Component/Compiler";
 const { Option } = Select;
 const { confirm } = Modal;
+
 
 class ControlledElement extends React.Component {
 
@@ -291,6 +293,43 @@ export default class MainView extends React.Component {
         userService.login({username:username,password:password,email:email},callback)
     }
 
+    importfile=(content)=>{
+        if(!this.state.login){
+            this.setState({
+                editorcontent:content
+            })
+            return;
+        }
+        if(this.state.login){
+            if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+                return;
+            }
+            if(this.state.currentfid<0 && this.state.editorcontent==""){
+                return;
+            }
+            let op=()=>{
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+            }
+            this.savecurrent(op)
+        }
+    }
+
+    exportfile=()=>{
+        let FileSaver=require('file-saver');
+        let data=this.state.editorcontent;
+        let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "my.logo");
+    }
+
     openlogin=()=>{
         this.setState({
             login_visible:true
@@ -511,7 +550,11 @@ export default class MainView extends React.Component {
     }
 
     editorrun=()=>{
-        alert("run")
+        let lines=this.state.editorcontent.split("\r\n");
+        let compiler=new Compiler();
+        compiler.append("CLEAN");
+        setTimeout(()=>{compiler.append(lines.join(" "))},10)
+
     }
 
     savecurrent=(nextop)=>{     //TODO
@@ -1055,6 +1098,9 @@ export default class MainView extends React.Component {
                             openfileoperation={()=>this.openfileoperation()}
                             username={this.state.username}
                             login={this.state.login}
+                            importfile={(content)=>this.importfile(content)}
+                            exportfile={()=>this.exportfile()}
+                            run={()=>this.editorrun()}
                         />
                     </ReflexElement>
 

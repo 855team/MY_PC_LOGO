@@ -57,7 +57,7 @@ class DrawingPanel extends React.Component{
         })
         let ctx=c.getContext('2d');
 
-        this.drawtest(ctx);
+        //this.drawtest(ctx);
         //this.drawline({x:200,y:200},{x:500,y:500},"red");
         //this.drawcircle({x:500,y:500},{x:200,y:300},"red",Math.PI/4)
         //document.getElementById("turtle").style.transform="rotate(135deg)"
@@ -117,6 +117,7 @@ class DrawingPanel extends React.Component{
         })
         let canvas=document.getElementById("mycanvas");
         canvas.width=canvas.width;
+        console.log(this.state.pos)
     }
 
     setorientation(angle){
@@ -185,11 +186,9 @@ class DrawingPanel extends React.Component{
             })
             this.setposition({x:endposX,y:endposY})
             if(this.state.penstate){
-                oldpos.x=(oldpos.x+20);
-                oldpos.y=(oldpos.y+20);
                 endposX=(endposX+20);
                 endposY=(endposY+20);
-                this.drawline(oldpos,{x:endposX,y:endposY},this.state.pencolor)
+                this.drawline({x:oldpos.x+20,y:oldpos.y+20},{x:endposX,y:endposY},this.state.pencolor)
             }
         });
         Bus.addListener('drawcircle', (radius) => {

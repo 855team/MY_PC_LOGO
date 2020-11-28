@@ -23,7 +23,7 @@ class Infobar extends React.Component{
                     <p>{taskdata.tip}</p>
                 </div>
             )
-            tasktag=<Popover content={content} title="Tip"><Tag style={{marginLeft:"2rem"}} color="purple">{taskdata.name}</Tag></Popover>
+            tasktag=<Popover content={content} title="Tip"><Tag style={{marginLeft:"2rem"}} color="purple">当前任务：{taskdata.name}</Tag></Popover>
 
         }
         if(!this.props.login){
