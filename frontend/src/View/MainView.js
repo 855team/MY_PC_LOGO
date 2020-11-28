@@ -26,9 +26,11 @@ import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
 import { Select } from 'antd';
-
+import * as TaskHandler from '../Component/Taskhandler';
+import Compiler from "../Component/Compiler";
 const { Option } = Select;
 const { confirm } = Modal;
+
 
 class ControlledElement extends React.Component {
 
@@ -147,8 +149,8 @@ export default class MainView extends React.Component {
             login:false,
             username:"",
             uid:undefined,
-            turtle:undefined,
-            task:undefined,
+            turtle:1,
+            task:1,
             projects:[],
 
             login_visible:false,
@@ -289,6 +291,43 @@ export default class MainView extends React.Component {
             }
         }
         userService.login({username:username,password:password,email:email},callback)
+    }
+
+    importfile=(content)=>{
+        if(!this.state.login){
+            this.setState({
+                editorcontent:content
+            })
+            return;
+        }
+        if(this.state.login){
+            if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+                return;
+            }
+            if(this.state.currentfid<0 && this.state.editorcontent==""){
+                return;
+            }
+            let op=()=>{
+                this.setState({
+                    currentfid:-1,
+                    currentpid:-1,
+                    editorcontent:content
+                })
+            }
+            this.savecurrent(op)
+        }
+    }
+
+    exportfile=()=>{
+        let FileSaver=require('file-saver');
+        let data=this.state.editorcontent;
+        let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "my.logo");
     }
 
     openlogin=()=>{
@@ -511,7 +550,11 @@ export default class MainView extends React.Component {
     }
 
     editorrun=()=>{
-        alert("run")
+        let lines=this.state.editorcontent.split("\r\n");
+        let compiler=new Compiler();
+        compiler.append("CLEAN");
+        setTimeout(()=>{compiler.append(lines.join(" "))},10)
+
     }
 
     savecurrent=(nextop)=>{     //TODO
@@ -997,6 +1040,11 @@ export default class MainView extends React.Component {
 
     }
 
+    updatetasklevel=(level)=>{
+        this.setState({
+            task:level
+        })
+    }
 
     registerlisteners(){
         Bus.addListener('newfile', (data) => {
@@ -1050,6 +1098,9 @@ export default class MainView extends React.Component {
                             openfileoperation={()=>this.openfileoperation()}
                             username={this.state.username}
                             login={this.state.login}
+                            importfile={(content)=>this.importfile(content)}
+                            exportfile={()=>this.exportfile()}
+                            run={()=>this.editorrun()}
                         />
                     </ReflexElement>
 
@@ -1117,9 +1168,11 @@ export default class MainView extends React.Component {
                         <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
                             <InfoBar
                                 login={this.state.login}
+                                task={this.state.task}
                                 fid={this.state.currentfid}
                                 pid={this.state.currentpid}
                                 lookup={(type,data)=>this.lookupname(type,data)}
+                                getcurrenttask={(level)=>TaskHandler.Lookupcurrentask(level)}
                             />
                         </div>
                     </ReflexElement>
@@ -1151,6 +1204,7 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
+                <TaskHandler.Taskhandler login={this.state.login} task={this.state.task} update={(level)=>this.updatetasklevel(level)}/>
 
             </div>
         )
