@@ -118,7 +118,8 @@
     box-shadow: none;
 }
 
-#hall-more-waiting{
+#hall-more-waiting {
+    width: 100%;
     text-align: center;
 }
 
@@ -130,7 +131,7 @@
 .hall-more-visible{
     visibility: visible;
     opacity: 1;
-    transition-delay: 0.5s;
+    transition-delay: 2s;
 }
 
 .hall-more-hidden{

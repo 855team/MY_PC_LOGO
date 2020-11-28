@@ -253,7 +253,7 @@ class DoubleRoom extends React.Component{
                 />
                 <div style={{marginLeft:"39%",color:"white",fontSize:20}}>双人模式</div>
             </div>
-            <div className="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{height:"60%"}}>
+            <div className="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{height:"56%"}}>
                 <HallButton
                     onClick={(e)=>this.createRoom()}
                     disabled={this.state.hallState=="waiting"}
@@ -268,7 +268,7 @@ class DoubleRoom extends React.Component{
                     image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
             </div>
             <div className="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
-
+                {this.state.hallState=='waiting'?(
                 <div
                     id="hall-more-waiting"
                     className={this.state.hallState=='waiting'?'hall-more-visible':'hall-more-hidden'}
@@ -281,8 +281,9 @@ class DoubleRoom extends React.Component{
                             onClick={(e)=>this.leaveRoom()}
                         >结束等待</Button>
                 </div>
+                    ):null}
 
-
+                {this.state.hallState=='joinroom'?(
                 <div
                     id="hall-more-joinroom"
                     className={this.state.hallState=='joinroom'?'hall-more-visible':'hall-more-hidden'}
@@ -302,7 +303,7 @@ class DoubleRoom extends React.Component{
                         <div style={{width:"65%",height:"100%",paddingRight:5}}>
                             <HallTable dataSource={this.state.allRooms}/>
                         </div>
-                    </div>
+                    </div>):null}
             </div>
         </div>)
     }
