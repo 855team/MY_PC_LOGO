@@ -26,7 +26,7 @@ import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
 import { Select } from 'antd';
-
+import * as TaskHandler from '../Component/Taskhandler';
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -147,8 +147,8 @@ export default class MainView extends React.Component {
             login:false,
             username:"",
             uid:undefined,
-            turtle:undefined,
-            task:undefined,
+            turtle:1,
+            task:1,
             projects:[],
 
             login_visible:false,
@@ -997,6 +997,11 @@ export default class MainView extends React.Component {
 
     }
 
+    updatetasklevel=(level)=>{
+        this.setState({
+            task:level
+        })
+    }
 
     registerlisteners(){
         Bus.addListener('newfile', (data) => {
@@ -1117,9 +1122,11 @@ export default class MainView extends React.Component {
                         <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
                             <InfoBar
                                 login={this.state.login}
+                                task={this.state.task}
                                 fid={this.state.currentfid}
                                 pid={this.state.currentpid}
                                 lookup={(type,data)=>this.lookupname(type,data)}
+                                getcurrenttask={(level)=>TaskHandler.Lookupcurrentask(level)}
                             />
                         </div>
                     </ReflexElement>
@@ -1151,6 +1158,7 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
+                <TaskHandler.Taskhandler login={this.state.login} task={this.state.task} update={(level)=>this.updatetasklevel(level)}/>
 
             </div>
         )
