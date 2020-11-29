@@ -14,14 +14,14 @@
     height: 100%;
     width: 100%;
     position: absolute;
-    z-index: 1200;
+    z-index: 2;
     background: rgba(0, 0, 0, 0.45);
     transition: background 0.5s;
 }
 
 .doubleroom-wrap{
     position: absolute;
-    z-index: 1200;
+    z-index: 2;
     background: white;
 
     height: 520px;
@@ -36,6 +36,126 @@
     display: flex;
 }
 
+#hall-header{
+    width:100%;
+    height:10%;
+    background: #ffc870;
+    border-radius:16px 16px 0 0;
+
+    display: flex;
+    align-items: center;
+}
+
+#hall-choice{
+    display: flex;
+    width: 100%;
+    height: 60%;
+    justify-content: center;
+    align-items: flex-end;
+    transition-duration: 0.3s;
+}
+
+#hall-more{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    font-size: 20px;
+    overflow: auto;
+    transition-duration: 0.3s;
+}
+
+#hall-more::-webkit-scrollbar{
+    width: 0px;
+    padding: 0px;
+}
+
+.hall-button{
+    padding: 0;
+    border: none;
+    width:150px;
+    height:150px;
+    border-radius:15px;
+    margin: 0 30px;
+    /*background: url("../Image/Turtle1.jpg");*/
+    background-size: 100% 100%;
+    /*box-shadow:inset #a1a1a1 0px 0px 20px;*/
+    transition-duration: 0.3s;
+    cursor:pointer;
+}
+
+.hall-button-mask{
+    width: 100%;
+    height:100%;
+    background: rgba(255, 255, 255, 0);
+    box-shadow:inset rgb(210, 210, 210) 0px 0px 40px;
+    border-radius:15px;
+    transition-duration: 0.3s;
+}
+
+.hall-button-mask:hover{
+    width: 100%;
+    height:100%;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow:inset rgba(255, 255, 255, 0.5) 0px 0px 40px;
+    border-radius:15px;
+    transition-duration: 0.3s;
+}
+
+.hall-button:hover{
+    border: none;
+    outline-style: none;
+    box-shadow: #282c34 0px 0px 10px;
+    transition-duration: 0.3s;
+}
+
+.hall-button:focus{
+    border: none;
+    outline-style: none;
+    transition-duration: 0.3s;
+}
+
+#hall-join-input{
+    width:70px;
+    height:40px;
+    margin-left:5px;
+    border:2px solid #ffc870;
+    box-shadow: none;
+}
+
+#hall-more-waiting {
+    width: 100%;
+    text-align: center;
+}
+
+#hall-more-joinroom{
+    width: 100%;
+    display: flex;
+}
+
+.hall-more-button{
+    width:60px;
+    height:40px;
+    background:#ffc870;
+    color:white;
+    border: none;
+    --antd-wave-shadow-color:none;
+}
+
+.hall-more-button:hover{
+    color: #ffc870;
+    border-color:#ffc870;
+}
+
+.hall-more-button:focus{
+    color: #ffc870;
+}
+
+.ant-spin-dot-item{
+    background-color: #ffaa25 !important;
+}
+
 .doubleroom-header{
     width:100%;
     height:50px;
@@ -47,30 +167,34 @@
 }
 
 .header-partnerinfo{
-    margin-left: 35%;
+    height: 100%;
+    width: 90%;
 
     color: white;
     font-family: 汉仪乐喵体简;
     font-size: 20px;
+
+    display:flex;
+    align-items: center;
+    justify-content:center;
 }
 
 .code-message{
     width:100%;
-    overflow: auto;
     min-height: 100px;
     max-height: 400px;
 }
 
-.code-message::-webkit-scrollbar{
-    width: 8px;
-    padding: 0.5px;
-    background: white;
-}
+/*.code-message::-webkit-scrollbar{*/
+/*    width: 8px;*/
+/*    padding: 0.5px;*/
+/*    background: white;*/
+/*}*/
 
-.code-message::-webkit-scrollbar-thumb{
-    background: rgba(226, 226, 226, 0.81);
-    border-radius: 4px;
-}
+/*.code-message::-webkit-scrollbar-thumb{*/
+/*    background: rgba(226, 226, 226, 0.81);*/
+/*    border-radius: 4px;*/
+/*}*/
 .code-message::-webkit-scrollbar-thumb:hover{
     background: rgba(161, 161, 161, 0.78);
 }
@@ -95,7 +219,6 @@
     border: none;
     width: 100%;
     height: 100%;
-    border-radius: 0 0 0 20px;
     resize: none;
 }
 
@@ -135,6 +258,21 @@
 .console-button:focus{
     background: white;
     color: #ffc870;
+}
+
+#leave-button{
+    background: #afafaf;
+    color: white;
+}
+
+#leave-button:hover{
+    background: white;
+    color: #afafaf;
+}
+
+#leave-button:focus{
+    background: white;
+    color: #afafaf;
 }
 
 

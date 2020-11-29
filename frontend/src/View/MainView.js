@@ -18,7 +18,6 @@ import * as fileService from "../Services/fileService"
 import {message,Modal,Input,Tag} from 'antd';
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
-import Battle from "../Component/Battle";
 import Setting from "../Component/Setting";
 import FileOperation from "../Component/FileOperation";
 import UserState from "../Component/UserState";
@@ -29,8 +28,10 @@ import { Select } from 'antd';
 import * as TaskHandler from '../Component/Taskhandler';
 import Compiler from "../Component/Compiler";
 import Debugtool from "../Component/DebugTool";
+import {offConnection} from "../Services/doubleService";
 const { Option } = Select;
 const { confirm } = Modal;
+
 
 
 class ControlledElement extends React.Component {
@@ -176,8 +177,10 @@ export default class MainView extends React.Component {
             remotedata:[],
 
             filepanel_visible:true,
+
             fake:false,
             debug:false
+
 
 
 
@@ -422,6 +425,7 @@ export default class MainView extends React.Component {
     }
 
     logout=async()=>{
+        offConnection(()=>{})
         localStorage.removeItem("token")
         await this.setState({
             login:false,
@@ -1061,10 +1065,6 @@ export default class MainView extends React.Component {
                 },
             });
         }
-
-
-
-
     }
 
     updatetasklevel=(level)=>{
@@ -1226,10 +1226,13 @@ export default class MainView extends React.Component {
                     <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
                 </div>
                 <div>
+                    {this.state.login?(
                     <DoubleRoom
                         onVisible={this.state.selected=="online"}
                         onReturn={e=>this.setState({selected:"file"})}
+                        owner={{uid:this.state.uid,username:this.state.username,turtle:this.state.turtle}}
                     />
+                    ):null}
                 </div>
                 <div style={{position:'relative'}}>
                     <Setting closesetting={()=>this.closesetting()} visible={this.state.setting_visible}/>
