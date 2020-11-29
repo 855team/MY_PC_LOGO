@@ -18,6 +18,20 @@ class SideBar extends React.Component {
         };
     }
 
+    debugswitch=()=>{
+        if(this.props.debug){
+            this.setState({
+                active:'file'
+            })
+            this.props.exitdebug();
+            return;
+        }
+        else{
+            this.props.enterdebug();
+            return;
+        }
+    }
+
     render() {
         let theme = getTheme();
         return (
@@ -27,17 +41,23 @@ class SideBar extends React.Component {
                 onSelect={(selected) => {
                     this.props.onSelected(selected);
                     this.setState(
-                        {active:selected},
+                        {active:"file"},
                         // ()=>console.log(this.state)
                     );
                 }}
             >
                 <Nav defaultSelected="file">
-
-                    <NavItem eventKey="debug" active={this.state.active=='debug'}>
-                        <NavIcon>
+                    <NavItem eventKey="file" active={true}>
+                        <NavIcon >
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
-                                <GoBug />
+                                <IoIosDocument/>
+                            </IconContext.Provider>
+                        </NavIcon>
+                    </NavItem>
+                    <NavItem eventKey="debug" active={false}>
+                        <NavIcon >
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
+                                <GoBug onClick={()=>this.debugswitch()}/>
                             </IconContext.Provider>
                         </NavIcon>
                     </NavItem>
