@@ -222,7 +222,7 @@ class DoubleRoom extends React.Component{
                 <HallButton
                     onClick={(e)=>this.createRoom()}
                     disabled={this.state.hallState=="waiting"}
-                    image={require("../Image/Newroom.png")} text={"创建房间"}/>
+                    image={require("../Image/newroom.png")} text={"创建房间"}/>
                 <HallButton
                     onClick={(e)=>{
                         if(this.state.hallState!="joinroom")
