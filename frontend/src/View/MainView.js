@@ -27,6 +27,7 @@ import InfoBar from "../Component/InfoBar"
 import { Select } from 'antd';
 import * as TaskHandler from '../Component/Taskhandler';
 import Compiler from "../Component/Compiler";
+import Debugtool from "../Component/DebugTool";
 import {offConnection} from "../Services/doubleService";
 const { Option } = Select;
 const { confirm } = Modal;
@@ -176,7 +177,13 @@ export default class MainView extends React.Component {
             remotedata:[],
 
             filepanel_visible:true,
-            fake:false
+
+            fake:false,
+            debug:false
+
+
+
+
         }
     }
 
@@ -289,6 +296,22 @@ export default class MainView extends React.Component {
             }
         }
         userService.login({username:username,password:password,email:email},callback)
+    }
+
+    enterdebug=async()=>{
+
+        await this.setState({
+            debug:true
+        })
+        Bus.emit("debugcontent",this.state.editorcontent);
+    }
+
+    exitdebug(){
+        if(this.state.debug){
+            this.setState({
+                debug:false
+            })
+        }
     }
 
     importfile=(content)=>{
@@ -549,14 +572,23 @@ export default class MainView extends React.Component {
     }
 
     editorrun=()=>{
-        let lines=this.state.editorcontent.split("\r\n");
-        let compiler=new Compiler();
-        compiler.append("CLEAN");
-        setTimeout(()=>{compiler.append(lines.join(" "))},10)
+        if(!this.state.debug){
+            let lines=this.state.editorcontent.split("\r\n");
+            let compiler=new Compiler();
+            compiler.append("CLEAN");
+            setTimeout(()=>{compiler.append(lines.join(" "))},10)
+        }
+        else{
+            message.warn("请先退出debug模式")
+        }
 
     }
 
-    savecurrent=(nextop)=>{     //TODO
+    savecurrent=(nextop)=>{
+        if(this.state.debug){
+            message.warn("请先退出debug模式");
+            return;
+        }
         let pid=this.state.currentpid;
         let fid=this.state.currentfid;
         let content=this.state.editorcontent;
@@ -1042,6 +1074,9 @@ export default class MainView extends React.Component {
     }
 
     registerlisteners(){
+        Bus.addListener('exitdebug', () => {
+            this.exitdebug()
+        });
         Bus.addListener('newfile', (data) => {
             this.Askfornewname("file","new",{pid:data.pid})
         });
@@ -1103,7 +1138,12 @@ export default class MainView extends React.Component {
                         <ReflexContainer orientation="vertical">
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar onSelected={(select)=>{this.setState({selected:select})}} />
+                                <SideBar
+                                    onSelected={(select)=>{this.setState({selected:select})}}
+                                    debug={this.state.debug}
+                                    enterdebug={()=>this.enterdebug()}
+                                    exitdebug={()=>this.exitdebug()}
+                                />
                             </ReflexElement>
 
                             <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
@@ -1131,6 +1171,7 @@ export default class MainView extends React.Component {
                                             save={()=>this.editorsave()}
                                             new={()=>{this.editornew()}}
                                             run={()=>this.editorrun()}
+                                            debug={this.state.debug}
                                         />
 
 
@@ -1201,6 +1242,9 @@ export default class MainView extends React.Component {
                 </div>
                 <div style={{position:'relative'}}>
                     <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
+                </div>
+                <div style={{position:'relative'}}>
+                    <Debugtool debug={this.state.debug} />
                 </div>
                 <TaskHandler.Taskhandler login={this.state.login} task={this.state.task} update={(level)=>this.updatetasklevel(level)}/>
 
