@@ -1,9 +1,24 @@
 .codebox-body{
+    width: 100%;
+    height: 100%;
     padding: 3px 10px;
+    overflow: auto;
+}
+
+.codebox-body::-webkit-scrollbar{
+    width: 8px;
+    padding: 0.5px;
+    background: white;
+}
+
+.codebox-body::-webkit-scrollbar-thumb{
+    background: rgba(226, 226, 226, 0.81);
+    border-radius: 4px;
 }
 
 .message-wrap{
     padding: 3px 0 3px 0;
+    height:30px;
     display: flex;
     align-items: center;
 }
@@ -11,9 +26,8 @@
 .coder{
     display:inline-block;
     width: 60px;
-    color: #54b7ff;
     font-family: 幼圆;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: bolder;
 }
 
@@ -21,6 +35,6 @@
     display:inline-block;
 
     color: #ffc870;
-    font-family: Consolas, 'Courier New', monospace;
+    font-family: Consolas;
     font-size: 20px;
 }
