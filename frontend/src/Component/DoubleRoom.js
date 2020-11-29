@@ -1,9 +1,9 @@
 import React from "react";
 import "../CSS/DoubleRoom.css"
-import "../CSS/HallTable.css"
 import DrawingPanel from "./DrawingPanel";
+import HallTable from "./HallTable";
 import CodeBox from "./CodeBox";
-import {Avatar, Button, Input,Spin,Table} from "antd";
+import {Avatar, Button, Input, message, notification, Spin, Table} from "antd";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import {onConnectSSE,offConnection,sendCommand,onGetRooms} from "../Services/doubleService";
 
@@ -29,40 +29,6 @@ class HallButton extends React.Component{
                 <p style={{fontSize:20,fontWeight:"bolder",fontFamily:"幼圆"}}>{this.props.text}</p>
             </div>
         )
-    }
-}
-
-class HallTable extends React.Component{
-    render(){
-        const columns=[
-            {
-                title: 'RoomId',
-                dataIndex: 'rid',
-                key: 'rid',
-                sorter: {
-                    compare: (a, b) => a.rid - b.rid,
-                },
-                // render: text => <a>{text}</a>,
-            },
-            {
-                title: '房主',
-                dataIndex: 'username',
-                key: 'username',
-            },
-            {
-                title:'房主Id',
-                dataIndex: 'uid',
-                key: 'uid'
-            }
-        ];
-
-        return (
-            <Table
-                columns={columns}
-                dataSource={this.props.dataSource}
-                pagination={false}
-                scroll={{y:true}}
-            />);
     }
 }
 
@@ -98,7 +64,6 @@ class DoubleRoom extends React.Component{
     }
 
     componentDidMount() {
-        console.log(this.props.owner)
         this.setState({owner:this.props.owner})
     }
 
@@ -231,7 +196,6 @@ class DoubleRoom extends React.Component{
             data=data.filter((item)=>!(item.isinroom1&&item.isinroom2))
             this.setState({
                 allRooms:data.map((item)=>{return {
-                    key:item.rid,
                     rid:item.rid,
                     uid:item.isinroom1?item.uid1:item.uid2,
                     username:item.isinroom1?item.username1:item.username2}
@@ -243,7 +207,7 @@ class DoubleRoom extends React.Component{
 
     renderHall=()=>{
         return (<div style={{width:"100%",height:"100%"}}>
-            <div className="hall-header">
+            <div id="hall-header">
                 <Button
                     type="primary"
                     shape="circle"
@@ -251,9 +215,10 @@ class DoubleRoom extends React.Component{
                     icon={<ArrowLeftOutlined/>}
                     onClick={this.props.onReturn}
                 />
+
                 <div style={{marginLeft:"39%",color:"white",fontSize:20}}>双人模式</div>
             </div>
-            <div className="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{height:"56%"}}>
+            <div id="hall-choice" style={this.state.hallState!="none"?{height:"45%"}:{height:"65%"}}>
                 <HallButton
                     onClick={(e)=>this.createRoom()}
                     disabled={this.state.hallState=="waiting"}
@@ -267,12 +232,9 @@ class DoubleRoom extends React.Component{
                     disabled={this.state.hallState=="waiting"}
                     image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
             </div>
-            <div className="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
+            <div id="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
                 {this.state.hallState=='waiting'?(
-                <div
-                    id="hall-more-waiting"
-                    className={this.state.hallState=='waiting'?'hall-more-visible':'hall-more-hidden'}
-                >
+                <div id="hall-more-waiting">
                         <Spin size={"large"}/>
                         <div style={{color:"#ffc870"}}>Room {this.state.rid} 等待中</div>
                         <Button
@@ -284,11 +246,8 @@ class DoubleRoom extends React.Component{
                     ):null}
 
                 {this.state.hallState=='joinroom'?(
-                <div
-                    id="hall-more-joinroom"
-                    className={this.state.hallState=='joinroom'?'hall-more-visible':'hall-more-hidden'}
-                >
-                        <div style={{width:"35%",height:"100%",textAlign:"center"}}>
+                <div id="hall-more-joinroom">
+                        <div style={{width:"20%",height:"100%",textAlign:"center"}}>
                             <div style={{marginBottom:20}}>
                                 <span style={{color:"#ffc870"}}>RoomId:</span>
                                 <Input id="hall-join-input"/>
@@ -300,7 +259,7 @@ class DoubleRoom extends React.Component{
                                 <Button className="hall-more-button" onClick={this.getRooms}>刷新</Button>
                             </div>
                         </div>
-                        <div style={{width:"65%",height:"100%",paddingRight:5}}>
+                        <div style={{width:"80%",height:"100%",paddingRight:20}}>
                             <HallTable dataSource={this.state.allRooms}/>
                         </div>
                     </div>):null}

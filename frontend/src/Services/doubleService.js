@@ -4,6 +4,7 @@ var RoomEnterSuccess = 20;
 var RoomCommandStream = 21;
 var RoomUserEnterNotify = 22;
 var RoomUserLeaveNotify = 23;
+var RoomNoPermission = 25;
 
 let requestUrl;
 var client;
@@ -15,11 +16,10 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
         requestUrl="http://123.57.65.161:30086/rooms?type=" + type
             + (type=="join"?("&rid="+rid):"")
             + "&token="+localStorage.getItem("token")
-        console.log(requestUrl);
         client = new EventSource(requestUrl);
 
         client.onerror =  (evt)=> {
-            console.log(evt);
+            message.error("浏览器不支持SSE")
             console.log({status: "Fail !!!!!!",msg:"Browser Does Not Support SSE"});
         }
         client.onmessage =  (evt)=> {
@@ -27,33 +27,30 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
             let dataJSON = JSON.parse(evt.data)
             console.log(dataJSON);
             if (!dataJSON.success) {
-                message.info({
-                    content:'Connect to SSE Fail !!!!!!',
-                    style:{zIndex:1300}
-                })
+                if(dataJSON.msg==RoomNoPermission)
+                    message.error("对不起，你不能进入这个房间");
+                else
+                    message.error("连接SSE失败")
                 client.close()
-                console.log({status:"Connect to SSE Fail !!!!!!",msg:dataJSON.msg})
             } else if (dataJSON.msg == RoomEnterSuccess) {
                 /* 成功进入房间 */
                 enterCallback(dataJSON.data);
-                console.log("roomId:"+dataJSON.data.rid)
-                // onGetRooms();
+                // console.log("roomId:"+dataJSON.data.rid)
             } else if (dataJSON.msg == RoomCommandStream) {
                 /* 有新代码返回（虽然返回的其实是所有代码） */
                 messageCallback(dataJSON.data)
             } else if (dataJSON.msg == RoomUserEnterNotify) {
                 /* 有人进入当前房间 */
-                console.log(dataJSON.data.uid + " - " + dataJSON.data.username + " Enter!")
+                message.info(dataJSON.data.username+" 进入了房间")
                 partnerCallback(dataJSON.data)
-                // onGetRooms();
             } else if (dataJSON.msg == RoomUserLeaveNotify) {
                 /* 有人离开当前房间 */
-                console.log(dataJSON.data.uid + " - " + dataJSON.data.username + " Leave!")
+                message.warn(dataJSON.data.username+" 离开了房间")
                 leaveCallback(dataJSON.data)
-                // onGetRooms();
             }
         };
     } else {
+        message.error("当前客户端协议不支持SSE");
         console.log("SSE not supported by this client-protocol");
     }
 }
