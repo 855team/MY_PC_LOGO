@@ -1131,6 +1131,7 @@ export default class MainView extends React.Component {
                             importfile={(content)=>this.importfile(content)}
                             exportfile={()=>this.exportfile()}
                             run={()=>this.editorrun()}
+                            cleardrawingpanel={()=>{let compiler=new Compiler(); compiler.append("CLEAN")}}
                         />
                     </ReflexElement>
 
@@ -1182,7 +1183,6 @@ export default class MainView extends React.Component {
                                 </ReflexContainer>
                             </ReflexElement>
 
-                            <ReflexSplitter propagate={true}/>
 
 
                             <ReflexElement  className="right-pane"  minSize={800} maxSize={800}  onResize={(el)=> {
