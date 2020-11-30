@@ -1224,7 +1224,7 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
                 </div>
-                <div>
+                <div style={{position:'relative'}}>
                     {this.state.login?(
                     <DoubleRoom
                         onVisible={this.state.selected=="online"}

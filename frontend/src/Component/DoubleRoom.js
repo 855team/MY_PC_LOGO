@@ -1,11 +1,12 @@
 import React from "react";
 import "../CSS/DoubleRoom.css"
-import DrawingPanel from "./DrawingPanel";
+import DrawingPanel2 from "./DrawingPanel2";
 import HallTable from "./HallTable";
 import CodeBox from "./CodeBox";
 import {Avatar, Button, Input, message, notification, Spin, Table} from "antd";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import {onConnectSSE,offConnection,sendCommand,onGetRooms} from "../Services/doubleService";
+import Compiler2 from "./Compiler2";
 
 class HallButton extends React.Component{
     state={
@@ -35,6 +36,7 @@ class HallButton extends React.Component{
 class DoubleRoom extends React.Component{
     constructor(props) {
         super(props);
+        this.compiler=new Compiler2();
         this.state={
             doubleRoomState:"hall",
 
@@ -101,7 +103,12 @@ class DoubleRoom extends React.Component{
                     isMine: item.uid==this.state.owner.uid
                 }
             })
-            this.setState({codes:newcodes})
+            this.setState({codes:newcodes});
+            if(newcodes.length==1){
+                this.compiler.append("PD")
+            }
+            let last=newcodes.length-1;
+            this.compiler.append(newcodes[last].code);
         }
         const partnerCallback=(data)=>{
             this.setState({
@@ -150,6 +157,11 @@ class DoubleRoom extends React.Component{
                 }
             })
             this.setState({codes:newcodes})
+            if(newcodes.length==1){
+                this.compiler.append("PD")
+            }
+            let last=newcodes.length-1;
+            this.compiler.append(newcodes[last].code);
         }
         const partnerCallback=(data)=>{
             this.setState({
@@ -317,8 +329,8 @@ class DoubleRoom extends React.Component{
                     </div>
                 </div>
 
-                <div style={{width:"40%",height:"100%",borderLeft:"2px solid #ffc870"}}>
-                    这里是双人房间小乌龟
+                <div style={{width:"40%",height:"100%",borderLeft:"2px solid #ffc870",backgroundColor:'blue'}}>
+                    <DrawingPanel2/>
                 </div>
         </>)
     }
