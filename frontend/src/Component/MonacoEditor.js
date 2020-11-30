@@ -229,11 +229,13 @@ export default class MonacoEditor extends Component {
     })
 
     this.editor.onMouseDown(e => {
+
       //这里限制了一下点击的位置，只有点击breakpoint应该出现的位置，才会创建，其他位置没反应
       if(!this.props.debug){
         return;
       }
       if (e.target.detail && e.target.detail.offsetX && e.target.detail.offsetX >= 0 && e.target.detail.offsetX <= 20) {
+
         let line = e.target.position.lineNumber
         //空行不创建
         if (this.editor.getModel().getLineContent(line).trim() === '') {
@@ -258,14 +260,63 @@ export default class MonacoEditor extends Component {
       }
     })
 
+    Bus.addListener("currentdebugpoint",async(line)=>{
+      line=line+1;
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      let value = {range: new monaco.Range(line, 1, line, 1), options: { isWholeLine: true, linesDecorationsClassName: 'currentpoint' }}
+      model.deltaDecorations([], [value])
+    })
+
+    Bus.addListener("deletecurrentdebugpoint",async(line)=>{
+      line=line+1;
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      let decorations = this.editor.getLineDecorations(line);
+      for (let decoration of decorations) {
+        if (decoration.options.linesDecorationsClassName === 'currentpoint') {
+          ids.push(decoration.id)
+        }
+      }
+      if (ids && ids.length) {
+        model.deltaDecorations(ids, [])
+      }
+    })
+
+    Bus.addListener("deletebreakpoints",async(breakpoints)=>{
+      let bp=[];
+      for(let i=0;i<breakpoints.length;i++){
+        if(breakpoints[i]==true){
+          bp.push(i)
+        }
+      }
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      for(let i=0;i<bp.length;i++){
+        let decorations = this.editor.getLineDecorations(bp[i]+1);
+        for (let decoration of decorations) {
+          if (decoration.options.linesDecorationsClassName === 'breakpoints') {
+            ids.push(decoration.id)
+          }
+        }
+      }
+
+      if (ids && ids.length) {
+        model.deltaDecorations(ids, [])
+      }
+    })
+
   }
   //添加断点
   async addBreakPoint (line) {
-    console.log(line)
     let model = this.editor.getModel()
     if (!model) return
     let value = {range: new monaco.Range(line, 1, line, 1), options: { isWholeLine: true, linesDecorationsClassName: 'breakpoints' }}
     model.deltaDecorations([], [value])
+    Bus.emit("addbreakpoint",line)
   }
   //删除断点，如果指定了line，删除指定行的断点，否则删除当前model里面的所有断点
   async removeBreakPoint (line) {
@@ -275,6 +326,7 @@ export default class MonacoEditor extends Component {
     let decorations
     let ids = []
     if (line !== undefined) {
+      Bus.emit("deletebreakpoint",line)
       decorations = this.editor.getLineDecorations(line)
     } else {
       decorations = this.editor.getAllDecorations()

@@ -19,14 +19,8 @@ class SideBar extends React.Component {
     }
 
     debugswitch=()=>{
-        if(this.props.debug){
-            this.setState({
-                active:'file'
-            })
-            this.props.exitdebug();
-            return;
-        }
-        else{
+
+        if(!this.props.debug){
             this.props.enterdebug();
             return;
         }
@@ -37,7 +31,7 @@ class SideBar extends React.Component {
         return (
             <SideNav
                 // style={theme.sidebar}
-                style={{background:"linear-gradient(#82cbff,#ffffff)"}}
+                style={{background:"linear-gradient(#82cbff,#ffffff)",zIndex:0}}
                 onSelect={(selected) => {
                     this.props.onSelected(selected);
                     this.setState(
@@ -54,10 +48,10 @@ class SideBar extends React.Component {
                             </IconContext.Provider>
                         </NavIcon>
                     </NavItem>
-                    <NavItem eventKey="debug" active={false}>
+                    <NavItem eventKey="debug" active={false} onClick={()=>this.debugswitch()}>
                         <NavIcon >
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
-                                <GoBug onClick={()=>this.debugswitch()}/>
+                                <GoBug />
                             </IconContext.Provider>
                         </NavIcon>
                     </NavItem>

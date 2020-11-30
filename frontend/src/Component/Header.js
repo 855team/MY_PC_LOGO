@@ -98,6 +98,10 @@ class Header extends React.Component {
                     </li>
                     <li className="toolbar-item">
                         <a className="toolbar-item-clicked"
+                           onClick={()=>{this.props.cleardrawingpanel()}}>清屏</a>
+                    </li>
+                    <li className="toolbar-item">
+                        <a className="toolbar-item-clicked"
                            onClick={()=>{this.props.opensetting()}}>设置</a>
                     </li>
                     <li className="toolbar-item">
