@@ -1142,7 +1142,6 @@ export default class MainView extends React.Component {
                                     onSelected={(select)=>{this.setState({selected:select})}}
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
-                                    exitdebug={()=>this.exitdebug()}
                                 />
                             </ReflexElement>
 
