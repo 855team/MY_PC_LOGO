@@ -230,7 +230,7 @@ class DoubleRoom extends React.Component{
                         this.setState({hallState:this.state.hallState=="joinroom"?"none":"joinroom"});
                     }}
                     disabled={this.state.hallState=="waiting"}
-                    image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
+                    image={require("../Image/joinroom3.png")} text={"加入房间"}/>
             </div>
             <div id="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
                 {this.state.hallState=='waiting'?(

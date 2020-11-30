@@ -1139,7 +1139,12 @@ export default class MainView extends React.Component {
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
                                 <SideBar
-                                    onSelected={(select)=>{this.setState({selected:select})}}
+                                    onSelected={(select)=>{
+                                        this.setState({
+                                            selected:(!this.state.login)&&select=='online'
+                                                ?this.state.select:select
+                                        })
+                                    }}
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
                                     exitdebug={()=>this.exitdebug()}
