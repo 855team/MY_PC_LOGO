@@ -3,14 +3,16 @@ package service
 import (
 	"backend/utils"
 	"github.com/kataras/golog"
+	"sync"
 )
 
 var RoomSSE = NewSSE()
 
 type SSE struct {
-	ClosingRooms chan uint
-	Rooms        map[uint]*utils.RoomEntry
-	NextRoom     uint
+	ClosingRooms	chan uint
+	Rooms			map[uint]*utils.RoomEntry
+	NextRoom		uint
+	Glock			sync.Mutex
 }
 
 func NewSSE() *SSE {

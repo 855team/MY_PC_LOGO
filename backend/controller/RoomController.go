@@ -58,6 +58,7 @@ func HandleRoom(ctx iris.Context) {
 			name = "Room-" + time.Now().Format("2006-01-02-15:04:05")
 		}
 
+		sse.Glock.Lock()
 		rid := sse.NextRoom
 		sse.Rooms[sse.NextRoom] = &utils.RoomEntry{
 			Name: name,
@@ -73,6 +74,7 @@ func HandleRoom(ctx iris.Context) {
 			Lock: new(sync.Mutex),
 		}
 		sse.NextRoom++
+		sse.Glock.Unlock()
 
 		entry := sse.Rooms[rid]
 
