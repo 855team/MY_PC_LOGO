@@ -41,8 +41,12 @@ class CodeBox extends React.Component{
         }
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.scrollToBottom()
+    componentDidUpdate(prevProps, prevState, snapshot){
+        const {dataSource} = this.props;
+
+        if((prevProps.dataSource!==dataSource&&dataSource.length>0&&dataSource[dataSource.length-1].isMine)
+            ||this.state.isBottom)
+            this.scrollToBottom()
     }
 
     componentWillUnmount() {
@@ -52,27 +56,18 @@ class CodeBox extends React.Component{
     }
 
     scrollToBottom=()=>{
-        const clientHeight = this.contentNode.clientHeight
-        const scrollHeight = this.contentNode.scrollHeight
-        if(this.state.isBottom)
-            this.contentNode.scrollTop=scrollHeight-clientHeight;
+        const clientHeight = this.contentNode.clientHeight;
+        const scrollHeight = this.contentNode.scrollHeight;
+        this.contentNode.scrollTop=scrollHeight-clientHeight;
+        if(!this.state.isBottom)
+            this.setState({isBottom:true})
     }
 
     renderMessage=()=>{
         const {dataSource}=this.props;
-        let index=0,existMine=false;
-        let codelist=dataSource.map((item)=>{
-            index++;
-            if(index>this.state.code_index&&item.isMine)
-                existMine=true
-            return <CodeMessage coder={item.username} code={item.code} color={item.isMine?"#0ebeff":"#ffa4a4"}/>
-        })
-        if(existMine)
-        {
-            if(this.contentNode)
-                this.contentNode.scrollTop=this.contentNode.scrollHeight-this.contentNode.clientHeight;
-            this.setState({isBottom:true,code_index:index})
-        }
+        let codelist=dataSource.map((item)=>
+            <CodeMessage coder={item.username} code={item.code} color={item.isMine?"#0ebeff":"#ffa4a4"}/>
+        )
         return codelist;
         /*数据格式--username code isMine*/
     }
