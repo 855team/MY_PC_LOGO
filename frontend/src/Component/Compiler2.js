@@ -17,7 +17,6 @@ class Compiler2 extends React.Component{
         };
         this.state = {
         }
-        console.log("I'm created!!!!")
         commands.changepenstate2(1);
     }
     tokenizer(input) {
@@ -98,7 +97,7 @@ class Compiler2 extends React.Component{
         for (let i = 0;i < tokens.length;i++) {
             this.tokens.push(tokens[i]);
         }
-        console.log(this.tokens);
+        // console.log(this.tokens);
         return 1;
     }
 
@@ -134,7 +133,7 @@ class Compiler2 extends React.Component{
                 current++;
                 token = tokens[current];
                 current++;
-                console.log(token);
+                // console.log(token);
                 if (token.type == 'INT') {
                     return {
                         type: 'FDExp',
@@ -198,7 +197,7 @@ class Compiler2 extends React.Component{
                 }
             }
             if (token.type == 'SETXY') {
-                console.log(tokens,current);
+                // console.log(tokens,current);
                 token = tokens[++current];
                 let node = {
                     type: 'SETXYExp',
@@ -223,7 +222,7 @@ class Compiler2 extends React.Component{
                     throw 'error';
                 }
                 current ++;
-                console.log("success",node);
+                // console.log("success",node);
                 return node;
             }
             if (token.type == 'SETPC') {
@@ -298,9 +297,9 @@ class Compiler2 extends React.Component{
 
         while (current < tokens.length) {
             this.AST.exps.push(walk());
-            console.log(current,this.AST);
+            // console.log(current,this.AST);
         }
-        console.log(this.AST);
+        // console.log(this.AST);
         this.current_token = current;
     }
     traverse(node) {
@@ -363,7 +362,7 @@ class Compiler2 extends React.Component{
         }
     }
     operGenerator() {
-        console.log("last",this.AST);
+        // console.log("last",this.AST);
         let current = this.current_ASTNode;
         let AST = this.AST;
         while (current < AST.exps.length) {
@@ -375,7 +374,7 @@ class Compiler2 extends React.Component{
 
     append(input) {
         // token AST traverse operation
-        console.log(input)
+        // console.log(input)
         interval=0;
         if (this.tokenizer(input) == 0)
             return;

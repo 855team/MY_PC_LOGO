@@ -34,14 +34,17 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
                 client.close()
             } else if (dataJSON.msg == RoomEnterSuccess) {
                 /* 成功进入房间 */
+                console.log("RoomEnterSuccess");
                 enterCallback(dataJSON.data);
                 // console.log("roomId:"+dataJSON.data.rid)
             } else if (dataJSON.msg == RoomCommandStream) {
                 /* 有新代码返回（虽然返回的其实是所有代码） */
+                console.log("RoomCommandStream");
                 messageCallback(dataJSON.data)
             } else if (dataJSON.msg == RoomUserEnterNotify) {
                 /* 有人进入当前房间 */
                 message.info(dataJSON.data.username+" 进入了房间")
+                console.log("RoomUserEnterNotify");
                 partnerCallback(dataJSON.data)
             } else if (dataJSON.msg == RoomUserLeaveNotify) {
                 /* 有人离开当前房间 */
@@ -67,7 +70,6 @@ export const onGetRooms=(callback)=>{
         .then((response) => {
             return response.json();
         }).then((json) => {
-            console.log(json)
             if (json.success) {
                 callback(json.data)
             }

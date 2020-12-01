@@ -71,8 +71,10 @@ class DoubleRoom extends React.Component{
 
     componentWillUpdate(nextProps, nextState, nextContext) {
         if(!this.props.onVisible&&nextProps.onVisible&&this.state.doubleRoomState=="room"){
-            this.compiler.append("CLEAN")
-            this.state.codes.map((item)=>{this.compiler.append(item.code)})
+            let commands="CLEAN"
+            this.state.codes.map((item)=>{commands+=" "+item.code})
+            console.log({commands:commands,length:commands.length});
+            this.compiler.append(commands)
         }
     }
 
@@ -203,9 +205,13 @@ class DoubleRoom extends React.Component{
         offConnection(callback)
     }
 
-    sendMessage=()=>{
+    sendMessage=(type)=>{
         let command=document.getElementById('console-input')
-        sendCommand(this.state.rid,command.value)
+        let commandValue = command.value;
+        if(type==='keyboard')
+            commandValue=commandValue.substr(0,commandValue.length-1);
+        console.log({command:commandValue});
+            sendCommand(this.state.rid,commandValue)
         command.value="";
     }
 
@@ -319,7 +325,7 @@ class DoubleRoom extends React.Component{
                         <div className="console" style={{height:430-this.state.roomMessageH}}>
                                     <textarea id="console-input" onKeyUp={(e)=>{
                                         if(e.keyCode==13)
-                                            this.sendMessage()
+                                            this.sendMessage('keyboard')
                                     }}/>
                         </div>
                     </div>
@@ -327,7 +333,7 @@ class DoubleRoom extends React.Component{
                     <div>
                         <Button
                             className="console-button"
-                            onClick={this.sendMessage}
+                            onClick={(e)=>this.sendMessage('click')}
                         >发送</Button>
                         <Button
                             id="leave-button"
