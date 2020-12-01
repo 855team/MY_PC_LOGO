@@ -22,6 +22,7 @@ const initpos={x:100,y:100};
 class DrawingPanel2 extends React.Component{
 
     constructor(props) {
+
         super(props);
         this.state={
             pos:initpos,
@@ -30,7 +31,7 @@ class DrawingPanel2 extends React.Component{
             pencolor:'#000000',
             height:0,
             width:0,
-            penstate:0
+            penstate:0,
         }
     }
 
@@ -46,7 +47,11 @@ class DrawingPanel2 extends React.Component{
         )
     }
     componentDidMount() {
-        this.registerlisteners();
+        console.log(this.state)
+        if(Bus.listeners("gostrait2").length==0){
+            this.registerlisteners();
+        }
+
         //canvas元素
         let c=document.getElementById('mycanvas2');
         c.width=document.getElementById('drawingpanel2').clientWidth;
@@ -62,6 +67,13 @@ class DrawingPanel2 extends React.Component{
         //this.drawcircle({x:500,y:500},{x:200,y:300},"red",Math.PI/4)
         //document.getElementById("turtle").style.transform="rotate(135deg)"
         //this.setsource("../assets/turtle_copy.png")
+
+    }
+
+    componentWillUnmount(){
+        this.setState = (state, callback) => {
+            return;
+        }
 
     }
 
@@ -107,17 +119,14 @@ class DrawingPanel2 extends React.Component{
         ctx.stroke(path);
     }
 
-    clear(){
+    clear=()=>{
         //清除canvas中的内容，乌龟回到初始位置
         this.setorientation(0);
         this.setposition(initpos);
-        this.setState({
-            pos:initpos,
-            orientation:0,
-        })
+        this.state.pos=initpos;
+        this.state.orientation=0;
         let canvas=document.getElementById("mycanvas2");
         canvas.width=canvas.width;
-        console.log(this.state.pos)
     }
 
     setorientation(angle){
@@ -149,9 +158,8 @@ class DrawingPanel2 extends React.Component{
             this.setsource(src);
         });
         Bus.addListener('changepencolor2', (color) => {
-            this.setState({
-                pencolor:color
-            })
+            this.state.pencolor=color
+
         });
         Bus.addListener('changebgcolor2', (color) => {
             this.changebgcolor(color);
@@ -160,30 +168,22 @@ class DrawingPanel2 extends React.Component{
             })
         });
         Bus.addListener('changepenstate2', (state) => {
-            this.setState({
-                penstate:state
-            })
+            this.state.penstate=state
         });
         Bus.addListener('changeposition2', (position) => {
             this.setposition(position)
-            this.setState({
-                pos:position
-            })
+            this.state.pos=position
         });
         Bus.addListener('turn2', async (angle) => {
             let newangle=this.state.orientation+angle
             await this.setorientation(newangle)
-            await this.setState({
-                orientation:newangle
-            })
+            this.state.orientation=newangle
         });
         Bus.addListener('gostrait2', async (length) => {
             let oldpos=this.state.pos;
             let endposX=oldpos.x+length*Math.sin(Math.PI*this.state.orientation/180);
             let endposY=oldpos.y-length*Math.cos(Math.PI*this.state.orientation/180);
-            await this.setState({
-                pos:{x:endposX,y:endposY}
-            })
+            this.state.pos={x:endposX,y:endposY}
             this.setposition({x:endposX,y:endposY})
             if(this.state.penstate){
                 endposX=(endposX+20);

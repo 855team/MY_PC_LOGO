@@ -375,6 +375,7 @@ class Compiler2 extends React.Component{
     append(input) {
         // token AST traverse operation
         // console.log(input)
+        console.log(input)
         interval=0;
         if (this.tokenizer(input) == 0)
             return;
