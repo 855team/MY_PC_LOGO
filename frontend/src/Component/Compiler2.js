@@ -17,6 +17,7 @@ class Compiler2 extends React.Component{
         };
         this.state = {
         }
+        console.log("I'm created!!!!")
         commands.changepenstate2(1);
     }
     tokenizer(input) {

@@ -1140,7 +1140,12 @@ export default class MainView extends React.Component {
 
                             <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
                                 <SideBar
-                                    onSelected={(select)=>{this.setState({selected:select})}}
+                                    onSelected={(select)=>{
+                                        this.setState({
+                                            selected:(!this.state.login)&&select=='online'
+                                                ?this.state.select:select
+                                        })
+                                    }}
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
                                 />
@@ -1224,7 +1229,7 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
                 </div>
-                <div style={{position:'relative'}}>
+                <div>
                     {this.state.login?(
                     <DoubleRoom
                         onVisible={this.state.selected=="online"}

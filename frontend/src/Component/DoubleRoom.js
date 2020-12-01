@@ -66,7 +66,14 @@ class DoubleRoom extends React.Component{
     }
 
     componentDidMount() {
-        this.setState({owner:this.props.owner})
+        this.setState({owner:this.props.owner});
+    }
+
+    componentWillUpdate(nextProps, nextState, nextContext) {
+        if(!this.props.onVisible&&nextProps.onVisible&&this.state.doubleRoomState=="room"){
+            this.compiler.append("CLEAN")
+            this.state.codes.map((item)=>{this.compiler.append(item.code)})
+        }
     }
 
     startResize=(e)=>{
@@ -189,7 +196,8 @@ class DoubleRoom extends React.Component{
             this.setState({
                 hallState:"none",
                 doubleRoomState:"hall",
-                rid:0
+                rid:0,
+                codes:[]
             })
         }
         offConnection(callback)
@@ -242,7 +250,7 @@ class DoubleRoom extends React.Component{
                         this.setState({hallState:this.state.hallState=="joinroom"?"none":"joinroom"});
                     }}
                     disabled={this.state.hallState=="waiting"}
-                    image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
+                    image={require("../Image/joinroom3.png")} text={"加入房间"}/>
             </div>
             <div id="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
                 {this.state.hallState=='waiting'?(
@@ -336,10 +344,11 @@ class DoubleRoom extends React.Component{
     }
 
     render() {
+        const {onVisible} = this.props;
         return (
             <div className="doubleroom-body">
-                <div className={this.props.onVisible?"doubleroom-mask":"unvisible-mask"} />
-                {this.props.onVisible?(
+                <div className={onVisible?"doubleroom-mask":"unvisible-mask"} />
+                {onVisible?(
                         <div className="doubleroom-wrap">
                             {this.state.doubleRoomState=="hall"?this.renderHall():this.renderRoom()}
                         </div>
