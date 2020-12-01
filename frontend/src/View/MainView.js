@@ -281,21 +281,21 @@ export default class MainView extends React.Component {
     }
 
     register=(username,password,email)=>{
-        let callback=async(result)=>{
-            if(result.success){
+        let callback=async(result)=> {
+            if (result.success) {
                 message.success("注册成功");
                 await this.setState({
-                    register_visible:false,
+                    register_visible: false,
                 });
-            }
-            else{
+            } else {
                 message.error("注册失败")
                 this.setState({
-                    register_visible:false
+                    register_visible: false
                 })
             }
         }
-        userService.login({username:username,password:password,email:email},callback)
+        console.log({username:username,password:password,email:email})
+        userService.register({username:username,password:password,email:email},callback)
     }
 
     enterdebug=async()=>{
