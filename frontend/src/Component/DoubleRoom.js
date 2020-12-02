@@ -69,11 +69,10 @@ class DoubleRoom extends React.Component{
         this.setState({owner:this.props.owner});
     }
 
-    componentWillUpdate(nextProps, nextState, nextContext) {
-        if(!this.props.onVisible&&nextProps.onVisible&&this.state.doubleRoomState=="room"){
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.onVisible&&!prevProps.onVisible&&this.state.doubleRoomState=="room"){
             let commands="CLEAN"
             this.state.codes.map((item)=>{commands+=" "+item.code})
-            console.log({commands:commands,length:commands.length});
             this.compiler.append(commands)
         }
     }
@@ -142,6 +141,7 @@ class DoubleRoom extends React.Component{
     joinRoom=()=>{
         let rid = parseInt(document.getElementById("hall-join-input").value)
         const enterCallback=(data)=>{
+
             if((data.isinroom1==false)||(data.isinroom2==false))
                 this.setState({rid:data.rid,hallState:"waiting"})
             if(data.isinroom1&&data.isinroom2)
@@ -254,7 +254,7 @@ class DoubleRoom extends React.Component{
                         this.setState({hallState:this.state.hallState=="joinroom"?"none":"joinroom"});
                     }}
                     disabled={this.state.hallState=="waiting"}
-                    image={require("../Image/joinroom3.png")} text={"加入房间"}/>
+                    image={require("../Image/Joinroom3.png")} text={"加入房间"}/>
             </div>
             <div id="hall-more" style={this.state.hallState!="none"?{height:"45%"}:{height:"0%"}}>
                 {this.state.hallState=='waiting'?(

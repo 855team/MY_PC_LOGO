@@ -30,7 +30,7 @@ class RegisterForm extends React.Component {
         };
 
         const onFinish = values => {
-            this.props.register(values.username,values.password)
+            this.props.register(values.username,values.password,values.email)
         };
 
         const onFinishFailed = errorInfo => {
