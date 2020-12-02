@@ -188,6 +188,7 @@ export default class MainView extends React.Component {
     }
 
     componentDidMount=() =>{
+        console.log(window.screen.width,window.screen.height);
         this.registerlisteners()
         this.validate()
 
@@ -295,7 +296,7 @@ export default class MainView extends React.Component {
                 })
             }
         }
-        userService.login({username:username,password:password,email:email},callback)
+        userService.register({username:username,password:password,email:email},callback)
     }
 
     enterdebug=async()=>{

@@ -14,7 +14,7 @@ class RegisterForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                this.props.register(values.username,values.password,values.email);
+                //this.props.register(values.username,values.password,values.email);
             }
         });
     };
@@ -30,7 +30,7 @@ class RegisterForm extends React.Component {
         };
 
         const onFinish = values => {
-            this.props.login(values.username,values.password)
+            this.props.register(values.username,values.password)
         };
 
         const onFinishFailed = errorInfo => {

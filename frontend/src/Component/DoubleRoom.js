@@ -133,8 +133,7 @@ class DoubleRoom extends React.Component{
         const leaveCallback=(data)=>{
             this.setState({
                 doubleRoomState:"hall",
-                hallState:"waiting",
-                codes:[]
+                hallState:"waiting"
             })
         }
         onConnectSSE('new',null,enterCallback,messageCallback,partnerCallback,leaveCallback);
@@ -186,8 +185,7 @@ class DoubleRoom extends React.Component{
         const leaveCallback=(data)=>{
             this.setState({
                 doubleRoomState:"hall",
-                hallState:"waiting",
-                codes:[]
+                hallState:"waiting"
             })
         }
         onConnectSSE('join',rid,enterCallback,messageCallback,partnerCallback,leaveCallback);
