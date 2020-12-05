@@ -185,7 +185,7 @@ class DoubleRoom extends React.Component{
         const leaveCallback=(data)=>{
             this.setState({
                 doubleRoomState:"hall",
-                hallState:"waiting",
+                hallState:"waiting"
             })
         }
         onConnectSSE('join',rid,enterCallback,messageCallback,partnerCallback,leaveCallback);

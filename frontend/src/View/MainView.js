@@ -188,6 +188,7 @@ export default class MainView extends React.Component {
     }
 
     componentDidMount=() =>{
+        console.log(window.screen.width,window.screen.height);
         this.registerlisteners()
         this.validate()
 
