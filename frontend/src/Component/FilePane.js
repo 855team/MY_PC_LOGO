@@ -55,10 +55,10 @@ class FilePane extends React.Component {
         return (
             <div
                 // style={theme.filePane}
-                style={{background:"none !important",width:"100%",height:"100%"}}
+                style={{background:"#E5F0FF",width:"100%",height:"100%"}}
             >
                 <div style={{height: '0.4em'}} />
-                <Treebeard data={this.props.treedata} onToggle={this.onToggle} />
+                <Treebeard data={this.props.treedata} customStyles={{color:"black"}} onToggle={this.onToggle} />
             </div>
         );
     }

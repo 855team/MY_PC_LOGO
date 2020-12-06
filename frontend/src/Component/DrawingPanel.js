@@ -36,7 +36,7 @@ class DrawingPanel extends React.Component{
 
     render(){
         return(
-            <div id="drawingpanel" style={{height:window.innerHeight*0.885,width:window.innerWidth*0.46,position: 'relative'}}>
+            <div id="drawingpanel" style={{height:1200,width:1200,position: 'relative'}}>
                 <canvas id='mycanvas'   style={{backgroundColor:'#E9F1FC',position:'absolute'}}>
                     Your browser does not support the canvas element.
                 </canvas>

@@ -1174,7 +1174,7 @@ export default class MainView extends React.Component {
                                                 roundedSelection: false,
                                                 cursorStyle: 'line',
                                                 automaticLayout: false,
-                                                theme: 'vs-dark',
+                                                theme: 'vs',
                                             }}
                                             value={this.state.editorcontent}
                                             updatecontent={(content)=>this.updatecontent(content)}
@@ -1207,7 +1207,7 @@ export default class MainView extends React.Component {
                     </div>
 
                     <div id="footer-pane">
-                        <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
+                        <div className="footer-pane-content" style={{height:"100%",width:"100%"}}>
                             <InfoBar
                                 login={this.state.login}
                                 task={this.state.task}
