@@ -23,6 +23,8 @@ class Sidebar2 extends React.Component{
         );
         if(selected=='debug'&&!this.props.debug)
             this.props.enterdebug();
+        if(selected=='tutorials')
+            this.props.openhelp();
     }
     render() {
         let theme = getTheme();
@@ -41,13 +43,6 @@ class Sidebar2 extends React.Component{
                            onClick={e => this.select('debug')}
                         >
                             <GoBug className="sidebar-item-icon"/>
-                        </a>
-                    </li>
-                    <li className={this.state.active=='settings'?"sidebar-item-selected":"sidebar-item"}>
-                        <a className="sidebar-item-clicked"
-                           onClick={e => this.select('settings')}
-                        >
-                            <IoMdSettings className="sidebar-item-icon"/>
                         </a>
                     </li>
                     <li className={this.state.active=='tutorials'?"sidebar-item-selected":"sidebar-item"}>

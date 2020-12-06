@@ -19,7 +19,6 @@ import * as fileService from "../Services/fileService"
 import {message,Modal,Input,Tag} from 'antd';
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
-import Setting from "../Component/Setting";
 import FileOperation from "../Component/FileOperation";
 import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
@@ -165,7 +164,6 @@ export default class MainView extends React.Component {
 
             help_visible:false,
             battle_visible:false,
-            setting_visible:false,
             userstate_visible:false,
             fileoperation_visible:false,
 
@@ -375,11 +373,7 @@ export default class MainView extends React.Component {
             battle_visible:true
         })
     }
-    opensetting=()=>{
-        this.setState({
-            setting_visible:true
-        })
-    }
+
     openfileoperation=()=>{
         this.setState({
             fileoperation_visible:true
@@ -412,11 +406,7 @@ export default class MainView extends React.Component {
             battle_visible:false
         })
     }
-    closesetting=()=>{
-        this.setState({
-            setting_visible:false
-        })
-    }
+
     closefileoperation=()=>{
         this.setState({
             fileoperation_visible:false
@@ -1129,7 +1119,6 @@ export default class MainView extends React.Component {
                             logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
-                            opensetting={()=>this.opensetting()}
                             openfileoperation={()=>this.openfileoperation()}
                             username={this.state.username}
                             login={this.state.login}
@@ -1161,6 +1150,7 @@ export default class MainView extends React.Component {
                                     }}
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
+                                    openhelp={()=>this.openhelp()}
                                 />
                             </div>
 
@@ -1247,9 +1237,6 @@ export default class MainView extends React.Component {
                         owner={{uid:this.state.uid,username:this.state.username,turtle:this.state.turtle}}
                     />
                     ):null}
-                </div>
-                <div style={{position:'relative'}}>
-                    <Setting closesetting={()=>this.closesetting()} visible={this.state.setting_visible}/>
                 </div>
                 <div style={{position:'relative'}}>
                     <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
