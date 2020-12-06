@@ -4,6 +4,7 @@
 
     display: flex;
     align-items: center;
+    background: none;
 }
 
 .logo{
@@ -29,7 +30,6 @@
 
     display: flex;
     align-items: center;
-
 
     transition-duration: 0.5s;
 }

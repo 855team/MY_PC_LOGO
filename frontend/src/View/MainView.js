@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import SideBar from "../Component/SideBar";
+import Sidebar2 from "../Component/Sidebar2";
 import SideBarPane from "../Component/SideBarPane";
 import Console from "../Component/Console";
 import Header from "../Component/Header";
@@ -29,6 +30,7 @@ import * as TaskHandler from '../Component/Taskhandler';
 import Compiler from "../Component/Compiler";
 import Debugtool from "../Component/DebugTool";
 import {offConnection} from "../Services/doubleService";
+import "../CSS/MainView.css";
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -1115,11 +1117,9 @@ export default class MainView extends React.Component {
 
     render() {
         return (
-            <div>
-            <div style={{ height: '100vh', width: '100vw',position:'absolute' }} >
-                <ReflexContainer orientation="horizontal" windowResizeAware={true}>
-
-                    <ReflexElement className="header-pane" minSize={50} maxSize={50}>
+            <div >
+            <div id="mainview-body">
+                    <div id="header-pane">
                         <Header
                             openlogin={()=>this.openlogin()}
                             logout={()=>this.logout()}
@@ -1134,13 +1134,21 @@ export default class MainView extends React.Component {
                             run={()=>this.editorrun()}
                             cleardrawingpanel={()=>{let compiler=new Compiler(); compiler.append("CLEAN")}}
                         />
-                    </ReflexElement>
+                    </div>
 
-                    <ReflexElement className="body-pane">
-                        <ReflexContainer orientation="vertical">
-
-                            <ReflexElement className="left-sidebar-pane" minSize={65} maxSize={65}>
-                                <SideBar
+                    <div id="body-pane">
+                            <div id="left-sidebar-pane" >
+                                {/*<SideBar*/}
+                                {/*    onSelected={(select)=>{*/}
+                                {/*        this.setState({*/}
+                                {/*            selected:(!this.state.login)&&select=='online'*/}
+                                {/*                ?this.state.select:select*/}
+                                {/*        })*/}
+                                {/*    }}*/}
+                                {/*    debug={this.state.debug}*/}
+                                {/*    enterdebug={()=>this.enterdebug()}*/}
+                                {/*/>*/}
+                                <Sidebar2
                                     onSelected={(select)=>{
                                         this.setState({
                                             selected:(!this.state.login)&&select=='online'
@@ -1150,19 +1158,18 @@ export default class MainView extends React.Component {
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
                                 />
-                            </ReflexElement>
+                            </div>
 
-                            <ReflexElement className="left-pane" flex={0.08} maxSize={380} minSize={250}>
-                                <div style={{ height:'100%', width: '100%',background:"#ffffff" }}>
+                            <div id="left-pane">
+                                <div style={{ height:'100%', width: '100%'}}>
                                     <SideBarPane treedata={this.state.treedata} style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
                                 </div>
-                            </ReflexElement>
+                            </div>
 
-                            <ReflexSplitter propagate={true}/>
+                            {/*<div propagate={true}/>*/}
 
-                            <ReflexElement className="mid-pane" minSize={200}>
-                                <ReflexContainer orientation="horizontal">
-
+                            <div id="mid-pane">
+                                <div style={{height:"50%"}}>
                                         <MonacoEditor
                                             language="LOGO"
                                             options={{
@@ -1179,19 +1186,13 @@ export default class MainView extends React.Component {
                                             run={()=>this.editorrun()}
                                             debug={this.state.debug}
                                         />
+                                </div>
+                                <div style={{height:"50%"}}>
+                                    <Console />
+                                </div>
+                            </div>
 
-
-                                    <ReflexSplitter propagate={true}/>
-
-
-                                        <Console />
-
-                                </ReflexContainer>
-                            </ReflexElement>
-
-
-
-                            <ReflexElement  className="right-pane"  minSize={800} maxSize={800}  onResize={(el)=> {
+                            <div id="right-pane"  onResize={(el)=> {
                                 let canvas=document.getElementById('mycanvas');
                                 let data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height)
                                 canvas.width=el.domElement.clientWidth;
@@ -1199,13 +1200,10 @@ export default class MainView extends React.Component {
                                 canvas.getContext("2d").putImageData(data,0,0);
                             }}>
                                     <DrawingPanel />
-                            </ReflexElement>
+                            </div>
+                    </div>
 
-
-                        </ReflexContainer>
-                    </ReflexElement>
-
-                    <ReflexElement className="footer-pane" minSize={30} maxSize={30}>
+                    <div id="footer-pane">
                         <div className="footer-pane-content" style={{background:"#ffffff",height:"100%",width:"100%"}}>
                             <InfoBar
                                 login={this.state.login}
@@ -1216,9 +1214,7 @@ export default class MainView extends React.Component {
                                 getcurrenttask={(level)=>TaskHandler.Lookupcurrentask(level)}
                             />
                         </div>
-                    </ReflexElement>
-
-                </ReflexContainer>
+                    </div>
             </div>
 
                 <div style={{position:'relative'}}>
