@@ -1193,13 +1193,7 @@ export default class MainView extends React.Component {
 
                             </div>
 
-                            <div id="right-pane"  onResize={(el)=> {
-                                let canvas=document.getElementById('mycanvas');
-                                let data=canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height)
-                                canvas.width=el.domElement.clientWidth;
-                                canvas.height=el.domElement.clientHeight;
-                                canvas.getContext("2d").putImageData(data,0,0);
-                            }}>
+                            <div id="right-pane"  >
                                 <FreeScrollBar>
                                     <DrawingPanel />
                                     </FreeScrollBar>
