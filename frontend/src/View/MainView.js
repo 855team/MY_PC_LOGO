@@ -19,7 +19,6 @@ import * as fileService from "../Services/fileService"
 import {message,Modal,Input,Tag} from 'antd';
 import RegisterForm from "../Component/RegisterForm";
 import Help from "../Component/Help";
-import Setting from "../Component/Setting";
 import FileOperation from "../Component/FileOperation";
 import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
@@ -31,6 +30,8 @@ import Compiler from "../Component/Compiler";
 import Debugtool from "../Component/DebugTool";
 import {offConnection} from "../Services/doubleService";
 import "../CSS/MainView.css";
+import FreeScrollBar from 'react-free-scrollbar';
+
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -163,7 +164,6 @@ export default class MainView extends React.Component {
 
             help_visible:false,
             battle_visible:false,
-            setting_visible:false,
             userstate_visible:false,
             fileoperation_visible:false,
 
@@ -261,7 +261,6 @@ export default class MainView extends React.Component {
             if(result.success){
                 message.success("登陆成功");
                 localStorage.setItem("token",result.data.token)
-                console.log(localStorage.getItem("token"))
                 await this.setState({
                     login_visible:false,
                     login:true,
@@ -374,11 +373,7 @@ export default class MainView extends React.Component {
             battle_visible:true
         })
     }
-    opensetting=()=>{
-        this.setState({
-            setting_visible:true
-        })
-    }
+
     openfileoperation=()=>{
         this.setState({
             fileoperation_visible:true
@@ -411,11 +406,7 @@ export default class MainView extends React.Component {
             battle_visible:false
         })
     }
-    closesetting=()=>{
-        this.setState({
-            setting_visible:false
-        })
-    }
+
     closefileoperation=()=>{
         this.setState({
             fileoperation_visible:false
@@ -427,14 +418,14 @@ export default class MainView extends React.Component {
         })
     }
 
-    logout=async()=>{
+    logout=()=>{
         offConnection(()=>{})
         localStorage.removeItem("token")
-        await this.setState({
+        this.setState({
             login:false,
             currentfid:-1,
             currentpid:-1,
-            remotedate:[],
+            remotedata:[],
             treedata:{
                 name: 'root',
                 toggled: true,
@@ -451,9 +442,11 @@ export default class MainView extends React.Component {
     }
 
     getproject=(pid)=>{
+
         let token=localStorage.getItem("token");
         let data={pid:pid,token:token}
         let callback=(result)=>{
+            console.log(result);
             if(result.success){
                 let project=result.data;
                 this.updateremotedata(pid,project)
@@ -478,7 +471,7 @@ export default class MainView extends React.Component {
             child.push(tmp);
         }
         for(let i=0;i<olddata.length;i++){
-            if(olddata[i].pid==pid){
+            if(olddata[i].pid===pid){
                 olddata[i].name=project.name;
                 olddata[i].files=child;
                 await this.setState({remotedata:olddata});
@@ -491,9 +484,10 @@ export default class MainView extends React.Component {
         newproject.files=child;
 
         olddata.push(newproject);
-        await this.setState({remotedata:olddata});
-        await this.setState({
-            treedata: this.generatetreedata(this.state.remotedata),
+
+        this.setState({
+            remotedata:olddata,
+            treedata: this.generatetreedata(olddata),
             filepanel_visible:true
         })
         return;
@@ -1118,14 +1112,13 @@ export default class MainView extends React.Component {
     render() {
         return (
             <div >
-            <div id="mainview-body">
+            <div id="mainview-body" style={{position:'absolute'}}>
                     <div id="header-pane">
                         <Header
                             openlogin={()=>this.openlogin()}
                             logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
-                            opensetting={()=>this.opensetting()}
                             openfileoperation={()=>this.openfileoperation()}
                             username={this.state.username}
                             login={this.state.login}
@@ -1157,18 +1150,22 @@ export default class MainView extends React.Component {
                                     }}
                                     debug={this.state.debug}
                                     enterdebug={()=>this.enterdebug()}
+                                    openhelp={()=>this.openhelp()}
                                 />
                             </div>
 
                             <div id="left-pane">
                                 <div style={{ height:'100%', width: '100%'}}>
+                                    <FreeScrollBar>
                                     <SideBarPane treedata={this.state.treedata} style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
+                                    </FreeScrollBar>
                                 </div>
                             </div>
 
                             {/*<div propagate={true}/>*/}
 
                             <div id="mid-pane">
+
                                 <div style={{height:"50%"}}>
                                         <MonacoEditor
                                             language="LOGO"
@@ -1187,9 +1184,13 @@ export default class MainView extends React.Component {
                                             debug={this.state.debug}
                                         />
                                 </div>
+
+
+
                                 <div style={{height:"50%"}}>
                                     <Console />
                                 </div>
+
                             </div>
 
                             <div id="right-pane"  onResize={(el)=> {
@@ -1199,7 +1200,9 @@ export default class MainView extends React.Component {
                                 canvas.height=el.domElement.clientHeight;
                                 canvas.getContext("2d").putImageData(data,0,0);
                             }}>
+                                <FreeScrollBar>
                                     <DrawingPanel />
+                                    </FreeScrollBar>
                             </div>
                     </div>
 
@@ -1234,9 +1237,6 @@ export default class MainView extends React.Component {
                         owner={{uid:this.state.uid,username:this.state.username,turtle:this.state.turtle}}
                     />
                     ):null}
-                </div>
-                <div style={{position:'relative'}}>
-                    <Setting closesetting={()=>this.closesetting()} visible={this.state.setting_visible}/>
                 </div>
                 <div style={{position:'relative'}}>
                     <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
