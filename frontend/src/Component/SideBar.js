@@ -35,7 +35,7 @@ class SideBar extends React.Component {
                 onSelect={(selected) => {
                     this.props.onSelected(selected);
                     this.setState(
-                        {active:"file"},
+                        {active:selected},
                         // ()=>console.log(this.state)
                     );
                 }}
