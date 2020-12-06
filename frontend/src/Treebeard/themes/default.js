@@ -61,6 +61,7 @@ export default {
                     left: '-21px'
                 },
                 title: {
+                    color:"black",
                     lineHeight: '24px',
                     verticalAlign: 'middle'
                 }
