@@ -1120,6 +1120,7 @@ export default class MainView extends React.Component {
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
                             openfileoperation={()=>this.openfileoperation()}
+                            task={this.state.task}
                             username={this.state.username}
                             login={this.state.login}
                             importfile={(content)=>this.importfile(content)}
