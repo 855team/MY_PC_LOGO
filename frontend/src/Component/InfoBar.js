@@ -3,8 +3,12 @@ import {Button,Tag} from 'antd';
 import { Popover } from 'antd';
 
 class Infobar extends React.Component{
+
     constructor(props) {
+
         super(props);
+
+
     }
     render(){
         let taskdata=this.props.getcurrenttask(this.props.task);

@@ -131,3 +131,14 @@
     font-family: 汉仪乐喵体简;
     color: white;
 }
+
+.userarea{
+    position:absolute;
+    right:10px;
+}
+
+.progress{
+    position:relative;
+    right:10px;
+}
+
