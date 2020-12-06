@@ -27,7 +27,7 @@ class Infobar extends React.Component{
 
         }
         if(!this.props.login){
-            return <Tag style={{marginLeft:"2rem"}} color="purple">未登录</Tag>
+            return <Tag style={{marginLeft:"2rem" }} color="purple">未登录</Tag>
         }
         if(this.props.fid<=0){
             return(

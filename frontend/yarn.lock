@@ -10104,7 +10104,7 @@ react-dev-utils@^10.2.1:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-dom@^16.13.1:
+react-dom@^16.1.1, react-dom@^16.13.1:
   version "16.14.0"
   resolved "https://registry.npm.taobao.org/react-dom/download/react-dom-16.14.0.tgz?cache=0&sync_timestamp=1603367689964&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-dom%2Fdownload%2Freact-dom-16.14.0.tgz#7ad838ec29a777fb3c75c3a190f661cf92ab8b89"
   integrity sha1-etg47Cmnd/s8dcOhkPZhz5Kri4k=
@@ -10126,6 +10126,14 @@ react-error-overlay@^6.0.7:
   version "6.0.8"
   resolved "https://registry.npm.taobao.org/react-error-overlay/download/react-error-overlay-6.0.8.tgz?cache=0&sync_timestamp=1603462279989&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-error-overlay%2Fdownload%2Freact-error-overlay-6.0.8.tgz#474ed11d04fc6bda3af643447d85e9127ed6b5de"
   integrity sha1-R07RHQT8a9o69kNEfYXpEn7Wtd4=
+
+react-free-scrollbar@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.npm.taobao.org/react-free-scrollbar/download/react-free-scrollbar-0.3.4.tgz#9f891806fc706f550e18bbaf4a396b9d5a5aa5a2"
+  integrity sha1-n4kYBvxwb1UOGLuvSjlrnVpapaI=
+  dependencies:
+    react "^16.1.1"
+    react-dom "^16.1.1"
 
 react-icons@^3.11.0:
   version "3.11.0"
@@ -10249,7 +10257,7 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@^16.13.1:
+react@^16.1.1, react@^16.13.1:
   version "16.14.0"
   resolved "https://registry.npm.taobao.org/react/download/react-16.14.0.tgz?cache=0&sync_timestamp=1603368001804&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact%2Fdownload%2Freact-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
   integrity sha1-lNd23dCqo32j7aj8W2sYpMmjEU0=

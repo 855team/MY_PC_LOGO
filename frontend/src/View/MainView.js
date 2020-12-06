@@ -31,6 +31,8 @@ import Compiler from "../Component/Compiler";
 import Debugtool from "../Component/DebugTool";
 import {offConnection} from "../Services/doubleService";
 import "../CSS/MainView.css";
+import FreeScrollBar from 'react-free-scrollbar';
+
 const { Option } = Select;
 const { confirm } = Modal;
 
@@ -261,7 +263,6 @@ export default class MainView extends React.Component {
             if(result.success){
                 message.success("登陆成功");
                 localStorage.setItem("token",result.data.token)
-                console.log(localStorage.getItem("token"))
                 await this.setState({
                     login_visible:false,
                     login:true,
@@ -427,14 +428,14 @@ export default class MainView extends React.Component {
         })
     }
 
-    logout=async()=>{
+    logout=()=>{
         offConnection(()=>{})
         localStorage.removeItem("token")
-        await this.setState({
+        this.setState({
             login:false,
             currentfid:-1,
             currentpid:-1,
-            remotedate:[],
+            remotedata:[],
             treedata:{
                 name: 'root',
                 toggled: true,
@@ -451,9 +452,11 @@ export default class MainView extends React.Component {
     }
 
     getproject=(pid)=>{
+
         let token=localStorage.getItem("token");
         let data={pid:pid,token:token}
         let callback=(result)=>{
+            console.log(result);
             if(result.success){
                 let project=result.data;
                 this.updateremotedata(pid,project)
@@ -478,7 +481,7 @@ export default class MainView extends React.Component {
             child.push(tmp);
         }
         for(let i=0;i<olddata.length;i++){
-            if(olddata[i].pid==pid){
+            if(olddata[i].pid===pid){
                 olddata[i].name=project.name;
                 olddata[i].files=child;
                 await this.setState({remotedata:olddata});
@@ -491,9 +494,10 @@ export default class MainView extends React.Component {
         newproject.files=child;
 
         olddata.push(newproject);
-        await this.setState({remotedata:olddata});
-        await this.setState({
-            treedata: this.generatetreedata(this.state.remotedata),
+
+        this.setState({
+            remotedata:olddata,
+            treedata: this.generatetreedata(olddata),
             filepanel_visible:true
         })
         return;
@@ -1118,7 +1122,7 @@ export default class MainView extends React.Component {
     render() {
         return (
             <div >
-            <div id="mainview-body">
+            <div id="mainview-body" style={{position:'absolute'}}>
                     <div id="header-pane">
                         <Header
                             openlogin={()=>this.openlogin()}
@@ -1162,13 +1166,16 @@ export default class MainView extends React.Component {
 
                             <div id="left-pane">
                                 <div style={{ height:'100%', width: '100%'}}>
+                                    <FreeScrollBar>
                                     <SideBarPane treedata={this.state.treedata} style={{ height:'100%', width: '100%' }} visible={this.state.filepanel_visible}/>
+                                    </FreeScrollBar>
                                 </div>
                             </div>
 
                             {/*<div propagate={true}/>*/}
 
                             <div id="mid-pane">
+
                                 <div style={{height:"50%"}}>
                                         <MonacoEditor
                                             language="LOGO"
@@ -1187,9 +1194,13 @@ export default class MainView extends React.Component {
                                             debug={this.state.debug}
                                         />
                                 </div>
+
+
+
                                 <div style={{height:"50%"}}>
                                     <Console />
                                 </div>
+
                             </div>
 
                             <div id="right-pane"  onResize={(el)=> {
@@ -1199,7 +1210,9 @@ export default class MainView extends React.Component {
                                 canvas.height=el.domElement.clientHeight;
                                 canvas.getContext("2d").putImageData(data,0,0);
                             }}>
+                                <FreeScrollBar>
                                     <DrawingPanel />
+                                    </FreeScrollBar>
                             </div>
                     </div>
 

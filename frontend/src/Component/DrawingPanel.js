@@ -17,7 +17,7 @@ import React from 'react';
 import ReactDom from 'react-dom'
 import Bus from '../Controller/eventBus'
 import Commands from "../Controller/Commands";
-const initpos={x:400,y:400};
+const initpos={x:300,y:300};
 
 class DrawingPanel extends React.Component{
 
@@ -36,8 +36,8 @@ class DrawingPanel extends React.Component{
 
     render(){
         return(
-            <div id="drawingpanel" style={{height:850,width:830,position: 'relative'}}>
-                <canvas id='mycanvas'   style={{backgroundColor:'#F0FFFF',position:'absolute'}}>
+            <div id="drawingpanel" style={{height:window.innerHeight*0.885,width:window.innerWidth*0.46,position: 'relative'}}>
+                <canvas id='mycanvas'   style={{backgroundColor:'#E9F1FC',position:'absolute'}}>
                     Your browser does not support the canvas element.
                 </canvas>
                 <img id="turtle" ref="turtle"  src={require("../assets/turtle.png")} style={{position:'relative',width:'40px',height:'40px',marginLeft:initpos.x,
