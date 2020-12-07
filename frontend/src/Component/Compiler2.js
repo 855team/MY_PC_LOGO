@@ -105,7 +105,12 @@ class Compiler2 extends React.Component{
         let current = this.current_token;
         let tokens = this.tokens;
         function walk() {
-
+            if (current >= tokens.length()) {
+                return {
+                    type:'error',
+                    value:'指令参数缺失'
+                }
+            }
             let token = tokens[current];
             //    console.log(token);
             if (token.type === 'INT') {
@@ -131,6 +136,14 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'FD') {
                 current++;
+
+                if (current >= tokens.length()) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
+
                 token = tokens[current];
                 current++;
                 // console.log(token);
@@ -140,10 +153,20 @@ class Compiler2 extends React.Component{
                         value: token.value
                     }
                 }
-                throw 'error';
+                return {
+                    type: 'error',
+                    value: 'FD指令后应为一个整数'
+                };
             }
             if (token.type == 'BK') {
                 current ++;
+                if (current >= tokens.length()) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
+
                 token = tokens[current];
                 current++;
                 if (token.type == 'INT') {
@@ -152,10 +175,19 @@ class Compiler2 extends React.Component{
                         value: token.value,
                     }
                 }
-                throw 'error';
+                return {
+                    type: 'error',
+                    value: 'BK指令后应为一个整数'
+                };
             }
             if (token.type == 'RT') {
                 current ++;
+                if (current >= tokens.length()) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[current];
                 current ++;
                 if (token.type == 'INT') {
@@ -163,10 +195,20 @@ class Compiler2 extends React.Component{
                         type: 'RTExp', value: token.value,
                     }
                 }
-                throw 'error';
+                return {
+                    type: 'error',
+                    value: 'RT指令后应为一个整数'
+                };
             }
             if (token.type == 'LT') {
                 current ++;
+                if (current >= tokens.length()) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
+
                 token = tokens[current];
                 current++;
                 if (token.type == 'INT') {
@@ -174,7 +216,10 @@ class Compiler2 extends React.Component{
                         type: 'LTExp', value: token.value,
                     }
                 }
-                throw 'error';
+                return {
+                    type: 'error',
+                    value: 'LT指令后应为一个整数'
+                };
             }
             if (token.type == 'PU') {
 
@@ -198,6 +243,12 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'SETXY') {
                 // console.log(tokens,current);
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 let node = {
                     type: 'SETXYExp',
@@ -205,30 +256,69 @@ class Compiler2 extends React.Component{
                     valuey: 0,
                 }
                 if (token.type != 'LBRACK') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETXY后应紧跟方括号'
+                    }
+                }
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
                 }
                 token = tokens[++current];
                 if (token.type != 'INT') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETXY指令的参数应为整数'
+                    }
                 }
                 node.valuex = token.value;
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'INT') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETXY指令的参数应为整数'
+                    }
                 }
                 node.valuey = token.value;
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'RBRACK') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETXY指令缺少右括号'
+                    }
                 }
                 current ++;
                 // console.log("success",node);
                 return node;
             }
             if (token.type == 'SETPC') {
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'COLOR') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETPC颜色值不符合RGB格式'
+                    }
                 }
                 current++;
                 return {
@@ -237,9 +327,18 @@ class Compiler2 extends React.Component{
                 }
             }
             if (token.type == 'SETBG') {
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'COLOR') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'SETBG颜色值不符合RGB格式'
+                    }
                 }
                 current++;
                 return {
@@ -253,14 +352,32 @@ class Compiler2 extends React.Component{
                     valuex:0,
                     valuey:0,
                 }
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'INT') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'STAMPOVAL第一个参数应为整数'
+                    }
                 }
                 node.valuex = token.value;
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
                 if (token.type != 'INT') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'STAMPOVAL第二个参数应为整数'
+                    }
                 }
                 node.valuey = token.value;
                 current ++;
@@ -268,6 +385,12 @@ class Compiler2 extends React.Component{
             }
 
             if (token.type == 'REPEAT') {
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
                 token = tokens[++current];
 
                 let node = {
@@ -277,30 +400,56 @@ class Compiler2 extends React.Component{
                 }
                 if (token.type == 'INT') {
                     node.iter = token.value;
+                    if (current >= tokens.length() - 1) {
+                        return {
+                            type:'error',
+                            value:'指令参数缺失'
+                        }
+                    }
                     token = tokens[++current];
                 }
                 if (token.type != 'LBRACK') {
-                    throw 'error';
+                    return {
+                        type:'error',
+                        value:'REPEAT后面应接左方括号'
+                    }
+                }
+                if (current >= tokens.length() - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
                 }
                 token = tokens[++current];
                 while (token.type != 'RBRACK') {
-                    node.exps.push(walk());
+                    let ret = walk();
+                    if (ret.type == 'error')
+                        return ret;
+                    node.exps.push(ret);
                     token = tokens[current];
                 }
                 current++;
                 return node;
             }
 
-            throw 'error';
+            return {
+                type:'error',
+                value:'指令不存在'
+            }
         }
 
 
         while (current < tokens.length) {
+            let ret = walk();
+            if (ret.type == 'ERROR') {
+                return ret;
+            }
             this.AST.exps.push(walk());
             // console.log(current,this.AST);
         }
         // console.log(this.AST);
         this.current_token = current;
+        return {type:"success"}
     }
     traverse(node) {
         if (node.type == 'FDExp') {
@@ -366,8 +515,8 @@ class Compiler2 extends React.Component{
         let current = this.current_ASTNode;
         let AST = this.AST;
         while (current < AST.exps.length) {
-            this.traverse(AST.exps[current]);
-            current++;
+            this.traverse(AST.exps[current])
+            current++
         }
         this.current_ASTNode = current;
     }
@@ -378,9 +527,14 @@ class Compiler2 extends React.Component{
         console.log(input)
         interval=0;
         if (this.tokenizer(input) == 0)
-            return;
-        this.parser();
+            return "该指令不存在，请重新输入";
+        let ret = this.parser();
+        if (ret.type != "success") {
+            console.log("grammar error",ret.value);
+            return ret.value;
+        }
         this.operGenerator();
+        return 'success';
     }
 }
 
