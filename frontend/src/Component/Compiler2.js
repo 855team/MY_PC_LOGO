@@ -105,7 +105,7 @@ class Compiler2 extends React.Component{
         let current = this.current_token;
         let tokens = this.tokens;
         function walk() {
-            if (current >= tokens.length()) {
+            if (current >= tokens.length) {
                 return {
                     type:'error',
                     value:'指令参数缺失'
@@ -137,7 +137,7 @@ class Compiler2 extends React.Component{
             if (token.type == 'FD') {
                 current++;
 
-                if (current >= tokens.length()) {
+                if (current >= tokens.length) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -160,7 +160,7 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'BK') {
                 current ++;
-                if (current >= tokens.length()) {
+                if (current >= tokens.length) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -182,7 +182,7 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'RT') {
                 current ++;
-                if (current >= tokens.length()) {
+                if (current >= tokens.length) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -202,7 +202,7 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'LT') {
                 current ++;
-                if (current >= tokens.length()) {
+                if (current >= tokens.length) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -243,7 +243,7 @@ class Compiler2 extends React.Component{
             }
             if (token.type == 'SETXY') {
                 // console.log(tokens,current);
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -261,7 +261,7 @@ class Compiler2 extends React.Component{
                         value:'SETXY后应紧跟方括号'
                     }
                 }
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -275,7 +275,7 @@ class Compiler2 extends React.Component{
                     }
                 }
                 node.valuex = token.value;
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -289,7 +289,7 @@ class Compiler2 extends React.Component{
                     }
                 }
                 node.valuey = token.value;
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -307,7 +307,7 @@ class Compiler2 extends React.Component{
                 return node;
             }
             if (token.type == 'SETPC') {
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -327,7 +327,7 @@ class Compiler2 extends React.Component{
                 }
             }
             if (token.type == 'SETBG') {
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -352,7 +352,7 @@ class Compiler2 extends React.Component{
                     valuex:0,
                     valuey:0,
                 }
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -366,7 +366,7 @@ class Compiler2 extends React.Component{
                     }
                 }
                 node.valuex = token.value;
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -385,7 +385,7 @@ class Compiler2 extends React.Component{
             }
 
             if (token.type == 'REPEAT') {
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -400,7 +400,7 @@ class Compiler2 extends React.Component{
                 }
                 if (token.type == 'INT') {
                     node.iter = token.value;
-                    if (current >= tokens.length() - 1) {
+                    if (current >= tokens.length - 1) {
                         return {
                             type:'error',
                             value:'指令参数缺失'
@@ -414,7 +414,7 @@ class Compiler2 extends React.Component{
                         value:'REPEAT后面应接左方括号'
                     }
                 }
-                if (current >= tokens.length() - 1) {
+                if (current >= tokens.length - 1) {
                     return {
                         type:'error',
                         value:'指令参数缺失'
@@ -441,7 +441,7 @@ class Compiler2 extends React.Component{
 
         while (current < tokens.length) {
             let ret = walk();
-            if (ret.type == 'ERROR') {
+            if (ret.type == 'error') {
                 return ret;
             }
             this.AST.exps.push(walk());
