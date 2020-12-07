@@ -1,9 +1,9 @@
 .header-content{
-    background: linear-gradient(#54b7ff, #82cbff);
     height: 100%;
 
     display: flex;
     align-items: center;
+    background: none;
 }
 
 .logo{
@@ -29,7 +29,6 @@
 
     display: flex;
     align-items: center;
-
 
     transition-duration: 0.5s;
 }
@@ -132,3 +131,14 @@
     font-family: 汉仪乐喵体简;
     color: white;
 }
+
+.userarea{
+    position:absolute;
+    right:10px;
+}
+
+.progress{
+    position:relative;
+    right:10px;
+}
+

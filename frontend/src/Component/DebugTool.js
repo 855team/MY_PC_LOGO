@@ -89,9 +89,9 @@ class Debugtool extends React.Component{
             return(
                 <div style={{width:"480px"}}>
                 <Draggable
-                    bounds={{top: 0, left: 0, right: 1200, bottom: 800}}
+                    bounds={{top: 0, left: 0, right: 800, bottom: 600}}
                     axis="both"
-                    defaultPosition={{x: 100, y: 600}}
+                    defaultPosition={{x: 100, y: 400}}
                     onStart={()=>{return;}}
                     onDrag={()=>{return;}}
                     onStop={()=>{return;}}>

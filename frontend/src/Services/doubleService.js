@@ -25,7 +25,6 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
         client.onmessage =  (evt)=> {
             // it's not required that you send and receive JSON, you can just output the "evt.data" as well.
             let dataJSON = JSON.parse(evt.data)
-            console.log(dataJSON);
             if (!dataJSON.success) {
                 if(dataJSON.msg==RoomNoPermission)
                     message.error("对不起，你不能进入这个房间");
@@ -34,17 +33,14 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
                 client.close()
             } else if (dataJSON.msg == RoomEnterSuccess) {
                 /* 成功进入房间 */
-                console.log("RoomEnterSuccess");
                 enterCallback(dataJSON.data);
                 // console.log("roomId:"+dataJSON.data.rid)
             } else if (dataJSON.msg == RoomCommandStream) {
                 /* 有新代码返回（虽然返回的其实是所有代码） */
-                console.log("RoomCommandStream");
                 messageCallback(dataJSON.data)
             } else if (dataJSON.msg == RoomUserEnterNotify) {
                 /* 有人进入当前房间 */
                 message.info(dataJSON.data.username+" 进入了房间")
-                console.log("RoomUserEnterNotify");
                 partnerCallback(dataJSON.data)
             } else if (dataJSON.msg == RoomUserLeaveNotify) {
                 /* 有人离开当前房间 */
@@ -59,7 +55,10 @@ export const onConnectSSE=(type,rid,enterCallback,messageCallback,partnerCallbac
 }
 
 export const offConnection=(callback)=>{
-    client.close()
+    console.log(client)
+    console.log(typeof(client))
+    if(typeof(client)!='undefined')
+        client.close()
     callback();
 }
 

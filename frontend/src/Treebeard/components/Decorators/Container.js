@@ -92,7 +92,7 @@ class Container extends PureComponent {
             <div style={node.active ? {...style.container} : {...style.link}} onDoubleClick={()=>this.updateworkspace(node)}>
 
                 {!terminal ? this.renderToggle() : null}
-                <decorators.Header node={node} style={style.header} customStyles={customStyles} onSelect={onSelect}/>
+                <decorators.Header node={node} style={{...style.header}} customStyles={customStyles} onSelect={onSelect}/>
 
             </div>
             </Dropdown>

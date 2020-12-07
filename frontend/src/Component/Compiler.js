@@ -17,7 +17,6 @@ class Compiler extends React.Component{
         };
         this.state = {
         }
-        commands.changepenstate(1);
     }
     tokenizer(input) {
         let lexer = new jslex({

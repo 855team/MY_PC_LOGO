@@ -5,9 +5,13 @@ import {Div} from '../common';
 
 const Header = ({onSelect, node, style, customStyles}) => (
     <div style={style.base} onClick={onSelect}>
-        <Div style={node.selected ? {...style.title, ...customStyles.header.title} : style.title}>
+        {node.type==="file"?(
+            <Div style= {{lineHeight: '24px',verticalAlign: 'middle',color:"grey"}}>
+                &nbsp;&nbsp;{node.name}
+            </Div>
+        ):(<Div style= {{lineHeight: '24px',verticalAlign: 'middle',color:"black"}}>
             {node.name}
-        </Div>
+        </Div>)}
     </div>
 );
 
