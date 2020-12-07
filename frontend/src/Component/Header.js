@@ -25,37 +25,35 @@ class UserArea extends React.Component{
             progress:progress
         })
     }
-    handleoption=(value)=>{
-        this.chosen=value;
-    }
     handleclick=()=>{
         let chosen=0;
         let task=this.props.task
         let level=parseInt((parseInt(task)+2)/3);
+        let setturtle=this.props.setturtle;
         let options=[
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/turtle.png")}
                 />, value: 1,disabled:false },
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/level2.png")}
                 />, value: 2,disabled:false },
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/level3.png")}
                 />, value: 3,disabled:false },
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/level4.png")}
                 />, value: 4,disabled:false },
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/level5.png")}
                 />, value: 5,disabled:false },
             { label: <Image
                     width={60}
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={require("../assets/level6.png")}
                 />, value: 6,disabled:false }
         ];
         for(let i=0;i<6;i++){
@@ -70,17 +68,15 @@ class UserArea extends React.Component{
                 <div>
                     <Radio.Group
                         options={options}
-                        onChange={(value)=>{this.handleoption(value)}}
+                        onChange={(value)=>{chosen=value;}}
                     />
                     <br />
-
-
                 </div>,
             onOk(){
                 if(chosen===0){
                     return;
                 }
-                this.props.setturtle(chosen);
+                setturtle(parseInt(chosen.target.value));
             },
             onCancel() {
                 return;
@@ -109,7 +105,7 @@ class UserArea extends React.Component{
             return(
                 <div className="userarea" >
                     <div style={{width:window.innerHeight*0.07,float:"left",cursor:"pointer"}} onClick={()=>this.handleclick()}>
-                    <Progress classname="progress" width={window.innerHeight*0.06} type="circle" percent={this.props.percent} format={() => "Lv"+level} />
+                    <Progress className="progress" width={window.innerHeight*0.06} type="circle" percent={this.props.percent} format={() => "Lv"+level} />
                     </div>
                     <div style={{float:"left",paddingTop:window.innerHeight*0.01}}>
                     <Button shape="round" type="primary" onClick={()=>this.props.logout()}>logout</Button>

@@ -156,6 +156,7 @@ export default class MainView extends React.Component {
             uid:undefined,
             turtle:1,
             task:1,
+            email:"",
             projects:[],
 
             login_visible:false,
@@ -235,7 +236,6 @@ export default class MainView extends React.Component {
         }
         if(token){
             const callback= async (result)=>{
-                console.log(result)
                 if(!result.success){
                     return false;
                 }
@@ -245,9 +245,32 @@ export default class MainView extends React.Component {
                         username:result.data.Username,
                         uid:result.data.Uid,
                         turtle:result.data.Turtle,
+                        email:result.data.Email,
                         task:result.data.Task,
                         projects:result.data.Projects
                     })
+                    switch (result.data.Turtle) {
+                        case 1:
+                            Bus.emit("changeimg","turtle");
+                            break;
+                        case 2:
+                            Bus.emit("changeimg","level2");
+                            break;
+                        case 3:
+                            Bus.emit("changeimg","level3");
+                            break;
+                        case 4:
+                            Bus.emit("changeimg","level4");
+                            break;
+                        case 5:
+                            Bus.emit("changeimg","level5");
+                            break;
+                        case 6:
+                            Bus.emit("changeimg","level6");
+                            break;
+                        default:
+                            break;
+                    }
                     this.getremotedata(result.data.Projects)
                 }
             }
@@ -268,8 +291,31 @@ export default class MainView extends React.Component {
                     uid:result.data.info.Uid,
                     turtle:result.data.info.Turtle,
                     task:result.data.info.Task,
+                    email:result.data.Email,
                     projects:result.data.info.Projects
                 });
+                switch (result.data.info.Turtle) {
+                    case 1:
+                        Bus.emit("changeimg","turtle");
+                        break;
+                    case 2:
+                        Bus.emit("changeimg","level2");
+                        break;
+                    case 3:
+                        Bus.emit("changeimg","level3");
+                        break;
+                    case 4:
+                        Bus.emit("changeimg","level4");
+                        break;
+                    case 5:
+                        Bus.emit("changeimg","level5");
+                        break;
+                    case 6:
+                        Bus.emit("changeimg","level6");
+                        break;
+                    default:
+                        break;
+                }
                 this.getremotedata(result.data.info.Projects)
             }
             else{
@@ -426,12 +472,14 @@ export default class MainView extends React.Component {
             currentfid:-1,
             currentpid:-1,
             remotedata:[],
+            turtle:1,
             treedata:{
                 name: 'root',
                 toggled: true,
                 type:"root"
             }
         })
+        Bus.emit("changeimg","turtle")
         message.success("退出成功")
     }
 
@@ -507,6 +555,11 @@ export default class MainView extends React.Component {
         let data={fid:fid,name:filename,token:token,content:content};
         fileService.modifyfile(data,callback)
     }
+    modifyuser=(turtle,task,callback)=>{
+        let token=localStorage.getItem("token");
+        let data={username:this.state.username,email:this.state.username,token:token,turtle:turtle,task:task};
+        userService.modifyuser(data,callback)
+    }
 
     updatecontent(content){
         this.setState({
@@ -580,10 +633,45 @@ export default class MainView extends React.Component {
         }
 
     }
+
     setturtle=(turtle)=>{
-        this.setState({
-            turtle:turtle
-        })
+        let callback=(result)=>{
+            console.log(message)
+
+            if(result.success){
+                this.setState({
+                    turtle:turtle
+                })
+                switch (turtle) {
+                    case 1:
+                        Bus.emit("changeimg","turtle");
+                        break;
+                    case 2:
+                        Bus.emit("changeimg","level2");
+                        break;
+                    case 3:
+                        Bus.emit("changeimg","level3");
+                        break;
+                    case 4:
+                        Bus.emit("changeimg","level4");
+                        break;
+                    case 5:
+                        Bus.emit("changeimg","level5");
+                        break;
+                    case 6:
+                        Bus.emit("changeimg","level6");
+                        break;
+                    default:
+                        break;
+                }
+
+                message.success("更换皮肤成功");
+            }
+            else{
+                message.warn("更换皮肤失败");
+            }
+        }
+        this.modifyuser(turtle,this.state.task,callback)
     }
 
     savecurrent=(nextop)=>{
