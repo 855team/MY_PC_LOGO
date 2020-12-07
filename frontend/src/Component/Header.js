@@ -14,6 +14,7 @@ class UserArea extends React.Component{
     };
     constructor(props){
 
+
         super(props);
     }
     componentDidMount() {
@@ -24,33 +25,44 @@ class UserArea extends React.Component{
             progress:progress
         })
     }
+    handleoption=(value)=>{
+        this.chosen=value;
+    }
     handleclick=()=>{
+        let chosen=0;
+        let task=this.props.task
+        let level=parseInt((parseInt(task)+2)/3);
         let options=[
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 1 },
+                />, value: 1,disabled:false },
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 2 },
+                />, value: 2,disabled:false },
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 3 },
+                />, value: 3,disabled:false },
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 4 },
+                />, value: 4,disabled:false },
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 5 },
+                />, value: 5,disabled:false },
             { label: <Image
                     width={60}
                     src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                />, value: 6 }
+                />, value: 6,disabled:false }
         ];
+        for(let i=0;i<6;i++){
+            if(i+1>level){
+                options[i].disabled=true;
+            }
+        }
         confirm({
             title: "选择乌龟皮肤",
             bodyStyle:{TextAlign:"center"},
@@ -58,20 +70,20 @@ class UserArea extends React.Component{
                 <div>
                     <Radio.Group
                         options={options}
+                        onChange={(value)=>{this.handleoption(value)}}
                     />
                     <br />
 
 
                 </div>,
             onOk(){
-                let op=()=>{
-
+                if(chosen===0){
+                    return;
                 }
-
-
+                this.props.setturtle(chosen);
             },
             onCancel() {
-
+                return;
             },
         });
     }
@@ -172,7 +184,7 @@ class Header extends React.Component {
                            onClick={()=>{this.props.openhelp()}}>帮助</a>
                     </li>
                 </ul>
-                <UserArea logout={this.props.logout} login={this.props.login} username={this.props.username} openlogin={this.props.openlogin} task={this.props.task} openregister={this.props.openregister}/>
+                <UserArea logout={this.props.logout} login={this.props.login} username={this.props.username} openlogin={this.props.openlogin} task={this.props.task} openregister={this.props.openregister} setturtle={(turtle)=>{this.props.setturtle(turtle)}}/>
             </div>
         );
     }

@@ -580,6 +580,11 @@ export default class MainView extends React.Component {
         }
 
     }
+    setturtle=(turtle)=>{
+        this.setState({
+            turtle:turtle
+        })
+    }
 
     savecurrent=(nextop)=>{
         if(this.state.debug){
@@ -1115,6 +1120,7 @@ export default class MainView extends React.Component {
             <div id="mainview-body" style={{position:'absolute'}}>
                     <div id="header-pane">
                         <Header
+                            setturtle={(turtle)=>{this.setturtle(turtle)}}
                             openlogin={()=>this.openlogin()}
                             logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
