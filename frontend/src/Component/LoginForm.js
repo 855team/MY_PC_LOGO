@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Checkbox ,Card} from 'antd';
+import { Form, Input, Button, Checkbox ,Card,message} from 'antd';
 import 'antd/dist/antd.css';
 
 
@@ -34,12 +34,12 @@ class WrappedLoginForm extends React.Component {
         };
 
         const onFinishFailed = errorInfo => {
-            alert("填写有误")
+             message.error("填写有误")
         };
 
         if(this.props.visible){
             return (
-                <Card style={{width:"350px",height:"230px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
+                <Card style={{width:"350px",height:"230px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:"#F9F9F9",textAlign:"center"}}>
                 <Form
                     {...layout}
                     name="basic"

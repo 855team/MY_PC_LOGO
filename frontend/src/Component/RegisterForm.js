@@ -39,7 +39,7 @@ class RegisterForm extends React.Component {
 
         if(this.props.visible){
             return (
-                <Card style={{width:"350px",height:"280px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
+                <Card style={{width:"350px",height:"280px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:"#F9F9F9",textAlign:"center"}}>
                 <Form
                     {...layout}
                     name="basic"
