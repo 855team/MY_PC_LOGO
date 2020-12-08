@@ -57,6 +57,46 @@ class Commands extends React.Component{
         //ridius包括横向半径和纵向半径，横向定义为与乌龟朝向垂直的方向
         Bus.emit('drawcircle',ridius);
     }
+    turn2(angle){
+        //改变海龟朝向,角度制
+        Bus.emit('turn2',angle);
+    }
+    gostrait2(length){
+        //直线运动一段距离，length为负数表示后退
+        //PENUP时不会画线，PENDOWN时会画线
+        Bus.emit('gostrait2',length)
+    }
+    clear2(){
+        //清屏，乌龟复原
+        Bus.emit('clear2');
+    }
+    changeposition2(position){
+        //改变乌龟位置，不管pendown还是penup
+        //position是xy的键值对
+        Bus.emit('changeposition2',position);
+    }
+    changepenstate2(state){
+        //0:PU,1:PD
+        //PENUP时，乌龟能移动，但不会在canvas上画线条
+        Bus.emit('changepenstate2',state);
+    }
+    changeimg2(src){
+        //换皮肤,src为文件名
+        Bus.emit('changeimg2',src);
+    }
+    changepencolor2(pencolor){
+        //改变画笔的颜色
+        Bus.emit('changepencolor2',pencolor);
+    }
+    changepbgcolor2(bgcolor){
+        //改变画布的颜色
+        Bus.emit('changebgcolor2',bgcolor);
+    }
+    drawcircle2(ridius){
+        //画一个椭圆，ridius为xy的键值对
+        //ridius包括横向半径和纵向半径，横向定义为与乌龟朝向垂直的方向
+        Bus.emit('drawcircle2',ridius);
+    }
 }
 
 export default Commands;

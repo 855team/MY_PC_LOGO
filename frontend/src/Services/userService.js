@@ -14,3 +14,7 @@ export const validate=(data,callback)=>{
     let url=backedip+"/getuser";
     postRequest(url,data, callback);
 }
+export const modifyuser=(data,callback)=>{
+    let url=backedip+"/modifyuser";
+    postRequest(url,data, callback);
+}

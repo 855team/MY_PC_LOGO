@@ -4,7 +4,7 @@ import Commands from "../Controller/Commands";
 let interval=0;
 
 let commands=new Commands();
-class Compiler extends React.Component{
+class Compiler2 extends React.Component{
 
     constructor(props) {
         super(props);
@@ -17,6 +17,7 @@ class Compiler extends React.Component{
         };
         this.state = {
         }
+        commands.changepenstate2(1);
     }
     tokenizer(input) {
         let lexer = new jslex({
@@ -96,7 +97,7 @@ class Compiler extends React.Component{
         for (let i = 0;i < tokens.length;i++) {
             this.tokens.push(tokens[i]);
         }
-        console.log(this.tokens);
+        // console.log(this.tokens);
         return 1;
     }
 
@@ -453,25 +454,25 @@ class Compiler extends React.Component{
     traverse(node) {
         if (node.type == 'FDExp') {
             interval++;
-            setTimeout(() => commands.gostrait(node.value), 10*interval)
+            setTimeout(() => commands.gostrait2(node.value), 10*interval)
 
         }
         if (node.type == 'BKExp') {
             interval++;
-            setTimeout(() => commands.gostrait(-node.value), 10*interval)
+            setTimeout(() => commands.gostrait2(-node.value), 10*interval)
         }
         if (node.type == 'RTExp') {
             interval++;
-            setTimeout(() => commands.turn(node.value), 10*interval)
+            setTimeout(() => commands.turn2(node.value), 10*interval)
 
         }
         if (node.type == 'LTExp') {
             interval++;
-            setTimeout(() => commands.turn(-node.value), 10*interval)
+            setTimeout(() => commands.turn2(-node.value), 10*interval)
         }
         if (node.type == 'CLEANExp') {
             interval++;
-            setTimeout(() => commands.clear(), 10*interval)
+            setTimeout(() => commands.clear2(), 10*interval)
         }
         if (node.type == 'RepeatExp') {
             for (let i = 0;i < node.iter;i++) {
@@ -482,46 +483,47 @@ class Compiler extends React.Component{
         }
         if (node.type == 'PUExp') {
             interval++;
-            setTimeout(() =>commands.changepenstate(0), 10*interval)
+            setTimeout(() =>commands.changepenstate2(0), 10*interval)
 
         }
         if (node.type == 'PDExp') {
             interval++;
-            setTimeout(() =>commands.changepenstate(1), 10*interval)
+            setTimeout(() =>commands.changepenstate2(1), 10*interval)
         }
         if (node.type == 'SETPCExp') {
             interval++;
-            setTimeout(() =>commands.changepencolor(node.value), 10*interval)
+            setTimeout(() =>commands.changepencolor2(node.value), 10*interval)
         }
         if (node.type == 'SETBGExp') {
             interval++;
-            setTimeout(() =>commands.changepbgcolor(node.value), 10*interval)
+            setTimeout(() =>commands.changepbgcolor2(node.value), 10*interval)
 
         }
         if (node.type == 'STAMPOVALExp') {
             interval++;
-            setTimeout(() =>commands.drawcircle({x:node.valuex, y:node.valuey}), 10*interval)
+            setTimeout(() =>commands.drawcircle2({x:node.valuex, y:node.valuey}), 10*interval)
 
         }
         if (node.type == 'SETXYExp') {
             interval++;
-            setTimeout(() =>commands.changeposition({x:node.valuex,y:node.valuey}), 10*interval)
+            setTimeout(() =>commands.changeposition2({x:node.valuex,y:node.valuey}), 10*interval)
 
         }
     }
     operGenerator() {
-        console.log("last",this.AST);
+        // console.log("last",this.AST);
         let current = this.current_ASTNode;
         let AST = this.AST;
         while (current < AST.exps.length) {
-            this.traverse(AST.exps[current]);
-            current++;
+            this.traverse(AST.exps[current])
+            current++
         }
         this.current_ASTNode = current;
     }
 
     append(input) {
         // token AST traverse operation
+        // console.log(input)
         console.log(input)
         interval=0;
         if (this.tokenizer(input) == 0)
@@ -538,7 +540,7 @@ class Compiler extends React.Component{
 
 
 
-export default Compiler;
+export default Compiler2;
 
 
 

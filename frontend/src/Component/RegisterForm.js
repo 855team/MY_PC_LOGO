@@ -14,7 +14,7 @@ class RegisterForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                this.props.register(values.username,values.password,values.email);
+                //this.props.register(values.username,values.password,values.email);
             }
         });
     };
@@ -30,7 +30,7 @@ class RegisterForm extends React.Component {
         };
 
         const onFinish = values => {
-            this.props.login(values.username,values.password)
+            this.props.register(values.username,values.password,values.email)
         };
 
         const onFinishFailed = errorInfo => {
@@ -39,7 +39,7 @@ class RegisterForm extends React.Component {
 
         if(this.props.visible){
             return (
-                <Card style={{width:"350px",height:"280px",left:"40%",top:"300px",zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
+                <Card style={{width:"350px",height:"280px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
                 <Form
                     {...layout}
                     name="basic"

@@ -14,14 +14,16 @@ class SideBar extends React.Component {
         super(props);
 
         this.state = {
-            active: {
-                'file': true,
-                'debug': false,
-                'settings': false,
-                'tutorials': false,
-                'online': false
-            }
+            active: 'file'
         };
+    }
+
+    debugswitch=()=>{
+
+        if(!this.props.debug){
+            this.props.enterdebug();
+            return;
+        }
     }
 
     render() {
@@ -29,29 +31,32 @@ class SideBar extends React.Component {
         return (
             <SideNav
                 // style={theme.sidebar}
-                style={{background:"linear-gradient(#82cbff,#ffffff)"}}
+                style={{background:"linear-gradient(#82cbff,#ffffff)",zIndex:0}}
                 onSelect={(selected) => {
-                    let prev_active = this.state.active;
-                    for (let k in prev_active) {
-                        prev_active[k] = false;
-                    }
-                    prev_active[selected] = true;
-                    this.setState({
-                        active: prev_active
-                    });
+                    this.props.onSelected(selected);
+                    this.setState(
+                        {active:selected},
+                        // ()=>console.log(this.state)
+                    );
                 }}
             >
                 <Nav defaultSelected="file">
-
-                    <NavItem eventKey="debug" active={this.state.active['debug']}>
-                        <NavIcon>
+                    <NavItem eventKey="file" active={true}>
+                        <NavIcon >
+                            <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
+                                <IoIosDocument/>
+                            </IconContext.Provider>
+                        </NavIcon>
+                    </NavItem>
+                    <NavItem eventKey="debug" active={false} onClick={()=>this.debugswitch()}>
+                        <NavIcon >
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <GoBug />
                             </IconContext.Provider>
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="settings" active={this.state.active['settings']}>
+                    <NavItem eventKey="settings" active={this.state.active=='settings'}>
                         <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdSettings />
@@ -59,7 +64,7 @@ class SideBar extends React.Component {
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="tutorials" active={this.state.active['tutorials']}>
+                    <NavItem eventKey="tutorials" active={this.state.active=='tutorials'}>
                         <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <HiLightBulb />
@@ -67,8 +72,8 @@ class SideBar extends React.Component {
                         </NavIcon>
                     </NavItem>
 
-                    <NavItem eventKey="online" active={this.state.active['online']}>
-                        <NavIcon onClick={()=>{this.props.openbattle()}}>
+                    <NavItem eventKey="online" active={this.state.active=='online'}>
+                        <NavIcon>
                             <IconContext.Provider value={{size: '2.5em', color: 'white', className: 'sidebar-icon'}}>
                                 <IoMdPeople />
                             </IconContext.Provider>

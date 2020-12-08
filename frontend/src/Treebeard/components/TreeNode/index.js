@@ -44,6 +44,7 @@ class TreeNode extends PureComponent {
     }
 
     renderChildren(decorators) {
+
         const {
             animations, decorators: propDecorators, node, style, onToggle, onSelect, customStyles
         } = this.props;

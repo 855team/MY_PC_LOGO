@@ -12,7 +12,7 @@ class Help extends React.Component {
     render() {
         if(this.props.visible){
             return (
-                <Card style={{width:"350px",height:"230px",left:"40%",top:"300px",zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
+                <Card style={{width:"350px",height:"230px",left:"40%",top:window.innerHeight*0.3,zIndex:100,shape:"round",borderRadius:"8px",backgroundColor:" #ffffb3",textAlign:"center"}}>
                     <a>操作说明</a>
                     <br/>
                     <a>任务奖励</a>

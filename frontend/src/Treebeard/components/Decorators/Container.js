@@ -47,6 +47,13 @@ class Container extends PureComponent {
         Bus.emit("newproject",null)
     }
 
+    updateworkspace=(node)=>{
+        if(node.type=="file"){
+            Bus.emit("updateworkspace",{fid:node.id,pid:node.parentid})
+        }
+
+    }
+
     generatemenu=(node)=>{
         if(node.type=="file"){
             return(
@@ -82,10 +89,10 @@ class Container extends PureComponent {
         } = this.props;
         return (
             <Dropdown overlay={this.generatemenu(node)} trigger={['contextMenu']} >
-            <div style={node.active ? {...style.container} : {...style.link}} >
+            <div style={node.active ? {...style.container} : {...style.link}} onDoubleClick={()=>this.updateworkspace(node)}>
 
                 {!terminal ? this.renderToggle() : null}
-                <decorators.Header node={node} style={style.header} customStyles={customStyles} onSelect={onSelect}/>
+                <decorators.Header node={node} style={{...style.header}} customStyles={customStyles} onSelect={onSelect}/>
 
             </div>
             </Dropdown>

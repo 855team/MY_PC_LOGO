@@ -17,11 +17,12 @@ import React from 'react';
 import ReactDom from 'react-dom'
 import Bus from '../Controller/eventBus'
 import Commands from "../Controller/Commands";
-const initpos={x:300,y:300};
+const initpos={x:100,y:100};
 
-class DrawingPanel extends React.Component{
+class DrawingPanel2 extends React.Component{
 
     constructor(props) {
+
         super(props);
         this.state={
             pos:initpos,
@@ -30,27 +31,31 @@ class DrawingPanel extends React.Component{
             pencolor:'#000000',
             height:0,
             width:0,
-            penstate:0
+            penstate:0,
         }
     }
 
     render(){
         return(
-            <div id="drawingpanel" style={{height:1200,width:1200,position: 'relative'}}>
-                <canvas id='mycanvas'   style={{backgroundColor:'#E9F1FC',position:'absolute'}}>
+            <div id="drawingpanel2" style={{height:"100%",width:"100%",position: 'relative'}}>
+                <canvas id='mycanvas2'   style={{backgroundColor:'#F0FFFF',position:'absolute'}}>
                     Your browser does not support the canvas element.
                 </canvas>
-                <img id="turtle" ref="turtle"  src={require("../assets/turtle.png")} style={{position:'relative',width:'40px',height:'40px',marginLeft:initpos.x,
+                <img id="turtle2"   src={require("../assets/turtle.png")} style={{position:'relative',width:'40px',height:'40px',marginLeft:initpos.x,
                     marginTop:initpos.y,transform:'rotate(0deg)'}}/>
             </div>
         )
     }
     componentDidMount() {
-        this.registerlisteners();
+        console.log(this.state)
+        if(Bus.listeners("gostrait2").length==0){
+            this.registerlisteners();
+        }
+
         //canvas元素
-        let c=document.getElementById('mycanvas');
-        c.width=document.getElementById('drawingpanel').clientWidth;
-        c.height=document.getElementById('drawingpanel').clientHeight;
+        let c=document.getElementById('mycanvas2');
+        c.width=document.getElementById('drawingpanel2').clientWidth;
+        c.height=document.getElementById('drawingpanel2').clientHeight;
         this.setState({
             height:c.height,
             width:c.width
@@ -62,6 +67,13 @@ class DrawingPanel extends React.Component{
         //this.drawcircle({x:500,y:500},{x:200,y:300},"red",Math.PI/4)
         //document.getElementById("turtle").style.transform="rotate(135deg)"
         //this.setsource("../assets/turtle_copy.png")
+
+    }
+
+    componentWillUnmount(){
+        this.setState = (state, callback) => {
+            return;
+        }
 
     }
 
@@ -83,12 +95,12 @@ class DrawingPanel extends React.Component{
 
     changebgcolor(color){
         //改变画布的背景颜色
-        document.getElementById("mycanvas").style.backgroundColor=color;
+        document.getElementById("mycanvas2").style.backgroundColor=color;
     }
 
     drawline(start,end,color){
         //画线
-        let canvas=document.getElementById("mycanvas");
+        let canvas=document.getElementById("mycanvas2");
         let ctx =canvas.getContext("2d");
         ctx.strokeStyle = color;
         let path=new Path2D();
@@ -99,7 +111,7 @@ class DrawingPanel extends React.Component{
 
     drawcircle(center,radius,color,angle){
         //画椭圆
-        let canvas=document.getElementById("mycanvas");
+        let canvas=document.getElementById("mycanvas2");
         let ctx =canvas.getContext("2d");
         ctx.strokeStyle = color;
         let path=new Path2D();
@@ -107,83 +119,71 @@ class DrawingPanel extends React.Component{
         ctx.stroke(path);
     }
 
-    clear(){
+    clear=()=>{
         //清除canvas中的内容，乌龟回到初始位置
         this.setorientation(0);
         this.setposition(initpos);
-        this.setState({
-            pos:initpos,
-            orientation:0,
-        })
-        let canvas=document.getElementById("mycanvas");
+        this.state.pos=initpos;
+        this.state.orientation=0;
+        let canvas=document.getElementById("mycanvas2");
         canvas.width=canvas.width;
-        console.log(this.state.pos)
     }
 
     setorientation(angle){
         //设置乌龟的旋转角度，角度为顺时针绝对
-         ReactDom.findDOMNode(document.getElementById("turtle")).style.transform=`rotate(${angle}deg)`;
+         ReactDom.findDOMNode(document.getElementById("turtle2")).style.transform=`rotate(${angle}deg)`;
     }
     setposition(position){
         //设置乌龟在canvas上的位置
         //position为xy的键值对
         let positionX=position.x;
         let positionY=position.y;
-        ReactDom.findDOMNode(document.getElementById("turtle")).style.marginLeft=`${positionX}px`;
-        ReactDom.findDOMNode(document.getElementById("turtle")).style.marginTop=`${positionY}px`;
+        ReactDom.findDOMNode(document.getElementById("turtle2")).style.marginLeft=`${positionX}px`;
+        ReactDom.findDOMNode(document.getElementById("turtle2")).style.marginTop=`${positionY}px`;
     }
 
     setsource(src){
         //设置乌龟的图像源，src为文件名
         //图像建议长与宽相近，压缩成40*40时不会失真
-        ReactDom.findDOMNode(document.getElementById("turtle")).src=require(`../assets/${src}.png`);
+        ReactDom.findDOMNode(document.getElementById("turtle2")).src=require(`../assets/${src}.png`);
     }
 
 
 
     registerlisteners(){
-        Bus.addListener('clear', () => {
+        Bus.addListener('clear2', () => {
             this.clear();
         });
-        Bus.addListener('changeimg', (src) => {
+        Bus.addListener('changeimg2', (src) => {
             this.setsource(src);
         });
-        Bus.addListener('changepencolor', (color) => {
-            this.setState({
-                pencolor:color
-            })
+        Bus.addListener('changepencolor2', (color) => {
+            this.state.pencolor=color
+
         });
-        Bus.addListener('changebgcolor', (color) => {
+        Bus.addListener('changebgcolor2', (color) => {
             this.changebgcolor(color);
             this.setState({
                 bgcolor:color
             })
         });
-        Bus.addListener('changepenstate', (state) => {
-            this.setState({
-                penstate:state
-            })
+        Bus.addListener('changepenstate2', (state) => {
+            this.state.penstate=state
         });
-        Bus.addListener('changeposition', (position) => {
+        Bus.addListener('changeposition2', (position) => {
             this.setposition(position)
-            this.setState({
-                pos:position
-            })
+            this.state.pos=position
         });
-        Bus.addListener('turn', async (angle) => {
+        Bus.addListener('turn2', async (angle) => {
             let newangle=this.state.orientation+angle
             await this.setorientation(newangle)
-            await this.setState({
-                orientation:newangle
-            })
+            this.state.orientation=newangle
         });
-        Bus.addListener('gostrait', async (length) => {
+        Bus.addListener('gostrait2', async (length) => {
             let oldpos=this.state.pos;
             let endposX=oldpos.x+length*Math.sin(Math.PI*this.state.orientation/180);
             let endposY=oldpos.y-length*Math.cos(Math.PI*this.state.orientation/180);
-            await this.setState({
-                pos:{x:endposX,y:endposY}
-            })
+            this.state.pos={x:endposX,y:endposY}
             this.setposition({x:endposX,y:endposY})
             if(this.state.penstate){
                 endposX=(endposX+20);
@@ -191,7 +191,7 @@ class DrawingPanel extends React.Component{
                 this.drawline({x:oldpos.x+20,y:oldpos.y+20},{x:endposX,y:endposY},this.state.pencolor)
             }
         });
-        Bus.addListener('drawcircle', (radius) => {
+        Bus.addListener('drawcircle2', (radius) => {
             if(this.state.penstate){
                 let pos={x:this.state.pos.x+20,y:this.state.pos.y+20}
                 this.drawcircle(pos,radius,this.state.pencolor,this.state.orientation)
@@ -206,4 +206,4 @@ class DrawingPanel extends React.Component{
 
 }
 
-export default DrawingPanel;
+export default DrawingPanel2;

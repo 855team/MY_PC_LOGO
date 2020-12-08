@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import * as monaco from 'monaco-editor';
 import PropTypes, {func} from 'prop-types';
 import highlight from '../Controller/logo_highlight';
-
+import "../CSS/Breakppoint.css"
+import Bus from "../Controller/eventBus"
 var keywords = [
   'ST', 'HT',                         // 显示隐藏乌龟
   'FD', 'BK', 'LT', 'RT',             // 前后左右
@@ -174,6 +175,8 @@ export default class MonacoEditor extends Component {
     this.props.editorDidMount(editor, monaco);
     editor.onDidChangeModelContent((event) => {
       const value = editor.getValue();
+      this.props.updatecontent(value);
+      Bus.emit("exitdebug");
       // Always refer to the latest value
       this._currentValue = value;
       this.props.onChange(value, event);
@@ -195,16 +198,159 @@ export default class MonacoEditor extends Component {
       this.editorDidMount(this.editor);
     }
     this.editor.addAction({       //custom context-menu
-      id: "Alert",
-      label: "Alert",
+      id: "Save",
+      label: "Save",
       contextMenuOrder: 0, // choose the order
       contextMenuGroupId: "operation",
       keybindings: [
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
       ],
-      run: ()=>alert("hello"),
+      run: ()=>this.props.save(),
     })
+    this.editor.addAction({       //custom context-menu
+      id: "New",
+      label: "New",
+      contextMenuOrder: 1, // choose the order
+      contextMenuGroupId: "operation",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P,
+      ],
+      run: ()=>this.props.new(),
+    })
+    this.editor.addAction({       //custom context-menu
+      id: "Run",
+      label: "Run",
+      contextMenuOrder: 2, // choose the order
+      contextMenuGroupId: "operation",
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_E,
+      ],
+      run: ()=>this.props.run(),
+    })
+
+    this.editor.onMouseDown(e => {
+
+      //这里限制了一下点击的位置，只有点击breakpoint应该出现的位置，才会创建，其他位置没反应
+      if(!this.props.debug){
+        return;
+      }
+      if (e.target.detail && e.target.detail.offsetX && e.target.detail.offsetX >= 0 && e.target.detail.offsetX <= 20) {
+
+        let line = e.target.position.lineNumber
+        //空行不创建
+        if (this.editor.getModel().getLineContent(line).trim() === '') {
+          return
+        }
+        //如果点击的位置没有的话创建breakpoint，有的话，删除
+        if (!this.hasBreakPoint(line)) {
+          this.addBreakPoint(line)
+        } else {
+          this.removeBreakPoint(line)
+        }
+        //如果存在上个位置，将鼠标移到上个位置，否则使editor失去焦点
+        if (this.lastPosition) {
+          this.editor.setPosition(this.lastPosition)
+        } else {
+          document.activeElement.blur()
+        }
+      }
+      //更新lastPosition为当前鼠标的位置（只有点击编辑器里面的内容的时候）
+      if (e.target.type === 6 || e.target.type === 7) {
+        this.lastPosition = this.editor.getPosition()
+      }
+    })
+
+    Bus.addListener("currentdebugpoint",async(line)=>{
+      line=line+1;
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      let value = {range: new monaco.Range(line, 1, line, 1), options: { isWholeLine: true, linesDecorationsClassName: 'currentpoint' }}
+      model.deltaDecorations([], [value])
+    })
+
+    Bus.addListener("deletecurrentdebugpoint",async(line)=>{
+      line=line+1;
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      let decorations = this.editor.getLineDecorations(line);
+      for (let decoration of decorations) {
+        if (decoration.options.linesDecorationsClassName === 'currentpoint') {
+          ids.push(decoration.id)
+        }
+      }
+      if (ids && ids.length) {
+        model.deltaDecorations(ids, [])
+      }
+    })
+
+    Bus.addListener("deletebreakpoints",async(breakpoints)=>{
+      let bp=[];
+      for(let i=0;i<breakpoints.length;i++){
+        if(breakpoints[i]==true){
+          bp.push(i)
+        }
+      }
+      let model = this.editor.getModel()
+      if (!model) return
+      let ids = [];
+      for(let i=0;i<bp.length;i++){
+        let decorations = this.editor.getLineDecorations(bp[i]+1);
+        for (let decoration of decorations) {
+          if (decoration.options.linesDecorationsClassName === 'breakpoints') {
+            ids.push(decoration.id)
+          }
+        }
+      }
+
+      if (ids && ids.length) {
+        model.deltaDecorations(ids, [])
+      }
+    })
+
   }
+  //添加断点
+  async addBreakPoint (line) {
+    let model = this.editor.getModel()
+    if (!model) return
+    let value = {range: new monaco.Range(line, 1, line, 1), options: { isWholeLine: true, linesDecorationsClassName: 'breakpoints' }}
+    model.deltaDecorations([], [value])
+    Bus.emit("addbreakpoint",line)
+  }
+  //删除断点，如果指定了line，删除指定行的断点，否则删除当前model里面的所有断点
+  async removeBreakPoint (line) {
+
+    let model = this.editor.getModel()
+    if (!model) return
+    let decorations
+    let ids = []
+    if (line !== undefined) {
+      Bus.emit("deletebreakpoint",line)
+      decorations = this.editor.getLineDecorations(line)
+    } else {
+      decorations = this.editor.getAllDecorations()
+    }
+    for (let decoration of decorations) {
+      if (decoration.options.linesDecorationsClassName === 'breakpoints') {
+        ids.push(decoration.id)
+      }
+    }
+    if (ids && ids.length) {
+      model.deltaDecorations(ids, [])
+    }
+  }
+  //判断该行是否存在断点
+  hasBreakPoint (line) {
+    let decorations = this.editor.getLineDecorations(line)
+    for (let decoration of decorations) {
+      if (decoration.options.linesDecorationsClassName === 'breakpoints') {
+        return true
+      }
+    }
+    return false
+  }
+
   editorRef = (component) => {
     this.containerElement = component;
   };

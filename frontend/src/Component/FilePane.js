@@ -28,9 +28,9 @@ const data = {
 class FilePane extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            data: data
+        this.state={
+            cursor:null,
+            data:null
         }
 
         this.onToggle = this.onToggle.bind(this);
@@ -43,7 +43,6 @@ class FilePane extends React.Component {
         }
         node.active = true;
         if (node.children) {
-            console.log(node.children)
             node.toggled = toggled;
         }
         this.setState(() => ({cursor: node, data: Object.assign({}, data)}));
@@ -56,10 +55,10 @@ class FilePane extends React.Component {
         return (
             <div
                 // style={theme.filePane}
-                style={{background:"linear-gradient(#82cbff,#ffffff)",width:"100%",height:"100%"}}
+                style={{background:"#E5F0FF",width:"100%",height:"100%"}}
             >
                 <div style={{height: '0.4em'}} />
-                <Treebeard data={data} onToggle={this.onToggle} />
+                <Treebeard data={this.props.treedata} customStyles={{color:"black"}} onToggle={this.onToggle} />
             </div>
         );
     }

@@ -1,0 +1,53 @@
+#mainview-body{
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(#54b7ff,#ffffff);
+}
+
+#header-pane{
+    width:100%;
+    height: 7%;
+    background:#4D97FF;
+}
+
+#body-pane{
+    width:100%;
+    height: 88.5%;
+    display: flex;
+    background:none;
+}
+
+#footer-pane{
+    width:100%;
+    height: 4.5%;
+    background: #4D97FF;
+}
+
+#left-sidebar-pane{
+    width:3%;
+    height:100%;
+    margin: 0;
+    background:none;
+}
+
+#left-pane{
+    width:15%;
+    height:100%;
+    margin: 0;
+    background:none;
+}
+
+#mid-pane{
+    width:36%;
+    height:100%;
+    margin: 0;
+    background:none;
+}
+
+#right-pane{
+    width:46%;
+    height:100%;
+    margin: 0;
+    overflow: auto;
+    background:none;
+}

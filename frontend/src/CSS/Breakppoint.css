@@ -1,0 +1,18 @@
+.breakpoints{
+    background: red;
+    background: radial-gradient(circle at 3px 3px, white, red);
+    width: 12px !important;
+    height: 12px !important;
+    left: 5px !important;
+    top: 5px;
+    border-radius: 5px;
+}
+
+.currentpoint{
+    background: greenyellow;
+    width: 8px !important;
+    height: 8px !important;
+    left: 7px !important;
+    top: 7px;
+    border-radius: 3px;
+}
