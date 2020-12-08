@@ -5,7 +5,7 @@ import { Menu, Dropdown,Upload,message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { Progress,Modal,Image} from 'antd';
 import { Radio } from 'antd';
-const {confirm}=Modal;
+const {confirm,info}=Modal;
 
 class UserArea extends React.Component{
 
@@ -120,6 +120,9 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
     }
+
+
+
     render() {
         let importfile=this.props.importfile;
         let uploadconfig = {
