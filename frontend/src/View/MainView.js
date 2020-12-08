@@ -35,117 +35,6 @@ import FreeScrollBar from 'react-free-scrollbar';
 const { Option } = Select;
 const { confirm } = Modal;
 
-
-
-class ControlledElement extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-
-        this.onMinimizeClicked = this.onMinimizeClicked.bind(this);
-        this.onMaximizeClicked = this.onMaximizeClicked.bind(this);
-
-        this.state = {
-            size: -1
-        };
-    }
-
-    onMinimizeClicked() {
-        const currentSize = this.getSize();
-        const parentSize = this.getParentSize();
-        const update = (size) => {
-            return new Promise((resolve) => {
-                this.setState(Object.assign({},
-                    this.state, {
-                        size: size < 25 ? 25 : size
-                    }), () => resolve());
-            });
-        };
-
-        const done = (from, to) => {
-            return from < to;
-        };
-
-        this.animate(currentSize, (currentSize>parentSize*0.5)*parentSize*0.5, -8, done, update);
-    }
-
-    onMaximizeClicked() {
-        const currentSize = this.getSize();
-        const parentSize = this.getParentSize();
-
-        const update = (size) => {
-            return new Promise((resolve) => {
-                this.setState(Object.assign({},
-                    this.state, {
-                        size
-                    }), () => resolve());
-            });
-        };
-
-        const done = (from, to) => {
-            return from > to;
-        };
-
-        this.animate(currentSize, ((currentSize+25>parentSize*0.5)+1)*parentSize*0.5, 8, done, update);
-    }
-
-    getSize() {
-        const domElement = ReactDOM.findDOMNode(this);
-        switch (this.props.orientation) {
-            case 'horizontal':
-                return domElement.offsetHeight;
-            case 'vertical':
-                return domElement.offsetWidth;
-            default:
-                return 0;
-        }
-    }
-
-    getParentSize() {
-        const domElement = ReactDOM.findDOMNode(this).parentNode;
-        switch (this.props.orientation) {
-            case 'horizontal':
-                return domElement.offsetHeight;
-            case 'vertical':
-                return domElement.offsetWidth;
-            default:
-                return 0;
-        }
-    }
-
-    animate(from, to, step, done, fn) {
-        const stepFn = () => {
-            if (!done(from, to)) {
-                fn(from += step).then(() => {
-                    setTimeout(stepFn, 1)
-                });
-            }
-        };
-        stepFn();
-    }
-
-    render() {
-        return (
-            <ReflexElement className="ctrl-pane" size={this.state.size} {...this.props}>
-                <div style={{height: '100%'}}>
-                    <div style={{height: '20px', backgroundColor: 'black', overflow: 'hidden'}}>
-                        <button onClick={this.onMinimizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
-                            <label> - </label>
-                        </button>
-                        <button onClick={this.onMaximizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
-                            <label> + </label>
-                        </button>
-                    </div>
-                    <div style={{position: 'absolute', top: '22px', bottom: '0', width: '100%', overflow: 'hidden'}}>
-                        {this.props.children}
-                    </div>
-                </div>
-            </ReflexElement>
-        )
-    }
-}
-
 export default class MainView extends React.Component {
     constructor(props) {
         super(props);
@@ -410,9 +299,26 @@ export default class MainView extends React.Component {
         })
     }
     openhelp=()=>{
-        this.setState({
-            help_visible:true
-        })
+        // this.setState({
+        //     help_visible:true
+        // })
+            Modal.info({
+                title: "帮助",
+                bodyStyle:{TextAlign:"center"},
+                content:
+                    <ul>
+                        <li>本系统旨在帮助儿童学习logo语言</li>
+                        <li>您可以通过在命令行或命令文件中输入代码来控制小乌龟的移动，命令文件可以保存在云端或本地，同时也可从本地导入文件</li>
+                        <li>您可以通过创建双人房间与远方的小伙伴一起控制小乌龟</li>
+                        <li>在通过书写代码完成任务的过程中，您可以累积经验值，解锁更漂亮的小乌龟，让写代码的过程更加愉悦</li>
+                    </ul>,
+                onOk(){
+                    return;
+                },
+                onCancel() {
+                    return;
+                },
+            });
     }
     openbattle=()=>{
         this.setState({
