@@ -1,26 +1,17 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import SideBar from "../Component/SideBar";
 import Sidebar2 from "../Component/Sidebar2";
 import SideBarPane from "../Component/SideBarPane";
 import Console from "../Component/Console";
 import Header from "../Component/Header";
-import {
-    ReflexContainer,
-    ReflexSplitter,
-    ReflexElement
-} from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
 import DrawingPanel from "../Component/DrawingPanel";
 import * as userService from "../Services/userService";
 import WrappedLoginForm from "../Component/LoginForm";
 import DoubleRoom from "../Component/DoubleRoom";
 import * as fileService from "../Services/fileService"
-import {message,Modal,Input,Tag} from 'antd';
+import {message, Modal, Input, Tag, Form, Button} from 'antd';
 import RegisterForm from "../Component/RegisterForm";
-import Help from "../Component/Help";
-import FileOperation from "../Component/FileOperation";
-import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
@@ -52,10 +43,6 @@ export default class MainView extends React.Component {
             register_visible:false,
             selected:'file',
 
-            help_visible:false,
-            battle_visible:false,
-            userstate_visible:false,
-            fileoperation_visible:false,
 
             editorcontent:"",
             currentpid:-1,
@@ -320,22 +307,7 @@ export default class MainView extends React.Component {
                 },
             });
     }
-    openbattle=()=>{
-        this.setState({
-            battle_visible:true
-        })
-    }
 
-    openfileoperation=()=>{
-        this.setState({
-            fileoperation_visible:true
-        })
-    }
-    openuserstate=()=>{
-        this.setState({
-            userstate_visible:true
-        })
-    }
 
 
     closelogin=()=>{
@@ -346,27 +318,6 @@ export default class MainView extends React.Component {
     closeregister=()=>{
         this.setState({
             register_visible:false
-        })
-    }
-    closehelp=()=>{
-        this.setState({
-            help_visible:false
-        })
-    }
-    closebattle=()=>{
-        this.setState({
-            battle_visible:false
-        })
-    }
-
-    closefileoperation=()=>{
-        this.setState({
-            fileoperation_visible:false
-        })
-    }
-    closeuserstate=()=>{
-        this.setState({
-            userstate_visible:false
         })
     }
 
@@ -389,11 +340,6 @@ export default class MainView extends React.Component {
         message.success("退出成功")
     }
 
-    showfilepanel(){
-        this.setState({
-            filepanel_visible:!this.state.filepanel_visible
-        })
-    }
 
     getproject=(pid)=>{
 
@@ -1119,7 +1065,6 @@ export default class MainView extends React.Component {
                             logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
-                            openfileoperation={()=>this.openfileoperation()}
                             task={this.state.task}
                             username={this.state.username}
                             login={this.state.login}
@@ -1221,9 +1166,6 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <RegisterForm register={(username,password,email)=>this.register(username,password,email)} closeregister={()=>this.closeregister()} visible={this.state.register_visible}/>
                 </div>
-                <div style={{position:'relative'}}>
-                    <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
-                </div>
                 <div>
                     {this.state.login?(
                     <DoubleRoom
@@ -1232,12 +1174,6 @@ export default class MainView extends React.Component {
                         owner={{uid:this.state.uid,username:this.state.username,turtle:this.state.turtle}}
                     />
                     ):null}
-                </div>
-                <div style={{position:'relative'}}>
-                    <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
-                </div>
-                <div style={{position:'relative'}}>
-                    <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
                 <div style={{position:'relative'}}>
                     <Debugtool debug={this.state.debug} />
