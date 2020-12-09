@@ -41,7 +41,7 @@ const (
 	RoomsGetSuccess			=	30
 )
 
-const TokenTerm = 30 * 60 // 30min
+var TokenTerm int64 = 30 * 60 // 30min
 
 /* Structure of Response */
 type ResponseBean struct {

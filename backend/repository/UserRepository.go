@@ -23,3 +23,9 @@ func SaveUser(user model.User) {
 	db.Save(&user)
 	return
 }
+
+func RemoveUser(uid uint) {
+	db.Delete(&model.User{
+		Uid: uid,
+	})
+}

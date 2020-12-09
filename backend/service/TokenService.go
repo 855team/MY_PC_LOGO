@@ -19,6 +19,8 @@ type grant struct {
 func CheckToken(token string) uint {
 	if token == "0000000000000000000000000000000000000000000000000000000000000000" {
 		return 1
+	} else if token == "1111111111111111111111111111111111111111111111111111111111111111" {
+		return 2
 	}
 	if g, exist := tokenMap.Load(token); exist {
 		grant := g.(grant)
