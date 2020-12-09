@@ -41,7 +41,7 @@ const (
 	RoomsGetSuccess			=	30
 )
 
-const TokenTerm = 30 * 60 // 30min
+var TokenTerm int64 = 30 * 60 // 30min
 
 /* Structure of Response */
 type ResponseBean struct {
@@ -63,6 +63,8 @@ type GetRoomsResponse struct {
 	Uid2		uint			`json:"uid2"`
 	Username1	string			`json:"username1"`
 	Username2	string			`json:"username2"`
+	Turtle1		uint				`json:"turtle1"`
+	Turtle2		uint				`json:"turtle2"`
 	IsInRoom1	bool			`json:"isinroom1"`
 	IsInRoom2	bool			`json:"isinroom2"`
 }
@@ -155,14 +157,13 @@ type CommandEntry struct {
 type NotifyEntry struct {
 	Uid			uint	`json:"uid"`
 	Username	string	`json:"username"`
+	Turtle		uint	`json:"turtle"`
 }
 
 type RoomEntry struct {
 	Name			string
-	Owner			uint
-	Partner			uint
-	OwnerName		string
-	PartnerName		string
+	Owner			model.User
+	Partner			model.User
 	HasOwner		bool
 	HasPartner		bool
 	OwnerStream		chan []CommandEntry

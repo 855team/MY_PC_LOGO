@@ -9,10 +9,12 @@ func GetRooms() (success bool, msg int, data []utils.GetRoomsResponse) {
 		data = append(data, utils.GetRoomsResponse{
 			Rid: rid,
 			Name: entry.Name,
-			Uid1: entry.Owner,
-			Uid2: entry.Partner,
-			Username1: entry.OwnerName,
-			Username2: entry.PartnerName,
+			Uid1: entry.Owner.Uid,
+			Uid2: entry.Partner.Uid,
+			Username1: entry.Owner.Username,
+			Username2: entry.Partner.Username,
+			Turtle1: entry.Owner.Turtle,
+			Turtle2: entry.Partner.Turtle,
 			IsInRoom1: entry.HasOwner,
 			IsInRoom2: entry.HasPartner,
 		})
@@ -34,7 +36,7 @@ func NewCommand(params utils.NewCommandParams) (success bool, msg int) {
 			}
 			if !entry.HasOwner || !entry.HasPartner {
 				success, msg = false, utils.RoomUserNotEnough
-			} else if entry.Owner != uid && entry.Partner != uid {
+			} else if entry.Owner.Uid != uid && entry.Partner.Uid != uid {
 				success, msg = false, utils.RoomNoPermission
 			} else {
 				entry.Lock.Lock()

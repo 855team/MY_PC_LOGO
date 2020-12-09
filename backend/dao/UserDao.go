@@ -42,3 +42,11 @@ func SetUser(user model.User) {
 	repository.SaveUser(user)
 	return
 }
+
+func RemoveUser(uid uint) {
+	repository.RemoveUser(uid)
+}
+
+func RemoveUserAuth(uid uint) {
+	repository.RemoveUserAuth(uid)
+}
