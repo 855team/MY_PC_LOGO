@@ -72,9 +72,12 @@ class DoubleRoom extends React.Component{
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(this.props.onVisible&&!prevProps.onVisible&&this.state.doubleRoomState==="room"){
-            let commands="CLEAN"
-            this.state.codes.map((item)=>{commands+=" "+item.code})
-            this.compiler.append(commands)
+            let commands="CLEAN";
+            this.state.codes.map((item)=>{commands+=" "+item.code});
+            let res=this.compiler.append(commands);
+            if(res!="success"){
+                message.warn(res);
+            }
         }
         if(this.state.doubleRoomState==="room"&&prevState.doubleRoomState==="hall"&&this.resizeArea){
             console.log("yes reseizeArea is created!")
@@ -121,7 +124,10 @@ class DoubleRoom extends React.Component{
                 this.compiler.append("PD")
             }
             let last=newcodes.length-1;
-            this.compiler.append(newcodes[last].code);
+            let res=this.compiler.append(newcodes[last].code);
+            if(res!="success"){
+                message.warn(res)
+            }
         }
         const partnerCallback=(data)=>{
             this.setState({
@@ -174,7 +180,10 @@ class DoubleRoom extends React.Component{
                 this.compiler.append("PD")
             }
             let last=newcodes.length-1;
-            this.compiler.append(newcodes[last].code);
+            let res=this.compiler.append(newcodes[last].code);
+            if(res!="success"){
+                message.warn(res)
+            }
         }
         const partnerCallback=(data)=>{
             this.setState({

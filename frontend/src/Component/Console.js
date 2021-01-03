@@ -2,6 +2,8 @@ import React, {createRef} from "react";
 import Commands from "../Controller/Commands";
 import ReactConsole from 'react-console-component';
 import Compiler from './Compiler.js'
+import {message} from 'antd'
+import Bus from '../Controller/eventBus'
 
 import '../CSS/react-console.css';
 let commands=new Commands();
@@ -16,7 +18,11 @@ class Console extends React.Component {
     }
 
     handle(line) {
-        this.compiler.append(line);
+        Bus.emit("console","execute");
+        let res=this.compiler.append(line);
+        if(res!="success"){
+            message.warn(res)
+        }
         // if(line=="a"){
         //     commands.turn(45);
         //     commands.changepenstate(1);

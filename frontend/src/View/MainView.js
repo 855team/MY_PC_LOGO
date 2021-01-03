@@ -239,6 +239,7 @@ export default class MainView extends React.Component {
     }
 
     importfile=(content)=>{
+        Bus.emit("files","import")
         if(!this.state.login){
             this.setState({
                 editorcontent:content
@@ -269,6 +270,7 @@ export default class MainView extends React.Component {
     }
 
     exportfile=()=>{
+        Bus.emit("files","export")
         let FileSaver=require('file-saver');
         let data=this.state.editorcontent;
         let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
@@ -289,6 +291,7 @@ export default class MainView extends React.Component {
         // this.setState({
         //     help_visible:true
         // })
+            Bus.emit("openwindow","help");
             Modal.info({
                 title: "帮助",
                 bodyStyle:{TextAlign:"center"},
@@ -421,6 +424,7 @@ export default class MainView extends React.Component {
     }
 
     editorsave=()=>{
+        Bus.emit("files","save")
         if(!this.state.login){
             message.warn("用户未登录");
             return
@@ -475,10 +479,15 @@ export default class MainView extends React.Component {
 
     editorrun=()=>{
         if(!this.state.debug){
+            Bus.emit("editor","execute");
             let lines=this.state.editorcontent.split("\r\n");
             let compiler=new Compiler();
             compiler.append("CLEAN");
-            setTimeout(()=>{compiler.append(lines.join(" "))},10)
+            setTimeout(()=>{
+                let res=compiler.append(lines.join(" "))
+                if(res!="success"){
+                    message.warn(res)
+                }},10)
         }
         else{
             message.warn("请先退出debug模式")
@@ -692,9 +701,14 @@ export default class MainView extends React.Component {
     }
 
     newfile=(pid,filename,content)=>{
+        Bus.emit("files","newfile")
         let token=localStorage.getItem("token");
         let data={pid:pid,name:filename,token:token,content:""};
         let setstate=(data)=>this.setState(data);
+        let addfiletoremotedata=this.addfiletoremotedata;
+        let generatetreedata=this.generatetreedata;
+        let state=this.state;
+        let savecurrent=this.savecurrent;
         let callback=async(result)=>{
             if(result.success){
                 if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
@@ -729,31 +743,31 @@ export default class MainView extends React.Component {
                     icon: <ExclamationCircleOutlined />,
                     onOk() {
                         let nextop=async()=>{
-                            this.addfiletoremotedata(pid,filename,result.data,"");
-                            await this.setState({
+                            addfiletoremotedata(pid,filename,result.data,"");
+                            await setstate({
                                 currentpid:pid,
                                 currentfid:result.data
                             })
-                            this.setState({
-                                treedata:this.generatetreedata(this.state.remotedata),
+                            setstate({
+                                treedata:generatetreedata(state.remotedata),
                                 editorcontent:"",
                             })
                             message.success("新建文件成功")
                         }
-                        this.savecurrent(nextop);
+                        savecurrent(nextop);
                     },
                     onCancel() {
                         let op=async()=>{
-                            this.addfiletoremotedata(pid,filename,result.data,"");
-                            await this.setState({
+                            addfiletoremotedata(pid,filename,result.data,"");
+                            await setstate({
                                 currentpid:pid,
                                 currentfid:result.data
                             })
-                            this.setState({
-                                treedata:this.generatetreedata(this.state.remotedata),
+                            setstate({
+                                treedata:generatetreedata(state.remotedata),
                                 editorcontent:"",
                             })
-                            message.success("新建文件成功")
+                            message.success("操作已取消")
                         }
                         op();
                     },
@@ -769,6 +783,7 @@ export default class MainView extends React.Component {
     }
 
     newproject=(projectname)=>{
+        Bus.emit("files","newproject")
         let token=localStorage.getItem("token");
         let data={name:projectname,token:token};
         let callback=async(result)=>{
@@ -1010,9 +1025,17 @@ export default class MainView extends React.Component {
     }
 
     updatetasklevel=(level)=>{
-        this.setState({
-            task:level
-        })
+        let token=localStorage.getItem("token");
+        let data={username:this.state.username,email:this.state.username,token:token,turtle:this.state.turtle,task:level};
+        let callback=(result)=>{
+            if(result.success){
+                this.setState({
+                    task:level
+                })
+                message.success("任务完成")
+            }
+        }
+        userService.modifyuser(data,callback)
     }
 
     registerlisteners(){
