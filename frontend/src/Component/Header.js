@@ -105,7 +105,7 @@ class UserArea extends React.Component{
             return(
                 <div className="userarea" >
                     <div style={{width:window.innerHeight*0.07,float:"left",cursor:"pointer"}} onClick={()=>this.handleclick()}>
-                    <Progress className="progress" width={window.innerHeight*0.06} type="circle" percent={this.props.percent} format={() => "Lv"+level} />
+                    <Progress className="progress" width={window.innerHeight*0.06} type="circle" status="exception" percent={progress} format={() => "Lv"+level} />
                     </div>
                     <div style={{float:"left",paddingTop:window.innerHeight*0.01}}>
                     <Button shape="round" type="primary" onClick={()=>this.props.logout()}>logout</Button>

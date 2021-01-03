@@ -443,7 +443,7 @@ class Compiler extends React.Component{
             if (ret.type == 'error') {
                 return ret;
             }
-            this.AST.exps.push(walk());
+            this.AST.exps.push(ret);
             // console.log(current,this.AST);
         }
         // console.log(this.AST);

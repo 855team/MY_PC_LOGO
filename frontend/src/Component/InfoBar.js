@@ -24,7 +24,7 @@ class Infobar extends React.Component{
         if(!taskdata.status){
             let content=(
                 <div>
-                    <p>这里应该埋一个彩蛋</p>
+                    <p>已解锁所有皮肤，快去体验一下吧</p>
                 </div>
             )
             tasktag=<Popover content={content} title="Tip"><Tag style={tagstyle} color="purple">已完成所有任务</Tag></Popover>
