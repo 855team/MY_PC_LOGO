@@ -85,7 +85,7 @@ class Compiler extends React.Component{
                 "CALL": function() {
                     return {type:"CALL"}
                 },
-                "[a-fA-Z][a-fA-Z0-9]*": function() {
+                "[a-zA-Z][a-zA-Z0-9]*": function() {
                     return {type:"STRING", value:this.text}
                 },
 
