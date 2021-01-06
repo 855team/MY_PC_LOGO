@@ -11,12 +11,25 @@ class Compiler extends React.Component{
         this.tokens = [];
         this.current_token = 0;
         this.current_ASTNode = 0;
-        this.AST = {
-            type:'program',
-            exps:[]
-        };
+        this.currentBlock = 0;
+        this.ASTblock = [];
+        this.ASTblock.push({name:'main',exps:[]});
         this.state = {
         }
+    }
+    findBlock(name) {
+        if (name === 'REPEAT' || name === 'FD' || name === 'BK' || name === 'LT' || name === 'RT' ||
+            name === 'PU' || name === 'PD' || name === 'SETXY' || name === 'SETPC' || name === 'SETBG' ||
+            name === 'CLEAN' || name === 'TO' || name === 'END' || name === 'CALL') {
+            return -2;
+        }
+        let size = this.ASTblock.length;
+        for (let i = 0;i < size;i++) {
+            if (name == this.ASTblock[i].name) {
+                return i;
+            }
+        }
+        return -1;
     }
     tokenizer(input) {
         let lexer = new jslex({
@@ -63,8 +76,20 @@ class Compiler extends React.Component{
                 "CLEAN": function() {
                     return {type:"CLEAN"}
                 },
+                "TO": function() {
+                    return {type:"TO"}
+                },
+                "END": function() {
+                    return {type:"END"}
+                },
+                "CALL": function() {
+                    return {type:"CALL"}
+                },
+                "[a-fA-Z][a-fA-Z0-9]*": function() {
+                    return {type:"STRING", value:this.text}
+                },
 
-                "#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]": function() {
+                "#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]": function() {
                     return {type:'COLOR', value:this.text}
                 },
                 // "[a-zA-Z0-9]+": function() {
@@ -94,6 +119,7 @@ class Compiler extends React.Component{
                 return 0;
             }
         for (let i = 0;i < tokens.length;i++) {
+            console.log(tokens[i].type, tokens[i].value);
             this.tokens.push(tokens[i]);
         }
         console.log(this.tokens);
@@ -103,15 +129,16 @@ class Compiler extends React.Component{
     parser() {
         let current = this.current_token;
         let tokens = this.tokens;
-        function walk() {
+        function walk(that) {
             if (current >= tokens.length) {
                 return {
                     type:'error',
-                    value:'指令参数缺失'
+                    value:'success'
                 }
             }
             let token = tokens[current];
             //    console.log(token);
+
             if (token.type === 'INT') {
                 current++;
                 return {
@@ -157,6 +184,98 @@ class Compiler extends React.Component{
                     value: 'FD指令后应为一个整数'
                 };
             }
+
+            if (token.type === 'CALL') {
+                console.log("traverse call1", current);
+                current++;
+                console.log("traverse call2", current);
+                if (current >= tokens.length) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
+
+                token = tokens[current];
+                current++;
+                console.log("traverse call3", current);
+                if (token.type == 'STRING') {
+                    let id = that.findBlock(token.value);
+                    if (id < 0) {
+                        return {
+                            type: 'error',
+                            value: '过程名不存在'
+                        }
+                    }
+                    return {
+                        type: 'CALLExp',
+                        value: token.value
+                    }
+                }
+                return {
+                    type:'error',
+                    value:'指令格式不正确'
+                }
+
+            }
+
+            if (token.type == 'TO') {
+                current++;
+                if (current >= tokens.length) {
+                    return {
+                        type:'error',
+                        value:'过程名缺失'
+                    }
+                }
+
+                token = tokens[current];
+                current++;
+
+                if (token.type == 'STRING') {
+                    let id = that.findBlock(token.value);
+                    if (id >= 0) {
+                        return {
+                            type: 'error',
+                            value: '过程名已存在'
+                        }
+                    }
+                    if (id == -2) {
+                        return {
+                            type: 'error',
+                            value: '过程名不合法'
+                        }
+                    }
+                    that.ASTblock.push({name:token.value, exps:[]});
+                    that.currentBlock = that.ASTblock.length - 1;
+                    return {
+                        type: 'defProc',
+                        value: token.value
+                    }
+                }
+                return {
+                    type:'error',
+                    value:'指令格式不正确'
+                }
+            }
+
+            if (token.type == 'END') {
+                current ++;
+                if (that.currentBlock == 0) {
+                    return {
+                        type: 'error',
+                        value: '未检测到过程定义'
+                    }
+                }
+                that.currentBlock = 0;
+                return {
+                    type: 'enddef',
+                    value: 'hello'
+                }
+            }
+
+
+
+
             if (token.type == 'BK') {
                 current ++;
                 if (current >= tokens.length) {
@@ -437,20 +556,30 @@ class Compiler extends React.Component{
             }
         }
 
+        console.log("current", current)
 
         while (current < tokens.length) {
-            let ret = walk();
+            let ret = walk(this);
             if (ret.type == 'error') {
+                this.current_token = current;
                 return ret;
             }
-            this.AST.exps.push(ret);
-            // console.log(current,this.AST);
+            if (ret.type == 'defProc') {
+                continue;
+            }
+            if (ret.type == 'enddef') {
+                continue;
+            }
+            this.ASTblock[this.currentBlock].exps.push(ret);
+            console.log(this.currentBlock, this.ASTblock[this.currentBlock]);
         }
         // console.log(this.AST);
         this.current_token = current;
         return {type:"success"}
     }
     traverse(node) {
+
+
         if (node.type == 'FDExp') {
             interval++;
             setTimeout(() => commands.gostrait(node.value), 10*interval)
@@ -479,6 +608,14 @@ class Compiler extends React.Component{
                     this.traverse(node.exps[j])
                 }
             }
+        }
+
+        if (node.type == 'CALLExp') {
+            let id = this.findBlock(node.value);
+            console.log("call exp", id);
+            let size = this.ASTblock[id].exps.length;
+            for (let i = 0;i < size;i++)
+                this.traverse(this.ASTblock[id].exps[i]);
         }
         if (node.type == 'PUExp') {
             interval++;
@@ -510,9 +647,12 @@ class Compiler extends React.Component{
         }
     }
     operGenerator() {
+        if (this.currentBlock != 0) {
+            return;
+        }
         console.log("last",this.AST);
         let current = this.current_ASTNode;
-        let AST = this.AST;
+        let AST = this.ASTblock[this.currentBlock];
         while (current < AST.exps.length) {
             this.traverse(AST.exps[current]);
             current++;
