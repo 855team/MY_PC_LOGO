@@ -115,7 +115,7 @@ class DrawingPanel2 extends React.Component{
         let ctx =canvas.getContext("2d");
         ctx.strokeStyle = color;
         let path=new Path2D();
-        path.ellipse(center.x, center.y, radius.x,radius.y,angle, 0,Math.PI*2, true);
+        path.ellipse(center.x, center.y, radius.x,radius.y,angle*Math.PI/180, 0,Math.PI*2, true);
         ctx.stroke(path);
     }
 
