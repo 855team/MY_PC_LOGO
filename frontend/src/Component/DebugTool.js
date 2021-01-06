@@ -36,7 +36,10 @@ class Debugtool extends React.Component{
     }
 
     runnextline=()=>{
-        this.compiler.append(this.content[this.currentline])
+        let res=this.compiler.append(this.content[this.currentline])
+        if(res!="success"){
+            message.warn(res)
+        }
         Bus.emit("deletecurrentdebugpoint",this.currentline)
         if(this.currentline==this.content.length-1){
             this.currentline=0;
@@ -59,7 +62,10 @@ class Debugtool extends React.Component{
         if(flag){
             Bus.emit("deletecurrentdebugpoint",this.currentline)
             let lines=this.content.slice(this.currentline,nextline);
-            this.compiler.append(lines.join(" "));
+            let res=this.compiler.append(lines.join(" "));
+            if(res!="success"){
+                message.warn(res)
+            }
             this.currentline=nextline;
             Bus.emit("currentdebugpoint",this.currentline)
         }

@@ -75,8 +75,7 @@ class HallTable extends React.Component{
                 key: 'rid',
                 sorter: {
                     compare: (a, b) => a.rid - b.rid,
-                },
-                // render: text => <a>{text}</a>,
+                }
             },
             {
                 title: '房主',

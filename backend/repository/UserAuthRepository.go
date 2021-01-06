@@ -23,3 +23,9 @@ func SaveUserAuth(userauth model.UserAuth) {
 	db.Save(&userauth)
 	return
 }
+
+func RemoveUserAuth(uid uint) {
+	db.Delete(&model.UserAuth{
+		Uid: uid,
+	})
+}

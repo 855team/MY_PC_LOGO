@@ -90,3 +90,9 @@ func ModifyUserAuth(params utils.ModifyUserAuthParams) (success bool, msg int) {
 
 	return
 }
+
+func RemoveUserAndUserAuth(username string) {
+	uid := dao.GetUserAuthByUsername(username).Uid
+	dao.RemoveUser(uid)
+	dao.RemoveUserAuth(uid)
+}

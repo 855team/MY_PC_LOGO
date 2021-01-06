@@ -3,14 +3,16 @@ package service
 import (
 	"backend/utils"
 	"github.com/kataras/golog"
+	"sync"
 )
 
 var RoomSSE = NewSSE()
 
 type SSE struct {
-	ClosingRooms chan uint
-	Rooms        map[uint]*utils.RoomEntry
-	NextRoom     uint
+	ClosingRooms	chan uint
+	Rooms			map[uint]*utils.RoomEntry
+	NextRoom		uint
+	Glock			sync.Mutex
 }
 
 func NewSSE() *SSE {
@@ -38,12 +40,12 @@ func (sse *SSE) listen() {
 		select {
 		case s := <-sse.ClosingRooms:
 			room := sse.Rooms[s]
-			if room.Owner != 0 && room.Partner != 0 && room.File[0].Uid != 0 {
+			if room.Owner.Uid != 0 && room.Partner.Uid != 0 && room.File[0].Uid != 0 {
 				fileStr := ""
 				for _, cmd := range room.File {
 					fileStr += cmd.Command
 				}
-				NewRoomProjectAndFile(room.Name+"-RoomProject", room.Name+"-RoomFile", room.Owner, room.Partner, fileStr)
+				NewRoomProjectAndFile(room.Name+"-RoomProject", room.Name+"-RoomFile", room.Owner.Uid, room.Partner.Uid, fileStr)
 			}
 			delete(sse.Rooms, s)
 			golog.Infof("Removed client. %d registered Rooms", len(sse.Rooms))

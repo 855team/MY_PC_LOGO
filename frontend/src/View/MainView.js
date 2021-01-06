@@ -1,26 +1,17 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import SideBar from "../Component/SideBar";
 import Sidebar2 from "../Component/Sidebar2";
 import SideBarPane from "../Component/SideBarPane";
 import Console from "../Component/Console";
 import Header from "../Component/Header";
-import {
-    ReflexContainer,
-    ReflexSplitter,
-    ReflexElement
-} from 'react-reflex';
 import MonacoEditor from "../Component/MonacoEditor";
 import DrawingPanel from "../Component/DrawingPanel";
 import * as userService from "../Services/userService";
 import WrappedLoginForm from "../Component/LoginForm";
 import DoubleRoom from "../Component/DoubleRoom";
 import * as fileService from "../Services/fileService"
-import {message,Modal,Input,Tag} from 'antd';
+import {message, Modal, Input, Tag, Form, Button} from 'antd';
 import RegisterForm from "../Component/RegisterForm";
-import Help from "../Component/Help";
-import FileOperation from "../Component/FileOperation";
-import UserState from "../Component/UserState";
 import Bus from "../Controller/eventBus";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import InfoBar from "../Component/InfoBar"
@@ -34,117 +25,6 @@ import FreeScrollBar from 'react-free-scrollbar';
 
 const { Option } = Select;
 const { confirm } = Modal;
-
-
-
-class ControlledElement extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-
-        this.onMinimizeClicked = this.onMinimizeClicked.bind(this);
-        this.onMaximizeClicked = this.onMaximizeClicked.bind(this);
-
-        this.state = {
-            size: -1
-        };
-    }
-
-    onMinimizeClicked() {
-        const currentSize = this.getSize();
-        const parentSize = this.getParentSize();
-        const update = (size) => {
-            return new Promise((resolve) => {
-                this.setState(Object.assign({},
-                    this.state, {
-                        size: size < 25 ? 25 : size
-                    }), () => resolve());
-            });
-        };
-
-        const done = (from, to) => {
-            return from < to;
-        };
-
-        this.animate(currentSize, (currentSize>parentSize*0.5)*parentSize*0.5, -8, done, update);
-    }
-
-    onMaximizeClicked() {
-        const currentSize = this.getSize();
-        const parentSize = this.getParentSize();
-
-        const update = (size) => {
-            return new Promise((resolve) => {
-                this.setState(Object.assign({},
-                    this.state, {
-                        size
-                    }), () => resolve());
-            });
-        };
-
-        const done = (from, to) => {
-            return from > to;
-        };
-
-        this.animate(currentSize, ((currentSize+25>parentSize*0.5)+1)*parentSize*0.5, 8, done, update);
-    }
-
-    getSize() {
-        const domElement = ReactDOM.findDOMNode(this);
-        switch (this.props.orientation) {
-            case 'horizontal':
-                return domElement.offsetHeight;
-            case 'vertical':
-                return domElement.offsetWidth;
-            default:
-                return 0;
-        }
-    }
-
-    getParentSize() {
-        const domElement = ReactDOM.findDOMNode(this).parentNode;
-        switch (this.props.orientation) {
-            case 'horizontal':
-                return domElement.offsetHeight;
-            case 'vertical':
-                return domElement.offsetWidth;
-            default:
-                return 0;
-        }
-    }
-
-    animate(from, to, step, done, fn) {
-        const stepFn = () => {
-            if (!done(from, to)) {
-                fn(from += step).then(() => {
-                    setTimeout(stepFn, 1)
-                });
-            }
-        };
-        stepFn();
-    }
-
-    render() {
-        return (
-            <ReflexElement className="ctrl-pane" size={this.state.size} {...this.props}>
-                <div style={{height: '100%'}}>
-                    <div style={{height: '20px', backgroundColor: 'black', overflow: 'hidden'}}>
-                        <button onClick={this.onMinimizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
-                            <label> - </label>
-                        </button>
-                        <button onClick={this.onMaximizeClicked} style={{float: 'right', verticalAlign: 'center'}}>
-                            <label> + </label>
-                        </button>
-                    </div>
-                    <div style={{position: 'absolute', top: '22px', bottom: '0', width: '100%', overflow: 'hidden'}}>
-                        {this.props.children}
-                    </div>
-                </div>
-            </ReflexElement>
-        )
-    }
-}
 
 export default class MainView extends React.Component {
     constructor(props) {
@@ -163,10 +43,6 @@ export default class MainView extends React.Component {
             register_visible:false,
             selected:'file',
 
-            help_visible:false,
-            battle_visible:false,
-            userstate_visible:false,
-            fileoperation_visible:false,
 
             editorcontent:"",
             currentpid:-1,
@@ -363,6 +239,7 @@ export default class MainView extends React.Component {
     }
 
     importfile=(content)=>{
+        Bus.emit("files","import")
         if(!this.state.login){
             this.setState({
                 editorcontent:content
@@ -393,6 +270,7 @@ export default class MainView extends React.Component {
     }
 
     exportfile=()=>{
+        Bus.emit("files","export")
         let FileSaver=require('file-saver');
         let data=this.state.editorcontent;
         let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
@@ -410,26 +288,29 @@ export default class MainView extends React.Component {
         })
     }
     openhelp=()=>{
-        this.setState({
-            help_visible:true
-        })
-    }
-    openbattle=()=>{
-        this.setState({
-            battle_visible:true
-        })
+        // this.setState({
+        //     help_visible:true
+        // })
+            Bus.emit("openwindow","help");
+            Modal.info({
+                title: "帮助",
+                bodyStyle:{TextAlign:"center"},
+                content:
+                    <ul>
+                        <li>本系统旨在帮助儿童学习logo语言</li>
+                        <li>您可以通过在命令行或命令文件中输入代码来控制小乌龟的移动，命令文件可以保存在云端或本地，同时也可从本地导入文件</li>
+                        <li>您可以通过创建双人房间与远方的小伙伴一起控制小乌龟</li>
+                        <li>在通过书写代码完成任务的过程中，您可以累积经验值，解锁更漂亮的小乌龟，让写代码的过程更加愉悦</li>
+                    </ul>,
+                onOk(){
+                    return;
+                },
+                onCancel() {
+                    return;
+                },
+            });
     }
 
-    openfileoperation=()=>{
-        this.setState({
-            fileoperation_visible:true
-        })
-    }
-    openuserstate=()=>{
-        this.setState({
-            userstate_visible:true
-        })
-    }
 
 
     closelogin=()=>{
@@ -440,27 +321,6 @@ export default class MainView extends React.Component {
     closeregister=()=>{
         this.setState({
             register_visible:false
-        })
-    }
-    closehelp=()=>{
-        this.setState({
-            help_visible:false
-        })
-    }
-    closebattle=()=>{
-        this.setState({
-            battle_visible:false
-        })
-    }
-
-    closefileoperation=()=>{
-        this.setState({
-            fileoperation_visible:false
-        })
-    }
-    closeuserstate=()=>{
-        this.setState({
-            userstate_visible:false
         })
     }
 
@@ -483,11 +343,6 @@ export default class MainView extends React.Component {
         message.success("退出成功")
     }
 
-    showfilepanel(){
-        this.setState({
-            filepanel_visible:!this.state.filepanel_visible
-        })
-    }
 
     getproject=(pid)=>{
 
@@ -569,6 +424,7 @@ export default class MainView extends React.Component {
     }
 
     editorsave=()=>{
+        Bus.emit("files","save")
         if(!this.state.login){
             message.warn("用户未登录");
             return
@@ -623,10 +479,15 @@ export default class MainView extends React.Component {
 
     editorrun=()=>{
         if(!this.state.debug){
+            Bus.emit("editor","execute");
             let lines=this.state.editorcontent.split("\r\n");
             let compiler=new Compiler();
             compiler.append("CLEAN");
-            setTimeout(()=>{compiler.append(lines.join(" "))},10)
+            setTimeout(()=>{
+                let res=compiler.append(lines.join(" "))
+                if(res!="success"){
+                    message.warn(res)
+                }},10)
         }
         else{
             message.warn("请先退出debug模式")
@@ -840,9 +701,14 @@ export default class MainView extends React.Component {
     }
 
     newfile=(pid,filename,content)=>{
+        Bus.emit("files","newfile")
         let token=localStorage.getItem("token");
         let data={pid:pid,name:filename,token:token,content:""};
         let setstate=(data)=>this.setState(data);
+        let addfiletoremotedata=this.addfiletoremotedata;
+        let generatetreedata=this.generatetreedata;
+        let state=this.state;
+        let savecurrent=this.savecurrent;
         let callback=async(result)=>{
             if(result.success){
                 if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
@@ -877,31 +743,31 @@ export default class MainView extends React.Component {
                     icon: <ExclamationCircleOutlined />,
                     onOk() {
                         let nextop=async()=>{
-                            this.addfiletoremotedata(pid,filename,result.data,"");
-                            await this.setState({
+                            addfiletoremotedata(pid,filename,result.data,"");
+                            await setstate({
                                 currentpid:pid,
                                 currentfid:result.data
                             })
-                            this.setState({
-                                treedata:this.generatetreedata(this.state.remotedata),
+                            setstate({
+                                treedata:generatetreedata(state.remotedata),
                                 editorcontent:"",
                             })
                             message.success("新建文件成功")
                         }
-                        this.savecurrent(nextop);
+                        savecurrent(nextop);
                     },
                     onCancel() {
                         let op=async()=>{
-                            this.addfiletoremotedata(pid,filename,result.data,"");
-                            await this.setState({
+                            addfiletoremotedata(pid,filename,result.data,"");
+                            await setstate({
                                 currentpid:pid,
                                 currentfid:result.data
                             })
-                            this.setState({
-                                treedata:this.generatetreedata(this.state.remotedata),
+                            setstate({
+                                treedata:generatetreedata(state.remotedata),
                                 editorcontent:"",
                             })
-                            message.success("新建文件成功")
+                            message.success("操作已取消")
                         }
                         op();
                     },
@@ -917,6 +783,7 @@ export default class MainView extends React.Component {
     }
 
     newproject=(projectname)=>{
+        Bus.emit("files","newproject")
         let token=localStorage.getItem("token");
         let data={name:projectname,token:token};
         let callback=async(result)=>{
@@ -1158,9 +1025,17 @@ export default class MainView extends React.Component {
     }
 
     updatetasklevel=(level)=>{
-        this.setState({
-            task:level
-        })
+        let token=localStorage.getItem("token");
+        let data={username:this.state.username,email:this.state.username,token:token,turtle:this.state.turtle,task:level};
+        let callback=(result)=>{
+            if(result.success){
+                this.setState({
+                    task:level
+                })
+                message.success("任务完成")
+            }
+        }
+        userService.modifyuser(data,callback)
     }
 
     registerlisteners(){
@@ -1213,7 +1088,6 @@ export default class MainView extends React.Component {
                             logout={()=>this.logout()}
                             openregister={()=>this.openregister()}
                             openhelp={()=>this.openhelp()}
-                            openfileoperation={()=>this.openfileoperation()}
                             task={this.state.task}
                             username={this.state.username}
                             login={this.state.login}
@@ -1315,9 +1189,6 @@ export default class MainView extends React.Component {
                 <div style={{position:'relative'}}>
                     <RegisterForm register={(username,password,email)=>this.register(username,password,email)} closeregister={()=>this.closeregister()} visible={this.state.register_visible}/>
                 </div>
-                <div style={{position:'relative'}}>
-                    <Help closehelp={()=>this.closehelp()} visible={this.state.help_visible}/>
-                </div>
                 <div>
                     {this.state.login?(
                     <DoubleRoom
@@ -1326,12 +1197,6 @@ export default class MainView extends React.Component {
                         owner={{uid:this.state.uid,username:this.state.username,turtle:this.state.turtle}}
                     />
                     ):null}
-                </div>
-                <div style={{position:'relative'}}>
-                    <FileOperation closefileoperation={()=>this.closefileoperation()} visible={this.state.fileoperation_visible}/>
-                </div>
-                <div style={{position:'relative'}}>
-                    <UserState closeuserstate={()=>this.closeuserstate()} visible={this.state.userstate_visible}/>
                 </div>
                 <div style={{position:'relative'}}>
                     <Debugtool debug={this.state.debug} />

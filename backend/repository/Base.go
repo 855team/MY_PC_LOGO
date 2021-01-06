@@ -32,9 +32,17 @@ func testPrepare() {
 	db.Create(&model.User{Uid: 1, Username: "test", Email: "test"})
 	db.Create(&model.User{Uid: 2, Username: "test1", Email: "test1"})
 	db.Create(&model.User{Uid: 3, Username: "test2", Email: "test2"})
-	db.Create(&model.User{Uid: 4, Username: "test-noemail"})
+	db.Create(&model.User{Uid: 4, Username: "tests-noemail"})
+
 	db.Create(&model.UserAuth{Uid: 1, Username: "test", Password: "test"})
 	db.Create(&model.UserAuth{Uid: 2, Username: "test1", Password: "test1"})
 	db.Create(&model.UserAuth{Uid: 3, Username: "test2", Password: "test2"})
-	db.Create(&model.UserAuth{Uid: 4, Username: "test-noemail", Password: "test-noemail"})
+	db.Create(&model.UserAuth{Uid: 4, Username: "tests-noemail", Password: "tests-noemail"})
+
+	db.Create(&model.Project{Pid: 1, Name: "test_proj"})
+	db.Table("users_projects").Create(&map[string]interface{} {
+		"user_uid": 1,
+		"project_pid": 1,
+	})
+	db.Create(&model.File{Fid: 1, Pid: 1, Name: "test_file", Content: "test_file"})
 }

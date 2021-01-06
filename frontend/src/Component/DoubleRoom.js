@@ -46,6 +46,7 @@ class DoubleRoom extends React.Component{
             roomResize:false,
             roomStartY:null,
             roomMessageH:320,
+            resizeAreaH:430,
 
             allRooms:[],
 
@@ -70,10 +71,17 @@ class DoubleRoom extends React.Component{
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.onVisible&&!prevProps.onVisible&&this.state.doubleRoomState=="room"){
-            let commands="CLEAN"
-            this.state.codes.map((item)=>{commands+=" "+item.code})
-            this.compiler.append(commands)
+        if(this.props.onVisible&&!prevProps.onVisible&&this.state.doubleRoomState==="room"){
+            let commands="CLEAN";
+            this.state.codes.map((item)=>{commands+=" "+item.code});
+            let res=this.compiler.append(commands);
+            if(res!="success"){
+                message.warn(res);
+            }
+        }
+        if(this.state.doubleRoomState==="room"&&prevState.doubleRoomState==="hall"&&this.resizeArea){
+            console.log("yes reseizeArea is created!")
+            this.setState({roomMessageH:this.resizeArea.clientHeight*0.69,resizeAreaH:this.resizeArea.clientHeight*0.99})
         }
     }
 
@@ -116,7 +124,10 @@ class DoubleRoom extends React.Component{
                 this.compiler.append("PD")
             }
             let last=newcodes.length-1;
-            this.compiler.append(newcodes[last].code);
+            let res=this.compiler.append(newcodes[last].code);
+            if(res!="success"){
+                message.warn(res)
+            }
         }
         const partnerCallback=(data)=>{
             this.setState({
@@ -169,7 +180,10 @@ class DoubleRoom extends React.Component{
                 this.compiler.append("PD")
             }
             let last=newcodes.length-1;
-            this.compiler.append(newcodes[last].code);
+            let res=this.compiler.append(newcodes[last].code);
+            if(res!="success"){
+                message.warn(res)
+            }
         }
         const partnerCallback=(data)=>{
             this.setState({
@@ -294,7 +308,9 @@ class DoubleRoom extends React.Component{
     renderRoom=()=>{
         return (<>
             <div style={{width:"60%",height:"100%"}}>
-                    <div className="doubleroom-header">
+                    <div className="doubleroom-header"
+                         style={{height:"10%"}}
+                    >
                         <Button
                             type="primary"
                             shape="circle"
@@ -312,15 +328,17 @@ class DoubleRoom extends React.Component{
                         onMouseUp={(e)=>this.setState({roomResize:false})}
                         onMouseLeave={(e)=>this.setState({roomResize:false})}
                         onMouseMove={this.Resize}
-                        style={{height:320+2+110}}
+                        style={{height:"82%"}}
+                        ref={node => this.resizeArea = node}
                     >
                         <div className="code-message" style={{height:this.state.roomMessageH}}>
                             <CodeBox dataSource={this.state.codes}/>
                         </div>
                         <div className="splitter"
                              onMouseDown={this.startResize}
+                             style={{height:"1%"}}
                         />
-                        <div className="console" style={{height:430-this.state.roomMessageH}}>
+                        <div className="console" style={{height:this.state.resizeAreaH-this.state.roomMessageH}}>
                                     <textarea id="console-input" onKeyUp={(e)=>{
                                         if(e.keyCode==13)
                                             this.sendMessage('keyboard')
@@ -328,7 +346,7 @@ class DoubleRoom extends React.Component{
                         </div>
                     </div>
 
-                    <div>
+                    <div style={{height:"8%"}}>
                         <Button
                             className="console-button"
                             onClick={(e)=>this.sendMessage('click')}
@@ -353,7 +371,7 @@ class DoubleRoom extends React.Component{
             <div className="doubleroom-body">
                 <div className={onVisible?"doubleroom-mask":"unvisible-mask"} />
                 {onVisible?(
-                        <div className="doubleroom-wrap">
+                        <div className="doubleroom-wrap" style={{height:"80%"}}>
                             {this.state.doubleRoomState=="hall"?this.renderHall():this.renderRoom()}
                         </div>
                     )
