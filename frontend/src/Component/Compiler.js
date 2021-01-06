@@ -186,7 +186,9 @@ class Compiler extends React.Component{
             }
 
             if (token.type === 'CALL') {
+                console.log("traverse call1", current);
                 current++;
+                console.log("traverse call2", current);
                 if (current >= tokens.length) {
                     return {
                         type:'error',
@@ -196,7 +198,7 @@ class Compiler extends React.Component{
 
                 token = tokens[current];
                 current++;
-
+                console.log("traverse call3", current);
                 if (token.type == 'STRING') {
                     let id = that.findBlock(token.value);
                     if (id < 0) {
@@ -554,10 +556,12 @@ class Compiler extends React.Component{
             }
         }
 
+        console.log("current", current)
 
         while (current < tokens.length) {
             let ret = walk(this);
             if (ret.type == 'error') {
+                this.current_token = current;
                 return ret;
             }
             if (ret.type == 'defProc') {
