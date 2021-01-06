@@ -1,6 +1,8 @@
 import React from 'react'
 import jslex from '../utils/jslex.js'
 import Commands from "../Controller/Commands";
+import {func} from "prop-types";
+import VarEnv from "../utils/VarEnv";
 let interval=0;
 
 let commands=new Commands();
@@ -37,9 +39,15 @@ class Compiler extends React.Component{
                 "[0-9]+": function() {
                     return {type:'INT',value:parseInt(this.text, 10)}
                 },
+                "\"[^\"]+\"" : function () {
+                    return {type:'EXPR',value:this.text.substring(1, this.text.length-1)}
+                },
                 //       "FD|BK|RT|LT|PU|PD|SETXY|SETPC|SETBG|REPEAT|MAKE|STAMPOVAL|CLEAN": function() {
                 //             return {type:this.text}
                 //      },
+                "MAKE": function () {
+                    return {type:"MAKE"}
+                },
                 "REPEAT": function() {
                     return {type:"REPEAT"}
                 },
@@ -153,6 +161,49 @@ class Compiler extends React.Component{
                     value: token.value,
                 };
             }
+
+            if (token.type === 'MAKE') {
+                if (current >= tokens.length - 1) {
+                    return {
+                        type:'error',
+                        value:'指令参数缺失'
+                    }
+                }
+                token = tokens[++current];
+
+                if (token.type === 'STRING') {
+                    if (current >= tokens.length - 1) {
+                        return {
+                            type:'error',
+                            value:'指令参数缺失'
+                        }
+                    }
+
+                    let varName = token.value;
+                    token = tokens[++current];
+                    ++current;
+
+                    if (token.type === 'EXPR') {
+                        VarEnv.put(varName, VarEnv.eval(token.value))
+
+                        return {
+                            type: 'NumberLiteral',
+                            value: 0,
+                        }
+                    } else {
+                        return {
+                            type: 'error',
+                            value: '变量名后应为双引号包裹的表达式（如"X+1"）'
+                        }
+                    }
+                } else {
+                    return {
+                        type:'error',
+                        value:'MAKE指令后应为变量名'
+                    }
+                }
+            }
+
             if (token.type == 'COLOR') {
                 current++;
                 return {
@@ -173,10 +224,10 @@ class Compiler extends React.Component{
                 token = tokens[current];
                 current++;
                 // console.log(token);
-                if (token.type == 'INT') {
+                if (token.type == 'INT' || token.type == 'EXPR') {
                     return {
                         type: 'FDExp',
-                        value: token.value
+                        value: VarEnv.eval(token.value)
                     }
                 }
                 return {
@@ -287,12 +338,13 @@ class Compiler extends React.Component{
 
                 token = tokens[current];
                 current++;
-                if (token.type == 'INT') {
+                if (token.type == 'INT' || token.type == 'EXPR') {
                     return {
                         type: 'BKExp',
-                        value: token.value,
+                        value: VarEnv.eval(token.value)
                     }
                 }
+
                 return {
                     type: 'error',
                     value: 'BK指令后应为一个整数'
@@ -308,11 +360,12 @@ class Compiler extends React.Component{
                 }
                 token = tokens[current];
                 current ++;
-                if (token.type == 'INT') {
+                if (token.type == 'INT' || token.type == 'EXPR') {
                     return {
-                        type: 'RTExp', value: token.value,
+                        type: 'RTExp', value: VarEnv.eval(token.value),
                     }
                 }
+
                 return {
                     type: 'error',
                     value: 'RT指令后应为一个整数'
@@ -322,18 +375,18 @@ class Compiler extends React.Component{
                 current ++;
                 if (current >= tokens.length) {
                     return {
-                        type:'error',
-                        value:'指令参数缺失'
+                        type:'error', value:'指令参数缺失'
                     }
                 }
 
                 token = tokens[current];
                 current++;
-                if (token.type == 'INT') {
+                if (token.type == 'INT' || token.type == 'EXPR') {
                     return {
-                        type: 'LTExp', value: token.value,
+                        type: 'LTExp', value: VarEnv.eval(token.value)
                     }
                 }
+
                 return {
                     type: 'error',
                     value: 'LT指令后应为一个整数'
@@ -392,7 +445,7 @@ class Compiler extends React.Component{
                         value:'SETXY指令的参数应为整数'
                     }
                 }
-                node.valuex = token.value;
+                node.valuex = VarEnv.eval(token.value);
                 if (current >= tokens.length - 1) {
                     return {
                         type:'error',
@@ -406,7 +459,7 @@ class Compiler extends React.Component{
                         value:'SETXY指令的参数应为整数'
                     }
                 }
-                node.valuey = token.value;
+                node.valuey = VarEnv.eval(token.value);
                 if (current >= tokens.length - 1) {
                     return {
                         type:'error',
@@ -432,7 +485,7 @@ class Compiler extends React.Component{
                     }
                 }
                 token = tokens[++current];
-                if (token.type != 'COLOR') {
+                if (token.type != 'COLOR' && token.type != 'EXPR') {
                     return {
                         type:'error',
                         value:'SETPC颜色值不符合RGB格式'
@@ -441,7 +494,7 @@ class Compiler extends React.Component{
                 current++;
                 return {
                     type:'SETPCExp',
-                    value:token.value,
+                    value:VarEnv.eval(token.value),
                 }
             }
             if (token.type == 'SETBG') {
@@ -452,7 +505,7 @@ class Compiler extends React.Component{
                     }
                 }
                 token = tokens[++current];
-                if (token.type != 'COLOR') {
+                if (token.type != 'COLOR' && token.type != 'EXPR') {
                     return {
                         type:'error',
                         value:'SETBG颜色值不符合RGB格式'
@@ -461,7 +514,7 @@ class Compiler extends React.Component{
                 current++;
                 return {
                     type:'SETBGExp',
-                    value:token.value,
+                    value:VarEnv.eval(token.value),
                 }
             }
             if (token.type == 'STAMPOVAL') {
@@ -483,7 +536,7 @@ class Compiler extends React.Component{
                         value:'STAMPOVAL第一个参数应为整数'
                     }
                 }
-                node.valuex = token.value;
+                node.valuex = VarEnv.eval(token.value);
                 if (current >= tokens.length - 1) {
                     return {
                         type:'error',
@@ -497,7 +550,7 @@ class Compiler extends React.Component{
                         value:'STAMPOVAL第二个参数应为整数'
                     }
                 }
-                node.valuey = token.value;
+                node.valuey = VarEnv.eval(token.value);
                 current ++;
                 return node;
             }
@@ -516,8 +569,8 @@ class Compiler extends React.Component{
                     iter: 1,
                     exps: [],
                 }
-                if (token.type == 'INT') {
-                    node.iter = token.value;
+                if (token.type == 'INT' || token.type == 'EXPR') {
+                    node.iter = VarEnv.eval(token.value);
                     if (current >= tokens.length - 1) {
                         return {
                             type:'error',
@@ -526,6 +579,7 @@ class Compiler extends React.Component{
                     }
                     token = tokens[++current];
                 }
+
                 if (token.type != 'LBRACK') {
                     return {
                         type:'error',
