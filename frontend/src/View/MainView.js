@@ -116,16 +116,16 @@ export default class MainView extends React.Component {
                     return false;
                 }
                 else{
-                    await this.setState({
+                    this.setState({
                         login:true,
-                        username:result.data.Username,
-                        uid:result.data.Uid,
-                        turtle:result.data.Turtle,
-                        email:result.data.Email,
-                        task:result.data.Task,
-                        projects:result.data.Projects
+                        username:result.data.username,
+                        uid:result.data.uid,
+                        turtle:result.data.turtle,
+                        email:result.data.email,
+                        task:result.data.task,
+                        projects:result.data.projects
                     })
-                    switch (result.data.Turtle) {
+                    switch (result.data.turtle) {
                         case 1:
                             Bus.emit("changeimg","turtle");
                             break;
@@ -147,7 +147,8 @@ export default class MainView extends React.Component {
                         default:
                             break;
                     }
-                    this.getremotedata(result.data.Projects)
+                    console.log(result.data)
+                    this.getremotedata(result.data.projects)
                 }
             }
             userService.validate({token:token},callback)
@@ -163,14 +164,14 @@ export default class MainView extends React.Component {
                 await this.setState({
                     login_visible:false,
                     login:true,
-                    username:result.data.info.Username,
-                    uid:result.data.info.Uid,
-                    turtle:result.data.info.Turtle,
-                    task:result.data.info.Task,
-                    email:result.data.Email,
-                    projects:result.data.info.Projects
+                    username:result.data.info.username,
+                    uid:result.data.info.uid,
+                    turtle:result.data.info.turtle,
+                    task:result.data.info.task,
+                    email:result.data.email,
+                    projects:result.data.info.projects
                 });
-                switch (result.data.info.Turtle) {
+                switch (result.data.info.turtle) {
                     case 1:
                         Bus.emit("changeimg","turtle");
                         break;
@@ -192,7 +193,7 @@ export default class MainView extends React.Component {
                     default:
                         break;
                 }
-                this.getremotedata(result.data.info.Projects)
+                this.getremotedata(result.data.info.projects)
             }
             else{
                 message.error("登陆失败")
@@ -349,7 +350,6 @@ export default class MainView extends React.Component {
         let token=localStorage.getItem("token");
         let data={pid:pid,token:token}
         let callback=(result)=>{
-            console.log(result);
             if(result.success){
                 let project=result.data;
                 this.updateremotedata(pid,project)
@@ -368,9 +368,9 @@ export default class MainView extends React.Component {
         let child=[];
         for(let i=0;i<files.length;i++){
             let tmp={};
-            tmp.name=files[i].Name;
+            tmp.name=files[i].name;
             tmp.fid=files[i].Fid;
-            tmp.content=files[i].Content;
+            tmp.content=files[i].content;
             child.push(tmp);
         }
         for(let i=0;i<olddata.length;i++){
@@ -401,7 +401,7 @@ export default class MainView extends React.Component {
     getremotedata=async (data)=>{
 
         for(let i=0;i<data.length;i++){
-            this.getproject(data[i].Pid);
+            this.getproject(data[i].pid);
         }
     }
 
@@ -424,6 +424,7 @@ export default class MainView extends React.Component {
     }
 
     editorsave=()=>{
+        console.log("a")
         Bus.emit("files","save")
         if(!this.state.login){
             message.warn("用户未登录");
@@ -983,6 +984,7 @@ export default class MainView extends React.Component {
     updateworkspace=(fid,pid)=>{
         let content=this.lookupcontent(fid,pid);
         let setstate=(data)=>{this.setState(data)};
+        let savecurrent=this.savecurrent;
         if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
             this.setState({
                 currentfid:fid,
@@ -1011,7 +1013,7 @@ export default class MainView extends React.Component {
                             editorcontent:content
                         })
                     }
-                    this.savecurrent(nextop);
+                    savecurrent(nextop);
                 },
                 onCancel() {
                     setstate({
