@@ -121,7 +121,7 @@ class DoubleRoom extends React.Component{
             })
             this.setState({codes:newcodes});
             if(newcodes.length==1){
-                this.compiler.append("PD")
+                this.compiler.append("CLEAN PD")
             }
             let last=newcodes.length-1;
             let res=this.compiler.append(newcodes[last].code);
@@ -177,7 +177,7 @@ class DoubleRoom extends React.Component{
             })
             this.setState({codes:newcodes})
             if(newcodes.length==1){
-                this.compiler.append("PD")
+                this.compiler.append("CLEAN PD")
             }
             let last=newcodes.length-1;
             let res=this.compiler.append(newcodes[last].code);

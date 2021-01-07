@@ -636,25 +636,25 @@ class Compiler2 extends React.Component{
 
         if (node.type == 'FDExp') {
             interval++;
-            setTimeout(() => commands.gostrait(node.value), 10*interval)
+            setTimeout(() => commands.gostrait2(node.value), 10*interval)
 
         }
         if (node.type == 'BKExp') {
             interval++;
-            setTimeout(() => commands.gostrait(-node.value), 10*interval)
+            setTimeout(() => commands.gostrait2(-node.value), 10*interval)
         }
         if (node.type == 'RTExp') {
             interval++;
-            setTimeout(() => commands.turn(node.value), 10*interval)
+            setTimeout(() => commands.turn2(node.value), 10*interval)
 
         }
         if (node.type == 'LTExp') {
             interval++;
-            setTimeout(() => commands.turn(-node.value), 10*interval)
+            setTimeout(() => commands.turn2(-node.value), 10*interval)
         }
         if (node.type == 'CLEANExp') {
             interval++;
-            setTimeout(() => commands.clear(), 10*interval)
+            setTimeout(() => commands.clear2(), 10*interval)
         }
         if (node.type == 'RepeatExp') {
             for (let i = 0;i < node.iter;i++) {
@@ -673,30 +673,30 @@ class Compiler2 extends React.Component{
         }
         if (node.type == 'PUExp') {
             interval++;
-            setTimeout(() =>commands.changepenstate(0), 10*interval)
+            setTimeout(() =>commands.changepenstate2(0), 10*interval)
 
         }
         if (node.type == 'PDExp') {
             interval++;
-            setTimeout(() =>commands.changepenstate(1), 10*interval)
+            setTimeout(() =>commands.changepenstate2(1), 10*interval)
         }
         if (node.type == 'SETPCExp') {
             interval++;
-            setTimeout(() =>commands.changepencolor(node.value), 10*interval)
+            setTimeout(() =>commands.changepencolor2(node.value), 10*interval)
         }
         if (node.type == 'SETBGExp') {
             interval++;
-            setTimeout(() =>commands.changepbgcolor(node.value), 10*interval)
+            setTimeout(() =>commands.changepbgcolor2(node.value), 10*interval)
 
         }
         if (node.type == 'STAMPOVALExp') {
             interval++;
-            setTimeout(() =>commands.drawcircle({x:node.valuex, y:node.valuey}), 10*interval)
+            setTimeout(() =>commands.drawcircle2({x:node.valuex, y:node.valuey}), 10*interval)
 
         }
         if (node.type == 'SETXYExp') {
             interval++;
-            setTimeout(() =>commands.changeposition({x:node.valuex,y:node.valuey}), 10*interval)
+            setTimeout(() =>commands.changeposition2({x:node.valuex,y:node.valuey}), 10*interval)
 
         }
     }
