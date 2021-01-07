@@ -594,7 +594,7 @@ class Compiler2 extends React.Component{
                 }
                 token = tokens[++current];
                 while (token.type != 'RBRACK') {
-                    let ret = walk();
+                    let ret = walk(that);
                     if (ret.type == 'error')
                         return ret;
                     node.exps.push(ret);
