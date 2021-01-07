@@ -369,7 +369,7 @@ export default class MainView extends React.Component {
         for(let i=0;i<files.length;i++){
             let tmp={};
             tmp.name=files[i].name;
-            tmp.fid=files[i].Fid;
+            tmp.fid=files[i].fid;
             tmp.content=files[i].content;
             child.push(tmp);
         }
@@ -417,14 +417,10 @@ export default class MainView extends React.Component {
     }
 
     updatecontent(content){
-        this.setState({
-            editorcontent:content
-        })
-
+        this.state.editorcontent=content
     }
 
     editorsave=()=>{
-        console.log("a")
         Bus.emit("files","save")
         if(!this.state.login){
             message.warn("用户未登录");
@@ -613,6 +609,7 @@ export default class MainView extends React.Component {
                 },
                 onCancel() {
                     message.success("操作已取消")
+                    nextop()
                 },
             });
         }
@@ -983,6 +980,8 @@ export default class MainView extends React.Component {
 
     updateworkspace=(fid,pid)=>{
         let content=this.lookupcontent(fid,pid);
+        content=content.replace("\n","\r\n");
+        content=content.replace("\r\r\n","\r\n");
         let setstate=(data)=>{this.setState(data)};
         let savecurrent=this.savecurrent;
         if(this.state.currentfid>=0 && this.state.currentpid>=0 && this.lookupcontent(this.state.currentfid,this.state.currentpid)==this.state.editorcontent){
@@ -1075,6 +1074,7 @@ export default class MainView extends React.Component {
             this.Askfornewname("file","rename",{pid:data.pid,fid:data.fid})
         });
         Bus.addListener('updateworkspace', (data) => {
+            console.log(data)
             this.updateworkspace(data.fid,data.pid)
         });
     }

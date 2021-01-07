@@ -48,6 +48,7 @@ class Container extends PureComponent {
     }
 
     updateworkspace=(node)=>{
+        console.log(node)
         if(node.type=="file"){
             Bus.emit("updateworkspace",{fid:node.id,pid:node.parentid})
         }
