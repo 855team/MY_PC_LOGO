@@ -45,7 +45,7 @@ func (sse *SSE) listen() {
 				for _, cmd := range room.File {
 					fileStr += cmd.Command
 				}
-				NewRoomProjectAndFile(room.Name+"-RoomProject", room.Name+"-RoomFile", room.Owner.Uid, room.Partner.Uid, fileStr)
+				NewRoomProjectAndFile(room.Name+"-P", room.Name+"-F", room.Owner.Uid, room.Partner.Uid, fileStr)
 			}
 			delete(sse.Rooms, s)
 			golog.Infof("Removed client. %d registered Rooms", len(sse.Rooms))

@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/Joker/hpp v1.0.0 // indirect
+	github.com/hhatto/gocloc v0.3.3 // indirect
 	github.com/iris-contrib/httpexpect/v2 v2.0.5
 	github.com/iris-contrib/middleware/cors v0.0.0-20201017024110-39b50ffeb885
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
