@@ -56,7 +56,7 @@ func HandleRoom(ctx iris.Context) {
 	if isNew {
 		name := ctx.URLParam("name")
 		if name == "" {
-			name = "Room-" + time.Now().Format("2006-01-02-15:04:05")
+			name = "R" + strconv.FormatInt(time.Now().Unix(), 16)
 		}
 
 		sse.Glock.Lock()
