@@ -1,0 +1,1021 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">backend/controller/ProjectController.go (100.0%)</option>
+				
+				<option value="file1">backend/controller/UserController.go (100.0%)</option>
+				
+				<option value="file2">backend/dao/ProjectDao.go (100.0%)</option>
+				
+				<option value="file3">backend/dao/UserDao.go (100.0%)</option>
+				
+				<option value="file4">backend/middleware/crs.go (100.0%)</option>
+				
+				<option value="file5">backend/repository/Base.go (95.0%)</option>
+				
+				<option value="file6">backend/repository/ProjectRepository.go (100.0%)</option>
+				
+				<option value="file7">backend/repository/UserAuthRepository.go (100.0%)</option>
+				
+				<option value="file8">backend/repository/UserProjectRepository.go (100.0%)</option>
+				
+				<option value="file9">backend/repository/UserRepository.go (100.0%)</option>
+				
+				<option value="file10">backend/router/Router.go (100.0%)</option>
+				
+				<option value="file11">backend/server/server.go (100.0%)</option>
+				
+				<option value="file12">backend/service/ProjectService.go (100.0%)</option>
+				
+				<option value="file13">backend/service/TokenService.go (100.0%)</option>
+				
+				<option value="file14">backend/service/UserService.go (100.0%)</option>
+				
+				<option value="file15">backend/utils/utils.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package controller
+
+import (
+        "backend/service"
+        "backend/utils"
+        "github.com/kataras/iris/v12"
+)
+
+func NewProject(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.NewProjectParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.NewProject(params)
+
+        utils.SendResponse(ctx, success, msg, data)</span>
+}
+
+func ModifyProject(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.ModifyProjectParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg:= service.ModifyProject(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}
+
+func GetProject(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.GetProjectParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.GetProject(params)
+        if success </span><span class="cov8" title="1">{
+                utils.SendResponse(ctx, success, msg, data)
+        }</span> else<span class="cov8" title="1"> {
+                utils.SendResponse(ctx, success, msg, nil)
+        }</span>
+}
+
+func DeleteProject(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.DeleteProjectParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg := service.DeleteProject(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}
+
+func NewFile(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.NewFileParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.NewFile(params)
+
+        utils.SendResponse(ctx, success, msg, data)</span>
+}
+
+func ModifyFile(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.ModifyFileParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg := service.ModifyFile(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}
+
+func DeleteFile(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.DeleteFileParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg := service.DeleteFile(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}</pre>
+		
+		<pre class="file" id="file1" style="display: none">package controller
+
+import (
+        "backend/service"
+        "backend/utils"
+        "github.com/kataras/iris/v12"
+)
+
+func Login(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.LoginParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.Login(params)
+
+        utils.SendResponse(ctx, success, msg, data)
+
+        return</span>
+}
+
+func Register(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.RegisterParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.Register(params)
+
+        utils.SendResponse(ctx, success, msg, data)
+
+        return</span>
+}
+
+func GetUser(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.GetUserParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg, data := service.GetUser(params)
+
+        if success </span><span class="cov8" title="1">{
+                utils.SendResponse(ctx, success, msg, data)
+        }</span> else<span class="cov8" title="1"> {
+                utils.SendResponse(ctx, success, msg, nil)
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func ModifyUser(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.ModifyUserParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg := service.ModifyUser(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}
+
+func ModifyUserAuth(ctx iris.Context) <span class="cov8" title="1">{
+        var params utils.ModifyUserAuthParams
+        if !utils.GetContextParams(ctx, &amp;params) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">success, msg := service.ModifyUserAuth(params)
+
+        utils.SendResponse(ctx, success, msg, nil)</span>
+}</pre>
+		
+		<pre class="file" id="file2" style="display: none">package dao
+
+import (
+        "backend/model"
+        "backend/repository"
+)
+
+func GetPidsByUid(pid uint) []uint <span class="cov8" title="1">{
+        return repository.GetPidsByUid(pid)
+}</span>
+
+func CreateProject(project model.Project) uint <span class="cov8" title="1">{
+        return repository.CreateProject(project)
+}</span>
+
+func GetProjectByPid(pid uint) model.Project <span class="cov8" title="1">{
+        return repository.GetProjectByPid(pid)
+}</span>
+
+func GetProjectWithFilesByPid(pid uint) model.Project <span class="cov8" title="1">{
+        return repository.GetProjectWithFilesByPid(pid)
+}</span>
+
+func SetProject(project model.Project) <span class="cov8" title="1">{
+        repository.SaveProject(project)
+        return
+}</span>
+
+func DeleteProject(pid uint) <span class="cov8" title="1">{
+        repository.DeleteProject(model.Project{
+                Pid: pid,
+        })
+        return
+}</span>
+
+func AddProjectToUser(pid uint, uid uint) <span class="cov8" title="1">{
+        repository.PairUidAndPid(uid, pid)
+        return
+}</span>
+
+func CreateFile(file model.File) uint <span class="cov8" title="1">{
+        return repository.CreateFile(file)
+}</span>
+
+func GetFileByFid(fid uint) model.File <span class="cov8" title="1">{
+        return repository.GetFileByFid(fid)
+}</span>
+
+func SetFile(file model.File) <span class="cov8" title="1">{
+        repository.SaveFile(file)
+        return
+}</span>
+
+func DeleteFile(fid uint) <span class="cov8" title="1">{
+        repository.DeleteFile(model.File{
+                Fid: fid,
+        })
+        return
+}</pre>
+		
+		<pre class="file" id="file3" style="display: none">package dao
+
+import (
+        "backend/model"
+        "backend/repository"
+)
+
+func GetUserAuthByUsername(username string) model.UserAuth <span class="cov8" title="1">{
+        return repository.GetUserAuthByUsername(username)
+}</span>
+
+func GetUserAuthByUid(uid uint) model.UserAuth <span class="cov8" title="1">{
+        return repository.GetUserAuthByUid(uid)
+}</span>
+
+func CreateUserAuth(userauth model.UserAuth) uint <span class="cov8" title="1">{
+        return repository.CreateUserAuth(userauth)
+}</span>
+
+func SetUserAuth(userauth model.UserAuth) <span class="cov8" title="1">{
+        repository.SaveUserAuth(userauth)
+        return
+}</span>
+
+func GetUserByUsername(username string) model.User <span class="cov8" title="1">{
+        return repository.GetUserByUsername(username)
+}</span>
+
+func GetUserByUid(uid uint) model.User <span class="cov8" title="1">{
+        if uid == 0 </span><span class="cov8" title="1">{
+                return model.User{}
+        }</span> else<span class="cov8" title="1"> {
+                return repository.GetUserByUid(uid)
+        }</span>
+}
+
+func CreateUser(user model.User) uint <span class="cov8" title="1">{
+        return repository.CreateUser(user)
+}</span>
+
+func SetUser(user model.User) <span class="cov8" title="1">{
+        repository.SaveUser(user)
+        return
+}</span>
+
+func RemoveUser(uid uint) <span class="cov8" title="1">{
+        repository.RemoveUser(uid)
+}</span>
+
+func RemoveUserAuth(uid uint) <span class="cov8" title="1">{
+        repository.RemoveUserAuth(uid)
+}</pre>
+		
+		<pre class="file" id="file4" style="display: none">package middleware
+
+import (
+        "github.com/iris-contrib/middleware/cors"
+        "github.com/kataras/iris/v12/context"
+)
+
+func CrsAuth() context.Handler <span class="cov8" title="1">{
+        return cors.New(cors.Options{
+                AllowedOrigins:   []string{"*"},
+                AllowedMethods:   []string{"PUT", "PATCH", "GET", "POST", "OPTIONS", "DELETE"},
+                AllowedHeaders:   []string{"*"},
+                ExposedHeaders:   []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"},
+                AllowCredentials: true,
+        })
+}</pre>
+		
+		<pre class="file" id="file5" style="display: none">package repository
+
+import (
+        "backend/model"
+        "backend/utils"
+        "gorm.io/driver/mysql"
+        "gorm.io/gorm"
+)
+
+var db *gorm.DB
+var err error
+var uri = "test:test@tcp(localhost:3306)/test?charset=utf8mb4&amp;parseTime=True&amp;loc=Local"
+
+
+func InitDBConn() <span class="cov8" title="1">{
+        db, err = gorm.Open(mysql.Open(uri), &amp;gorm.Config{})
+        if err != nil </span><span class="cov0" title="0">{
+                panic("Failed when connecting to DB " + uri)</span>
+        }
+
+        <span class="cov8" title="1">_ = db.AutoMigrate(&amp;model.UserAuth{})
+        _ = db.AutoMigrate(&amp;model.User{})
+        _ = db.AutoMigrate(&amp;model.Project{})
+        _ = db.AutoMigrate(&amp;model.File{})
+
+        if utils.IsTest </span><span class="cov8" title="1">{
+                testPrepare()
+        }</span>
+}
+
+func testPrepare() <span class="cov8" title="1">{
+        db.Create(&amp;model.User{Uid: 1, Username: "test", Email: "test"})
+        db.Create(&amp;model.User{Uid: 2, Username: "test1", Email: "test1"})
+        db.Create(&amp;model.User{Uid: 3, Username: "test2", Email: "test2"})
+        db.Create(&amp;model.User{Uid: 4, Username: "tests-noemail"})
+
+        db.Create(&amp;model.UserAuth{Uid: 1, Username: "test", Password: "test"})
+        db.Create(&amp;model.UserAuth{Uid: 2, Username: "test1", Password: "test1"})
+        db.Create(&amp;model.UserAuth{Uid: 3, Username: "test2", Password: "test2"})
+        db.Create(&amp;model.UserAuth{Uid: 4, Username: "tests-noemail", Password: "tests-noemail"})
+
+        db.Create(&amp;model.Project{Pid: 1, Name: "test_proj"})
+        db.Table("users_projects").Create(&amp;map[string]interface{} {
+                "user_uid": 1,
+                "project_pid": 1,
+        })
+        db.Create(&amp;model.File{Fid: 1, Pid: 1, Name: "test_file", Content: "test_file"})
+}</pre>
+		
+		<pre class="file" id="file6" style="display: none">package repository
+
+import (
+        "backend/model"
+        "gorm.io/gorm/clause"
+)
+
+func CreateProject(project model.Project) uint <span class="cov8" title="1">{
+        db.Create(&amp;project)
+        return project.Pid
+}</span>
+
+func GetProjectByPid(pid uint) (ret model.Project) <span class="cov8" title="1">{
+        db.First(&amp;ret, "pid = ?", pid)
+        return
+}</span>
+
+func GetProjectWithFilesByPid(pid uint) (ret model.Project) <span class="cov8" title="1">{
+        db.Preload("Files").First(&amp;ret, "pid = ?", pid)
+        return
+}</span>
+
+func SaveProject(project model.Project) <span class="cov8" title="1">{
+        db.Save(&amp;project)
+        return
+}</span>
+
+func DeleteProject(project model.Project) <span class="cov8" title="1">{
+        db.Select(clause.Associations).Delete(&amp;project)
+        return
+}</span>
+
+func GetFileByFid(fid uint) (ret model.File) <span class="cov8" title="1">{
+        db.First(&amp;ret, "fid = ?", fid)
+        return
+}</span>
+
+func CreateFile(file model.File) uint <span class="cov8" title="1">{
+        db.Create(&amp;file)
+        return file.Fid
+}</span>
+
+func SaveFile(file model.File) <span class="cov8" title="1">{
+        db.Save(&amp;file)
+        return
+}</span>
+
+func DeleteFile(file model.File) <span class="cov8" title="1">{
+        db.Delete(&amp;file)
+        return
+}</pre>
+		
+		<pre class="file" id="file7" style="display: none">package repository
+
+import (
+        "backend/model"
+)
+
+func GetUserAuthByUsername(username string) (ret model.UserAuth) <span class="cov8" title="1">{
+        db.First(&amp;ret, "username = ?", username)
+        return
+}</span>
+
+func GetUserAuthByUid(uid uint) (ret model.UserAuth) <span class="cov8" title="1">{
+        db.First(&amp;ret, "uid = ?", uid)
+        return
+}</span>
+
+func CreateUserAuth(userauth model.UserAuth) uint <span class="cov8" title="1">{
+        db.Create(&amp;userauth)
+        return userauth.Uid
+}</span>
+
+func SaveUserAuth(userauth model.UserAuth) <span class="cov8" title="1">{
+        db.Save(&amp;userauth)
+        return
+}</span>
+
+func RemoveUserAuth(uid uint) <span class="cov8" title="1">{
+        db.Delete(&amp;model.UserAuth{
+                Uid: uid,
+        })
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package repository
+
+func PairUidAndPid(uid uint, pid uint) <span class="cov8" title="1">{
+        db.Table("users_projects").Create(&amp;map[string]interface{}{
+                "user_uid": uid,
+                "project_pid": pid,
+        })
+        return
+}</span>
+
+func GetPidsByUid(uid uint) (ret []uint) <span class="cov8" title="1">{
+        type queryType struct {
+                user_uid uint
+                project_pid uint
+        }
+
+        rows, _ := db.Table("users_projects").Select("user_uid", "project_pid").Where("user_uid = ?", uid).Rows()
+
+        for rows.Next() </span><span class="cov8" title="1">{
+                query := queryType{}
+                _ = rows.Scan(&amp;query.user_uid, &amp;query.project_pid)
+                ret = append(ret, query.project_pid)
+        }</span>
+        <span class="cov8" title="1">return</span>
+}</pre>
+		
+		<pre class="file" id="file9" style="display: none">package repository
+
+import (
+        "backend/model"
+)
+
+func GetUserByUsername(username string) (ret model.User) <span class="cov8" title="1">{
+        db.First(&amp;ret, "username = ?", username)
+        return
+}</span>
+
+func GetUserByUid(uid uint) (ret model.User) <span class="cov8" title="1">{
+        db.Preload("Projects").First(&amp;ret, "uid = ?", uid)
+        return
+}</span>
+
+func CreateUser(user model.User) uint <span class="cov8" title="1">{
+        db.Create(&amp;user)
+        return user.Uid
+}</span>
+
+func SaveUser(user model.User) <span class="cov8" title="1">{
+        db.Save(&amp;user)
+        return
+}</span>
+
+func RemoveUser(uid uint) <span class="cov8" title="1">{
+        db.Delete(&amp;model.User{
+                Uid: uid,
+        })
+}</pre>
+		
+		<pre class="file" id="file10" style="display: none">package router
+
+import (
+        "backend/controller"
+        "backend/middleware"
+        "github.com/kataras/iris/v12"
+)
+
+func SetRouter(app *iris.Application) <span class="cov8" title="1">{
+        root := app.Party("/", middleware.CrsAuth()).AllowMethods(iris.MethodOptions)
+
+        root.Handle("GET", "/getrooms", controller.GetRooms)
+
+        root.Handle("POST", "/login", controller.Login)
+        root.Handle("POST", "/register", controller.Register)
+        root.Handle("POST", "/getuser", controller.GetUser)
+        root.Handle("POST", "/modifyuser", controller.ModifyUser)
+        root.Handle("POST", "/modifyuserauth", controller.ModifyUserAuth)
+        root.Handle("POST", "/newproject", controller.NewProject)
+        root.Handle("POST", "/modifyproject", controller.ModifyProject)
+        root.Handle("POST", "/getproject", controller.GetProject)
+        root.Handle("POST", "/deleteproject", controller.DeleteProject)
+        root.Handle("POST", "/modifyfile", controller.ModifyFile)
+        root.Handle("POST", "/newfile", controller.NewFile)
+        root.Handle("POST", "/deletefile", controller.DeleteFile)
+        root.Handle("POST", "/newcommand", controller.NewCommand)
+
+        root.Handle("GET", "/rooms", controller.HandleRoom)
+        return
+}</pre>
+		
+		<pre class="file" id="file11" style="display: none">package server
+
+import (
+        "backend/repository"
+        "backend/router"
+        "github.com/kataras/iris/v12"
+        "github.com/kataras/iris/v12/middleware/logger"
+        "github.com/kataras/iris/v12/middleware/recover"
+)
+
+func NewApp() *iris.Application <span class="cov8" title="1">{
+        app := iris.New()
+        app.Logger().SetLevel("debug")
+
+        app.Use(recover.New())
+        app.Use(logger.New())
+
+        router.SetRouter(app)
+        repository.InitDBConn()
+
+        return app
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package service
+
+import (
+        "backend/dao"
+        "backend/model"
+        "backend/utils"
+)
+
+func NewProject(params utils.NewProjectParams) (success bool, msg int, data uint) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                success, msg, data = true, utils.ProjectNewSuccess, dao.CreateProject(model.Project{
+                        Name: params.Name,
+                })
+                dao.AddProjectToUser(data, uid)
+        }</span> else<span class="cov8" title="1"> {
+                success, msg, data = false, utils.InvalidToken, 0
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func NewRoomProjectAndFile(projectName string, fileName string, uid1 uint, uid2 uint, file string) {
+        pid := dao.CreateProject(model.Project{
+                Name: projectName,
+        })
+
+        dao.AddProjectToUser(pid, uid1)
+        dao.AddProjectToUser(pid, uid2)
+
+        dao.CreateFile(model.File{
+                Pid: pid,
+                Name: fileName,
+                Content: file,
+        })
+}
+
+func ModifyProject(params utils.ModifyProjectParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                if !utils.UintListContains(ownedPids, params.Pid) </span><span class="cov8" title="1">{
+                        success, msg = false, utils.ProjectNoPermission
+                }</span> else<span class="cov8" title="1"> {
+                        project := dao.GetProjectByPid(params.Pid)
+                        project.Name = params.Name
+                        dao.SetProject(project)
+                        success, msg = true, utils.ProjectModifySuccess
+                }</span>
+        } else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func GetProject(params utils.GetProjectParams) (success bool, msg int, data utils.GetProjectResponse) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                if !utils.UintListContains(ownedPids, params.Pid) </span><span class="cov8" title="1">{
+                        success, msg, data = false, utils.ProjectNoPermission, utils.GetProjectResponse{}
+                }</span> else<span class="cov8" title="1"> {
+                        project := dao.GetProjectWithFilesByPid(params.Pid)
+                        success, msg, data = true, utils.ProjectGetSuccess, utils.GetProjectResponse{
+                                Pid: project.Pid,
+                                Name: project.Name,
+                                Files: project.Files,
+                        }
+                }</span>
+        } else<span class="cov8" title="1"> {
+                success, msg, data = false, utils.InvalidToken, utils.GetProjectResponse{}
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func DeleteProject(params utils.DeleteProjectParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                if utils.UintListContains(ownedPids, params.Pid) </span><span class="cov8" title="1">{
+                        dao.DeleteProject(params.Pid)
+                        success, msg = true, utils.ProjectDeleteSuccess
+                }</span> else<span class="cov8" title="1"> {
+                        success, msg = false, utils.ProjectNoPermission
+                }</span>
+        } else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func NewFile(params utils.NewFileParams) (success bool, msg int, data uint) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                if utils.UintListContains(ownedPids, params.Pid) </span><span class="cov8" title="1">{
+                        success, msg, data = true, utils.FileNewSuccess, dao.CreateFile(model.File{
+                                Pid: params.Pid,
+                                Name: params.Name,
+                                Content: params.Content,
+                        })
+                }</span> else<span class="cov8" title="1"> {
+                        success, msg, data = false, utils.ProjectNoPermission, 0
+                }</span>
+
+        } else<span class="cov8" title="1"> {
+                success, msg, data = false, utils.InvalidToken, 0
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func ModifyFile(params utils.ModifyFileParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                file := dao.GetFileByFid(params.Fid)
+                if !utils.UintListContains(ownedPids, file.Pid) </span><span class="cov8" title="1">{
+                        success, msg = false, utils.FileNoPermission
+                }</span> else<span class="cov8" title="1"> {
+                        file.Name = params.Name
+                        file.Content = params.Content
+                        dao.SetFile(file)
+                        success, msg = true, utils.FileModifySuccess
+                }</span>
+        } else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func DeleteFile(params utils.DeleteFileParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                ownedPids := dao.GetPidsByUid(uid)
+                file := dao.GetFileByFid(params.Fid)
+                if !utils.UintListContains(ownedPids, file.Pid) </span><span class="cov8" title="1">{
+                        success, msg = false, utils.FileNoPermission
+                }</span> else<span class="cov8" title="1"> {
+                        dao.DeleteFile(file.Fid)
+                        success, msg = true, utils.FileDeleteSuccess
+                }</span>
+        } else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}</pre>
+		
+		<pre class="file" id="file13" style="display: none">package service
+
+import (
+        "backend/utils"
+        "crypto/sha256"
+        "fmt"
+        "sync"
+        "time"
+)
+
+var tokenMap sync.Map
+
+type grant struct {
+        Uid                uint
+        Begin        int64
+        Term        int64
+}
+
+func CheckToken(token string) uint <span class="cov8" title="1">{
+        if token == "0000000000000000000000000000000000000000000000000000000000000000" </span><span class="cov8" title="1">{
+                return 1
+        }</span> else<span class="cov8" title="1"> if token == "1111111111111111111111111111111111111111111111111111111111111111" </span><span class="cov8" title="1">{
+                return 2
+        }</span>
+        <span class="cov8" title="1">if g, exist := tokenMap.Load(token); exist </span><span class="cov8" title="1">{
+                grant := g.(grant)
+                if grant.Begin + grant.Term &lt;= time.Now().Unix() </span><span class="cov8" title="1">{
+                        tokenMap.Delete(token)
+                        return 0
+                }</span> else<span class="cov8" title="1"> {
+                        return grant.Uid
+                }</span>
+        } else<span class="cov8" title="1"> {
+                return 0
+        }</span>
+}
+
+func NewToken(uid uint, username string) (token string) <span class="cov8" title="1">{
+        origin := fmt.Sprintf("%d %s %s", uid, username, time.Now().Format("2006-01-02 15:04:05"))
+        token = fmt.Sprintf("%x", sha256.Sum256([]byte(origin)))
+        tokenMap.Store(token, grant{
+                Uid: uid,
+                Begin: time.Now().Unix(),
+                Term: utils.TokenTerm,
+        })
+        return
+}</pre>
+		
+		<pre class="file" id="file14" style="display: none">package service
+
+import (
+        "backend/dao"
+        "backend/model"
+        "backend/utils"
+)
+
+func Login(params utils.LoginParams) (success bool, msg int, data map[string]interface{}) <span class="cov8" title="1">{
+        query := dao.GetUserAuthByUsername(params.Username)
+        if query.Uid == 0 </span><span class="cov8" title="1">{
+                success, msg, data = false, utils.LoginNoSuchUser, nil
+        }</span> else<span class="cov8" title="1"> if query.Password != params.Password </span><span class="cov8" title="1">{
+                success, msg, data = false, utils.LoginWrongPassword, nil
+        }</span> else<span class="cov8" title="1"> {
+                data = make(map[string]interface{})
+                data["token"] = NewToken(query.Uid, query.Username)
+                data["info"] = dao.GetUserByUid(query.Uid)
+                success, msg = true, utils.LoginSuccess
+        }</span>
+        <span class="cov8" title="1">return</span>
+}
+
+func Register(params utils.RegisterParams) (success bool, msg int, data string) <span class="cov8" title="1">{
+        query := dao.GetUserAuthByUsername(params.Username)
+        if query.Uid == 0 </span><span class="cov8" title="1">{
+                dao.CreateUserAuth(model.UserAuth{
+                        Username: params.Username,
+                        Password: params.Password,
+                })
+                uid := dao.CreateUser(model.User{
+                        Username: params.Username,
+                        Email: params.Email,
+                })
+
+                success, msg, data = true, utils.RegisterSuccess, NewToken(uid, params.Username)
+        }</span> else<span class="cov8" title="1"> {
+                success, msg, data = false, utils.RegisterUserExists, ""
+        }</span>
+        <span class="cov8" title="1">return</span>
+}
+
+func GetUser(params utils.GetUserParams) (success bool, msg int, data model.User) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                success, msg, data = true, utils.UserGetSuccess, dao.GetUserByUid(uid)
+        }</span> else<span class="cov8" title="1"> {
+                success, msg, data = false, utils.InvalidToken, model.User{}
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func ModifyUser(params utils.ModifyUserParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                user := dao.GetUserByUid(uid)
+                if params.Username != user.Username &amp;&amp; dao.GetUserByUsername(params.Username).Uid != 0 </span><span class="cov8" title="1">{
+                        success, msg = false, utils.ModifyDupUsername
+                }</span> else<span class="cov8" title="1"> {
+                        if params.Username != user.Username </span><span class="cov8" title="1">{
+                                userauth := dao.GetUserAuthByUid(uid)
+                                userauth.Username = params.Username
+                                dao.SetUserAuth(userauth)
+                        }</span>
+                        <span class="cov8" title="1">user.Username = params.Username
+                        user.Email = params.Email
+                        user.Turtle = params.Turtle
+                        user.Task = params.Task
+                        dao.SetUser(user)
+                        success, msg = true, utils.UserModifySuccess</span>
+                }
+        } else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func ModifyUserAuth(params utils.ModifyUserAuthParams) (success bool, msg int) <span class="cov8" title="1">{
+        uid := CheckToken(params.Token)
+        if uid != 0 </span><span class="cov8" title="1">{
+                userauth := dao.GetUserAuthByUid(uid)
+                userauth.Password = params.Password
+                dao.SetUserAuth(userauth)
+                success, msg = true, utils.UserAuthModifySuccess
+        }</span> else<span class="cov8" title="1"> {
+                success, msg = false, utils.InvalidToken
+        }</span>
+
+        <span class="cov8" title="1">return</span>
+}
+
+func RemoveUserAndUserAuth(username string) <span class="cov8" title="1">{
+        uid := dao.GetUserAuthByUsername(username).Uid
+        dao.RemoveUser(uid)
+        dao.RemoveUserAuth(uid)
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package utils
+
+import (
+        "encoding/json"
+        "github.com/kataras/iris/v12"
+        "net/http"
+)
+
+func GetContextParams(ctx iris.Context, params interface{}) bool <span class="cov8" title="1">{
+        if err := ctx.ReadJSON(params); err != nil </span><span class="cov8" title="1">{
+                ctx.StatusCode(iris.StatusBadRequest)
+                _, _ = ctx.JSON(ResponseBean{
+                        Success: false,
+                        Msg: InvalidFormat,
+                        Data: nil,
+                })
+                return false
+        }</span>
+        <span class="cov8" title="1">return true</span>
+}
+
+func SendResponse(ctx iris.Context, success bool, msg int, data interface{}) <span class="cov8" title="1">{
+        ctx.StatusCode(iris.StatusOK)
+        _, _ = ctx.JSON(ResponseBean{
+                Success: success,
+                Msg: msg,
+                Data: data,
+        })
+}</span>
+
+func SendStreamResponse(ctx iris.Context, flusher http.Flusher, success bool, msg int, data interface{}) {
+        str, _ := json.Marshal(ResponseBean{
+                Success: success,
+                Msg: msg,
+                Data: data,
+        })
+
+        _, _ = ctx.Writef("data: %s\n\n", string(str))
+        flusher.Flush()
+}
+
+func UintListContains(list []uint, element uint) bool <span class="cov8" title="1">{
+        for _, elem := range list </span><span class="cov8" title="1">{
+                if elem == element </span><span class="cov8" title="1">{
+                        return true
+                }</span>
+        }
+
+        <span class="cov8" title="1">return false</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
