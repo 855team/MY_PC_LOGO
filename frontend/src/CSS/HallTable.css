@@ -1,0 +1,33 @@
+.ant-table-thead  > tr > th {
+    color: #fbffff;
+    background: #ffc870;
+    font-size: 15px;
+    height: 50px;
+    padding: 8px 10px;
+}
+
+.ant-table-tbody > tr > td {
+    height:30px;
+    padding: 8px 10px;
+}
+
+.ant-table-body::-webkit-scrollbar{
+    width: 3px;
+    background: white;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb{
+    background: rgba(226, 226, 226, 0.81);
+    border-radius: 1.5px;
+}
+.ant-table-body::-webkit-scrollbar-thumb:hover{
+    background: rgba(161, 161, 161, 0.78);
+}
+
+.ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+    background-color: #ffe3b8 !important;
+}
+
+.ant-table-tbody > tr:focus:not(.ant-table-expanded-row) > td {
+    background-color: #ffe3b8 !important;
+}
