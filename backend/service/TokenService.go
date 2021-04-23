@@ -21,6 +21,8 @@ func CheckToken(token string) uint {
 		return 1
 	} else if token == "1111111111111111111111111111111111111111111111111111111111111111" {
 		return 2
+	} else if token == "2222222222222222222222222222222222222222222222222222222222222222" {
+		return 3
 	}
 	if g, exist := tokenMap.Load(token); exist {
 		grant := g.(grant)
