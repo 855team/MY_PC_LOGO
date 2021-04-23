@@ -9,7 +9,7 @@ import (
 
 var db *gorm.DB
 var err error
-var uri = "test:test@tcp(localhost:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
+var uri = "test:test@tcp(123.57.65.161:30087)/test?charset=utf8mb4&parseTime=True&loc=Local"
 
 
 func InitDBConn() {
