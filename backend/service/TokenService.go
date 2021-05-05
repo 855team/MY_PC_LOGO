@@ -16,7 +16,7 @@ type grant struct {
 	Term	int64
 }
 
-func CheckToken(token string) uint {
+var CheckToken = func(token string) uint {
 	if token == "0000000000000000000000000000000000000000000000000000000000000000" {
 		return 1
 	} else if token == "1111111111111111111111111111111111111111111111111111111111111111" {
@@ -37,7 +37,7 @@ func CheckToken(token string) uint {
 	}
 }
 
-func NewToken(uid uint, username string) (token string) {
+var NewToken = func(uid uint, username string) (token string) {
 	origin := fmt.Sprintf("%d %s %s", uid, username, time.Now().Format("2006-01-02 15:04:05"))
 	token = fmt.Sprintf("%x", sha256.Sum256([]byte(origin)))
 	tokenMap.Store(token, grant{
