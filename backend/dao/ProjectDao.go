@@ -5,53 +5,53 @@ import (
 	"backend/repository"
 )
 
-func GetPidsByUid(pid uint) []uint {
+var GetPidsByUid = func(pid uint) []uint {
 	return repository.GetPidsByUid(pid)
 }
 
-func CreateProject(project model.Project) uint {
+var CreateProject = func(project model.Project) uint {
 	return repository.CreateProject(project)
 }
 
-func GetProjectByPid(pid uint) model.Project {
+var GetProjectByPid = func(pid uint) model.Project {
 	return repository.GetProjectByPid(pid)
 }
 
-func GetProjectWithFilesByPid(pid uint) model.Project {
+var GetProjectWithFilesByPid = func(pid uint) model.Project {
 	return repository.GetProjectWithFilesByPid(pid)
 }
 
-func SetProject(project model.Project) {
+var SetProject = func(project model.Project) {
 	repository.SaveProject(project)
 	return
 }
 
-func DeleteProject(pid uint) {
+var DeleteProject = func(pid uint) {
 	repository.DeleteProject(model.Project{
 		Pid: pid,
 	})
 	return
 }
 
-func AddProjectToUser(pid uint, uid uint) {
+var AddProjectToUser = func(pid uint, uid uint) {
 	repository.PairUidAndPid(uid, pid)
 	return
 }
 
-func CreateFile(file model.File) uint {
+var CreateFile = func(file model.File) uint {
 	return repository.CreateFile(file)
 }
 
-func GetFileByFid(fid uint) model.File {
+var GetFileByFid = func(fid uint) model.File {
 	return repository.GetFileByFid(fid)
 }
 
-func SetFile(file model.File) {
+var SetFile = func(file model.File) {
 	repository.SaveFile(file)
 	return
 }
 
-func DeleteFile(fid uint) {
+var DeleteFile = func(fid uint) {
 	repository.DeleteFile(model.File{
 		Fid: fid,
 	})

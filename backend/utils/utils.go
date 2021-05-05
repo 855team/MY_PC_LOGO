@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func GetContextParams(ctx iris.Context, params interface{}) bool {
+var GetContextParams = func(ctx iris.Context, params interface{}) bool {
 	if err := ctx.ReadJSON(params); err != nil {
 		ctx.StatusCode(iris.StatusBadRequest)
 		_, _ = ctx.JSON(ResponseBean{
@@ -19,7 +19,7 @@ func GetContextParams(ctx iris.Context, params interface{}) bool {
 	return true
 }
 
-func SendResponse(ctx iris.Context, success bool, msg int, data interface{}) {
+var SendResponse = func(ctx iris.Context, success bool, msg int, data interface{}) {
 	ctx.StatusCode(iris.StatusOK)
 	_, _ = ctx.JSON(ResponseBean{
 		Success: success,
@@ -28,7 +28,7 @@ func SendResponse(ctx iris.Context, success bool, msg int, data interface{}) {
 	})
 }
 
-func SendStreamResponse(ctx iris.Context, flusher http.Flusher, success bool, msg int, data interface{}) {
+var SendStreamResponse = func(ctx iris.Context, flusher http.Flusher, success bool, msg int, data interface{}) {
 	str, _ := json.Marshal(ResponseBean{
 		Success: success,
 		Msg: msg,
@@ -39,7 +39,7 @@ func SendStreamResponse(ctx iris.Context, flusher http.Flusher, success bool, ms
 	flusher.Flush()
 }
 
-func UintListContains(list []uint, element uint) bool {
+var UintListContains = func(list []uint, element uint) bool {
 	for _, elem := range list {
 		if elem == element {
 			return true

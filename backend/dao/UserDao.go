@@ -5,28 +5,28 @@ import (
 	"backend/repository"
 )
 
-func GetUserAuthByUsername(username string) model.UserAuth {
+var GetUserAuthByUsername = func(username string) model.UserAuth {
 	return repository.GetUserAuthByUsername(username)
 }
 
-func GetUserAuthByUid(uid uint) model.UserAuth {
+var GetUserAuthByUid = func(uid uint) model.UserAuth {
 	return repository.GetUserAuthByUid(uid)
 }
 
-func CreateUserAuth(userauth model.UserAuth) uint {
+var CreateUserAuth = func(userauth model.UserAuth) uint {
 	return repository.CreateUserAuth(userauth)
 }
 
-func SetUserAuth(userauth model.UserAuth) {
+var SetUserAuth = func(userauth model.UserAuth) {
 	repository.SaveUserAuth(userauth)
 	return
 }
 
-func GetUserByUsername(username string) model.User {
+var GetUserByUsername = func(username string) model.User {
 	return repository.GetUserByUsername(username)
 }
 
-func GetUserByUid(uid uint) model.User {
+var GetUserByUid = func(uid uint) model.User {
 	if uid == 0 {
 		return model.User{}
 	} else {
@@ -34,19 +34,19 @@ func GetUserByUid(uid uint) model.User {
 	}
 }
 
-func CreateUser(user model.User) uint {
+var CreateUser = func(user model.User) uint {
 	return repository.CreateUser(user)
 }
 
-func SetUser(user model.User) {
+var SetUser = func(user model.User) {
 	repository.SaveUser(user)
 	return
 }
 
-func RemoveUser(uid uint) {
+var RemoveUser = func(uid uint) {
 	repository.RemoveUser(uid)
 }
 
-func RemoveUserAuth(uid uint) {
+var RemoveUserAuth = func(uid uint) {
 	repository.RemoveUserAuth(uid)
 }
