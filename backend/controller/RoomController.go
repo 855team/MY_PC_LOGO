@@ -77,21 +77,6 @@ func HandleRoom(ctx iris.Context) {
 
 		entry := sse.Rooms[rid]
 
-		ctx.OnClose(func(iris.Context) {
-			entry.Lock.Lock()
-			entry.HasOwner = false
-			if entry.HasPartner {
-				entry.PartnerStream <- nil
-			}
-			entry.Lock.Unlock()
-
-			golog.Println(strconv.Itoa(int(rid)) + " - Owner Quit -" + strconv.Itoa(int(uid)))
-
-			if !entry.HasOwner && !entry.HasPartner {
-				sse.ClosingRooms <- rid
-			}
-		})
-
 		golog.Println(strconv.Itoa(int(rid)) + " - New Owner -" + strconv.Itoa(int(uid)))
 
 		utils.SendStreamResponse(ctx, flusher, true, utils.RoomEnterSuccess, utils.GetRoomsResponse{
@@ -106,27 +91,6 @@ func HandleRoom(ctx iris.Context) {
 			IsInRoom1: entry.HasOwner,
 			IsInRoom2: entry.HasPartner,
 		})
-		for {
-			s := <-entry.OwnerStream
-			if s == nil {
-				var msg int
-				if entry.HasPartner {
-					msg = utils.RoomUserEnterNotify
-				} else {
-					msg = utils.RoomUserLeaveNotify
-				}
-				utils.SendStreamResponse(ctx, flusher, true, msg, utils.NotifyEntry{
-					Uid: entry.Partner.Uid,
-					Username: entry.Partner.Username,
-					Turtle: entry.Partner.Turtle,
-				})
-			} else {
-				if s[0].Uid != 0 {
-					utils.SendStreamResponse(ctx, flusher, true, utils.RoomCommandStream, s)
-					flusher.Flush()
-				}
-			}
-		}
 	} else {
 		_rid, _ := strconv.ParseUint(ctx.URLParam("rid"), 10, 64)
 		rid := uint(_rid)
@@ -147,21 +111,6 @@ func HandleRoom(ctx iris.Context) {
 			}
 			entry.Lock.Unlock()
 
-			ctx.OnClose(func(iris.Context) {
-				entry.Lock.Lock()
-				entry.HasPartner = false
-				if entry.HasOwner {
-					entry.OwnerStream <- nil
-				}
-				entry.Lock.Unlock()
-
-				golog.Println(strconv.Itoa(int(rid)) + " - Partner Quit -" + strconv.Itoa(int(uid)))
-
-				if !entry.HasOwner && !entry.HasPartner {
-					sse.ClosingRooms <- rid
-				}
-			})
-
 			golog.Println(strconv.Itoa(int(rid)) + " - New Partner -" + strconv.Itoa(int(uid)))
 
 			utils.SendStreamResponse(ctx, flusher, true, utils.RoomEnterSuccess, utils.GetRoomsResponse{
@@ -176,26 +125,6 @@ func HandleRoom(ctx iris.Context) {
 				IsInRoom1: entry.HasOwner,
 				IsInRoom2: entry.HasPartner,
 			})
-			for {
-				s := <-entry.PartnerStream
-				if s == nil {
-					var msg int
-					if entry.HasOwner {
-						msg = utils.RoomUserEnterNotify
-					} else {
-						msg = utils.RoomUserLeaveNotify
-					}
-					utils.SendStreamResponse(ctx, flusher, true, msg, utils.NotifyEntry{
-						Uid: entry.Owner.Uid,
-						Username: entry.Owner.Username,
-						Turtle: entry.Owner.Turtle,
-					})
-				} else {
-					if s[0].Uid != 0 {
-						utils.SendStreamResponse(ctx, flusher, true, utils.RoomCommandStream, s)
-					}
-				}
-			}
 		} else if !entry.HasOwner && (entry.Owner.Uid == uid || entry.Owner.Uid == 0) && entry.Partner.Uid != uid {
 			entry.Lock.Lock()
 			entry.Owner = dao.GetUserByUid(uid)
@@ -208,21 +137,6 @@ func HandleRoom(ctx iris.Context) {
 				entry.PartnerStream <- nil
 			}
 			entry.Lock.Unlock()
-
-			ctx.OnClose(func(iris.Context) {
-				entry.Lock.Lock()
-				entry.HasOwner = false
-				if entry.HasPartner {
-					entry.PartnerStream <- nil
-				}
-				entry.Lock.Unlock()
-
-				golog.Println(strconv.Itoa(int(rid)) + " - Owner Quit -" + strconv.Itoa(int(uid)))
-
-				if !entry.HasOwner && !entry.HasPartner {
-					sse.ClosingRooms <- rid
-				}
-			})
 
 			golog.Println(strconv.Itoa(int(rid)) + " - New Owner -" + strconv.Itoa(int(uid)))
 
@@ -238,26 +152,6 @@ func HandleRoom(ctx iris.Context) {
 				IsInRoom1: entry.HasOwner,
 				IsInRoom2: entry.HasPartner,
 			})
-			for {
-				s := <-entry.OwnerStream
-				if s == nil {
-					var msg int
-					if entry.HasPartner {
-						msg = utils.RoomUserEnterNotify
-					} else {
-						msg = utils.RoomUserLeaveNotify
-					}
-					utils.SendStreamResponse(ctx, flusher, true, msg, utils.NotifyEntry{
-						Uid: entry.Partner.Uid,
-						Username: entry.Partner.Username,
-						Turtle: entry.Partner.Turtle,
-					})
-				} else {
-					if s[0].Uid != 0 {
-						utils.SendStreamResponse(ctx, flusher, true, utils.RoomCommandStream, s)
-					}
-				}
-			}
 		} else if (entry.HasOwner && entry.Owner.Uid == uid) || (entry.HasPartner && entry.Partner.Uid == uid) {
 			utils.SendStreamResponse(ctx, flusher, false, utils.RoomUserAlreadyInRoom, nil)
 			return
