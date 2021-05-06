@@ -226,3 +226,56 @@ func TestHandleRoom(t *testing.T) {
 	controller.HandleRoom(ctx)
 	stub.Reset()
 }
+
+// DataFLow-HandleRoom-全定义覆盖
+func TestHandleRoom_DataFlow(t *testing.T) {
+	app := new(iris.Application)
+	pool := GetContextPool(app)
+
+	// B0->C0->B2->C1->B4->C2->B5->C3->B6->B7->return
+	ctx := pool.Acquire(httptest.NewRecorder(), httptest.NewRequest("GET", "/rooms?type=new", nil))
+	stub := gostub.StubFunc(&service.CheckToken, uint(1)).
+		StubFunc(&utils.SendStreamResponse).
+		StubFunc(&dao.GetUserByUid, model.User{})
+	controller.HandleRoom(ctx)
+	stub.Reset()
+
+	// B0->C0->B2->C1->B4->C2->B8->C4->C5->B10->C6->B11->B13->C7->B14->B15->return
+	ctx = pool.Acquire(httptest.NewRecorder(), httptest.NewRequest("GET", "/rooms?rid=1", nil))
+	stub = gostub.StubFunc(&service.CheckToken, uint(1)).
+		Stub(&service.RoomSSE, &service.SSE{Rooms: map[uint]*utils.RoomEntry{
+			1: {HasOwner: true, HasPartner: false, Owner: model.User{Uid: 2}, Partner: model.User{Uid: 0},
+				OwnerStream: make(chan []utils.CommandEntry, 10), PartnerStream: make(chan []utils.CommandEntry, 10),
+				Lock: &sync.Mutex{}},
+		}}).
+		StubFunc(&dao.GetUserByUid, model.User{}).
+		StubFunc(&utils.SendStreamResponse)
+	controller.HandleRoom(ctx)
+	stub.Reset()
+
+	// B0->C0->B2->C1->B4->C2->B8->C4->C5->B10->C6->B12->B13->C7->B14->B15->return
+	ctx = pool.Acquire(httptest.NewRecorder(), httptest.NewRequest("GET", "/rooms?rid=1", nil))
+	stub = gostub.StubFunc(&service.CheckToken, uint(1)).
+		Stub(&service.RoomSSE, &service.SSE{Rooms: map[uint]*utils.RoomEntry{
+			1: {HasOwner: true, HasPartner: false, Owner: model.User{Uid: 2}, Partner: model.User{Uid: 1},
+				OwnerStream: make(chan []utils.CommandEntry, 10), PartnerStream: make(chan []utils.CommandEntry, 10),
+				Lock: &sync.Mutex{}},
+		}}).
+		StubFunc(&dao.GetUserByUid, model.User{}).
+		StubFunc(&utils.SendStreamResponse)
+	controller.HandleRoom(ctx)
+	stub.Reset()
+
+	// B0->C0->B2->C1->B4->C2->B8->C4->C5->C8->B16->C9->B17->C10->B19->return
+	ctx = pool.Acquire(httptest.NewRecorder(), httptest.NewRequest("GET", "/rooms?rid=1", nil))
+	stub = gostub.StubFunc(&service.CheckToken, uint(1)).
+		Stub(&service.RoomSSE, &service.SSE{Rooms: map[uint]*utils.RoomEntry{
+			1: {HasOwner: false, HasPartner: false, Owner: model.User{Uid: 1}, Partner: model.User{Uid: 2},
+				OwnerStream: make(chan []utils.CommandEntry, 10), PartnerStream: make(chan []utils.CommandEntry, 10),
+				Lock: &sync.Mutex{}},
+		}}).
+		StubFunc(&dao.GetUserByUid, model.User{Uid: 1}).
+		StubFunc(&utils.SendStreamResponse)
+	controller.HandleRoom(ctx)
+	stub.Reset()
+}
